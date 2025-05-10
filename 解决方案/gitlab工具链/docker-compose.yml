@@ -1,6 +1,6 @@
 services:
     gitlab:
-        image: gitlab/gitlab-ce:17.11.1-ce.0 # 推荐指定具体版本
+        image: gitlab/gitlab-ce:17.11.2-ce.0 # 推荐指定具体版本
         container_name: gitlab
         restart: unless-stopped # 自动重启策略
         shm_size: "256m" # 共享内存大小
@@ -62,13 +62,12 @@ services:
                     memory: 2G
 
     gitlab-runner:
-        image: gitlab/gitlab-runner:v17.11.0
+        image: gitlab/gitlab-runner:v17.11.1
         container_name: gitlab-runner
         restart: unless-stopped
         depends_on:
             gitlab:
                 condition: service_healthy # 确保 Runner 仅在 GitLab 健康后启动：
-
         environment:
             TZ: Asia/Shanghai
         volumes:
@@ -89,12 +88,11 @@ services:
 volumes:
     gitlab_config:
         name: gitlab_config # 无前缀
-        external: true # 迁移数据卷的时候加，新部署不需要
     gitlab_logs:
         name: gitlab_logs
     gitlab_data:
         name: gitlab_data
-        external: true
+        
     runner_config:
         name: runner_config
     runner_cache:

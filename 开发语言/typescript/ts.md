@@ -3,11 +3,10 @@
 ## 安装
   ```bash
     npm i typescript -g
+
     tsc -v
     # 显示基本可用的帮助信息
     tsc -h
-    # 显示完整的帮助信息
-    tsc --all
   ```
 ## 编译 
 * tsc
@@ -64,71 +63,7 @@
   ```
 ## tsconfig.json 中常见的参数配置
 > TypeScript 允许将 tsc 的编译参数，写在配置文件 tsconfig.json。只要当前目录有这个文件，tsc就会自动读取，所以运行时可以不写参数。
-```json
-{
-    // "include": ["src/*"],
-    // "exclude": ["node_modules", "test", "dist", "**/*spec.ts"],
-    "compilerOptions": {
-        /* 基本选项 */
-        "target": "ESNext" /* 将 TypeScript 代码转换为 JavaScript 代码时应使用的 ESNext 生成最新的 ECMAScript 标准的代码 */,
-        "module": "CommonJS" /* 生成代码的模块标准 */,
-        "baseUrl": "./",
-        "paths": {
-            "@/*": ["src/*"]
-        },
-        "rootDir": "./src" /* 输入文件的根目录 */,
-        "outDir": "./dist" /* 指定输出目录 */,
-
-        /* 项目选项 */
-        "incremental": true /* 开启增量编译 */,
-        // "composite": true,                                 /* 启用项目引用 */
-        // "tsBuildInfoFile": "./",                           /* 指定 .tsbuildinfo 增量编译文件的路径 */
-        // "disableSourceOfProjectReferenceRedirect": true,   /* 禁用引用项目时优先使用源文件而不是声明文件 */
-        // "disableSolutionSearching": true,                  /* 禁用多项目引用检查 */
-        // "disableReferencedProjectLoad": true,              /* 减少 TypeScript 自动加载的项目数量 */
-
-        /* 语言和环境 */
-        "lib": ["ESNext", "DOM"] /* 内置的类型声明库 */,
-        "experimentalDecorators": true /* 启用装饰器 */,
-        "emitDecoratorMetadata": true /* 启用装饰器元数据 */,
-        // "jsx": "react",                        /* 指定 JSX 代码生成方式 */
-        // "jsxFactory": "React.createElement",   /* 指定 JSX 工厂函数 */
-        // "jsxFragmentFactory": "React.Fragment", /* 指定 JSX 片段引用 */
-        // "jsxImportSource": "react",             /* 指定用于导入 JSX 工厂函数的模块 */
-        // "reactNamespace": React"",              /* 指定用于 `createElement` 的对象 */
-        // "noLib": true,                          /* 禁用包含任何库文件，包括默认的 lib.d.ts  */
-        // "useDefineForClassFields": true,        /* 生成符合 ECMAScript 标准的类字段 */
-
-        /* 模块 */
-        "moduleResolution": "node" /* 指定模块解析策略 */,
-        "esModuleInterop": true /* 生成额外的 JavaScript 代码，以便更好地支持从 CommonJS 模块导入 */,
-        "allowSyntheticDefaultImports": true /* 允许从没有设置默认导出的模块中默认导入 */,
-        "forceConsistentCasingInFileNames": true /* 强制检查导入路径的大小写是否与文件系统中的实际文件名一致 */,
-
-        /* JavaScript 支持 */
-        "allowJs": true /* 允许js文件作为项目的一部分. Use the `checkJS` option to get errors from these files. */,
-        "checkJs": true /* 启用对 JavaScript 文件的类型检查和错误报告. */,
-        "maxNodeModuleJsDepth": 1 /* 用于指定在 node_modules 目录中检查 JavaScript 文件时的最大文件夹深度。此选项仅在 allowJs 选项启用时适用. */,
-
-        /* Emit */
-        "declaration": true /* 生成 .d.ts 文件 */,
-        "declarationDir": "./" /* 生成 .d.ts 文件路径 */,
-        "sourceMap": true /* 生成 .map 文件 */,
-        "removeComments": true /* 删除注释. */,
-
-        /* 类型检查 */
-        "strict": true /* 启用所有严格类型检查选项 */,
-        "noImplicitAny": false /* 关闭对隐式 any 类型的错误报告*/,
-        "strictNullChecks": false /* 关闭严格空值检查 */,
-        "strictBindCallApply": false /* 关闭对 bind、call 和 apply 方法的参数进行严格检查 */,
-        "noFallthroughCasesInSwitch": true /* 启用对 switch 语句中贯穿情况的错误报告 */,
-
-        /* 完整性 */
-        "skipDefaultLibCheck": true /* 跳过对默认库文件（如 lib.d.ts）的类型检查。可以加快编译速度 */,
-        "skipLibCheck": true /* 跳过检测所有 .d.ts files. */
-    }
-}
-```
+见[tsconfig.json](./demo_ts/tsconfig.json)
 ## ts的类型系统
 * 类型注解：js原始类型 number|bigint|string|boolean|undefined|null|symbol
   ```js
@@ -152,7 +87,7 @@
     const y:bigint = 3.14; // 报错
   ```
 * ts的数组类型
-  > JavaScript 数组在 TypeScript 里面分成两种类型，分别是数组（array）和元组（tuple）。
+  > js 数组在 ts 里面分成两种类型，分别是数组（array）和元组（tuple）。
   ```ts
     // 数组的类型有两种写法。
     // 1. 是在数组成员的类型后面，加上一对方括号。
@@ -168,7 +103,6 @@
 
     // 只读数组
     const arr:readonly number[] = [0, 1];
-
     arr[1] = 2; // 报错
     arr.push(3); // 报错
     delete arr[0]; // 报错
@@ -231,7 +165,7 @@
   ```
 * ts的枚举类型
   ```ts
-   const enum Color {
+    enum Color {
         Red=0,     
         Green=1,   
         Blue=2     
@@ -261,6 +195,75 @@
         Left = 'LEFT',
         Right = 'RIGHT',
     }
+  ```
+## ts 中的工具类型
+* Record
+  - 快速构造对象类型，严格约束键名和值类型。
+  ```ts
+    // 语法
+    // K：键的类型，可以是 string、number、symbol 或其联合类型
+    // T：值的类型。
+    // 返回值：一个对象类型，所有键来自 K，每个键对应的值为 T。
+    type Record<K extends keyof any, T> = {
+    [P in K]: T;
+    };
+
+    // 核心特性-严格约束键的集合
+    type Weekday = "Mon" | "Tue" | "Wed" | "Thu" | "Fri";
+    type Schedule = Record<Weekday, string>;
+
+    // 等价于：
+    type Schedule = {
+        Mon: string;
+        Tue: string;
+        Wed: string;
+        Thu: string;
+        Fri: string;
+    };
+
+    const schedule: Schedule = {
+        Mon: "Work",
+        Tue: "Meeting", 
+        Wed: "Code",
+        Thu: "Review",
+        Fri: "Deploy", 
+        // 缺少任一属性会报错！
+    };
+
+    // 与联合类型结合
+    type Key = "id" | "timestamp";
+    type Data = Record<Key, string | number>;
+
+    const data: Data = {
+        id: "abc123", 
+        timestamp: 1620000000, 
+    };
+  ```
+* Pick
+  - 从现有类型中选取指定的属性，生成一个新的类型
+  ```ts
+    // Pick 的语法
+    // T：原始类型
+    // K：需要从 T 中选取的属性名的联合类型
+    // 返回值：一个新类型，仅包含 T 中指定的属性 K。
+    type Pick<T, K extends keyof T> = {
+        [P in K]: T[P];
+    };
+
+    // 案例
+    export interface CanvasConfig
+      extends Pick<
+        GCanvasConfig,
+        | "container"
+        | "devicePixelRatio"
+        | "width"
+        | "height"
+        | "cursor"
+        | "background"
+      > {
+        // 其他自定义属性...
+    }
+    // 继承 GCanvasConfig 中已有类型的属性，选取6个属性，保持属性一致，减少冗余代码
   ```
 ### ts的三种特殊类型
 * any 类型
@@ -367,11 +370,11 @@
   }
   ```
 ## 类
+* 基础示例
   ```js
     class Person {
         // 私有属性
         private name: string;
-        
         // 构造函数
         constructor(name: string) {
             this.name = name;
@@ -409,39 +412,109 @@
         }
     }
   ```
+* 访问器
+  - 是一种特殊的类方法，允许将方法伪装成属性访问，同时支持动态计算值或封装内部逻辑
+  ```ts
+    class MyClass {
+        private _value: number = 0;
+        // 定义 Getter,只读
+        public get value(): number {
+            return this._value;
+        }
+    }
+    const obj = new MyClass();
+    console.log(obj.value); // 输出 0（看起来像访问属性，实际调用了方法）
+
+    // Getter 通常与 Setter 配对使用，实现完整的属性访问控制
+    class Temperature {
+        private _celsius: number = 0;
+        // Getter
+        get celsius(): number {
+            return this._celsius;
+        }
+        // Setter
+        set celsius(value: number) {
+            if (value < -273.15) throw new Error("温度不能低于绝对零度！");
+            this._celsius = value;
+        }
+        // 计算属性（华氏度）
+        get fahrenheit(): number {
+            return this._celsius * 1.8 + 32;
+        }
+    }
+    const temp = new Temperature();
+    temp.celsius = 25; // 通过 Setter 赋值
+    console.log(temp.fahrenheit); // 输出 77
+  ```
 ## 继承
-* public、protected、private
-  - public 当前类里面，子类，类外面都可以访问,属性不加修饰符,默认就是公有的
-  - protected 在当前类和子类内部可以访问，类外部无法访问
-  - private 在当前类内部可访问，子类，类外部都无法访问
-* 静态属性和静态方法 static
-  - 可以直接通过类名访问
-  + 应用场景：
-    - 静态方法工具类方法，不需要实例化就可以调用
+* 类继承
+  + 修饰符
+    - public 当前类里面，子类，类外面都可以访问,属性不加修饰符,默认就是公有的
+    - protected 在当前类和子类内部可以访问，类外部无法访问
+    - private 在当前类内部可访问，子类，类外部都无法访问
+  + 静态属性和静态方法（static） 
+    - 可以直接通过类名访问
+    - 静态方法一般用作工具类方法，不需要实例化就可以调用
     - 静态属性用来存储常量
-   ```ts
-    class Son extends Person {
-    // 静态属性
-    public static age: number = 18;
-    public school: string;
-    constructor(name: string, school: string) {
-        // 访问派生类的构造函数中的 "this" 前，必须调用 "super",初始化父类构造函数 --并把参数传给父类
-        super(name);
-        //把传进来的school赋值给全局变量
-        this.school = school;
-    }
-    // 静态方法
-    static run(name: string): string {
-        return `${name}在跑步,他的年龄才${this.age}`;
-    }
-    }
+  + 类继承的示例
+    ```ts
+        class Son extends Person {
+            // 静态属性
+            public static age: number = 18;
+            public school: string;
 
-    let son = new Son("王五", "清华大学");
-    son.setName("赵六"); // 私有类也不能在子类的外部访问,但可通过公开的方法中进行赋值和访问
+            constructor(name: string, school: string) {
+                // 访问子类的构造函数中的 "this" 前，必须调用 "super",初始化父类构造函数 --并把参数传给父类
+                super(name);
+                // 把传进来的school赋值给全局变量
+                this.school = school;
+            }
+            // 静态方法
+            static run(name: string): string {
+                return `${name}在跑步,他的年龄才${this.age}`;
+            }
+        }
 
-    console.log(Son.run("方七"));
-    console.log(Son.age);
-   ```
+        let son = new Son("王五", "清华大学");
+        son.setName("赵六"); // 私有类也不能在子类的外部访问,但可通过公开的方法中进行赋值和访问
+
+        console.log(Son.run("方七"));
+        console.log(Son.age);
+    ```
+* 接口继承
+  - 允许一个接口扩展其他接口，继承其成员并添加新功能
+  ```ts
+    interface Animal {
+        name: string;
+        eat(): void;
+    }
+    // 单个继承
+    interface Dog extends Animal {
+        bark(): void;
+    }
+    const myDog: Dog = {
+        name: "Buddy",
+        eat() { console.log("Eating..."); },
+        bark() { console.log("Woof!"); }
+    };
+
+    // 多重继承
+    interface Pet {
+        owner: string;
+    }
+    interface Dog extends Animal, Pet {
+        bark(): void;
+    }
+    const myDog: Dog = {
+        name: "Buddy",
+        owner: "Alice",
+        eat() { /* ... */ },
+        bark() { /* ... */ }
+    };
+    // 注意：
+    // 1. 父接口的同名属性必须类型兼容，否则会报错
+    // 2. 子接口可以重载方法，但需兼容参数和返回值
+  ```
 ## 多态
 * 概念：面向对象编程中的一个重要概念，它允许对象以多种形式出现。多态性使得同一个方法可以根据对象的不同类型而表现出不同的行为。多态主要通过继承和接口实现。
 * 应用场景
@@ -522,10 +595,9 @@
   ```
 ## 装饰器
 [装饰器](https://wangdoc.com/typescript/decorator)
-
 ## declare 关键字
 * declare 关键字用来告诉编译器，某个类型是存在的，可以在当前文件中使用。
-  - 如自己的脚本使用外部库定义的函数，编译器会因为不知道外部函数的类型定义而报错，这时就可以在自己的脚本里面使用declare关键字，告诉编译器外部函数的类型。这样的话，编译单个脚本就不会因为使用了外部类型而报错。
+  - 如自己的脚本使用外部库定义的函数，编译器会因为不知道外部函数的类型定义而报错，这时就可以在自己的脚本里面使用 declare 关键字，告诉编译器外部函数的类型。
 * declare 关键字可以描述以下类型。
   - 变量（const、let、var 命令声明）
   - type 或者 interface 命令声明的类型
@@ -594,32 +666,31 @@
   ```
 ## d.ts 类型声明文件
 * 单独使用的模块，一般会同时提供一个单独的类型声明文件（declaration file），把本模块的外部接口的所有类型都写在这个文件里面，便于模块使用者了解接口，也便于编译器检查使用者的用法是否正确。
-* 类型声明文件里面只有类型代码，没有具体的代码实现。它的文件名一般为[模块名].d.ts的形式，其中的d表示 declaration（声明）。
+* 类型声明文件里面只有类型代码，没有具体的代码实现。它的文件名一般为[模块名].d.ts的形式，其中的d表示 declaration（声明）
 ## 类型声明文件的来源
-> tsc 在编译的时候，会分别加载 lib 的，@types 下的，还有 include 和 files 的文件，进行类型检查
-* TypeScript 编译器自动生成。
+> tsc 在编译的时候，会分别加载 lib、@types，还有 include 和 files 的文件，进行类型检查。
+* ts 编译器自动生成。
   - 下面是在tsconfig.json文件里面，打开这个选项。
   ```json
     {
-    "compilerOptions": {
-        "declaration": true
-    }
+        "compilerOptions": {
+            "declaration": true
+        }
     }
   ```
-* TypeScript 内置类型文件。
+* ts 内置类型文件。
   - 安装 TypeScript 语言时，会同时安装一些内置的类型声明文件，主要是内置的全局对象（JavaScript 语言接口和运行环境 API）的类型声明。
   - 这些只是声明类型，没有具体的 JS 实现，TS 就给单独设计了一种文件类型，也就是 d.ts， d 是 declare 的意思
-  - TypeScript 编译器会自动根据编译目标target的值，加载对应的内置声明文件，所以不需要特别的配置。但是，可以使用编译选项lib，指定加载哪些内置声明文件。
+  - TypeScript 编译器会自动根据编译目标 target 的值，加载对应的内置声明文件，所以不需要特别的配置。但是，可以使用编译选项lib，指定加载哪些内置声明文件。
   ```json
     {
-    "compilerOptions": {
-        "lib": ["dom", "es2021"]
-    }
+        "compilerOptions": {
+            "lib": ["dom", "es2021"]
+        }
     }
   ```
 * 外部类型声明文件  
-  - 如果项目中使用了外部的某个第三方代码库，那么就需要这个库的类型声明文件。分成三种情况。
-    1. 这个库自带了类型声明文件。
-    2. 这个库没有自带，但是可以找到社区制作的类型声明文件。这些声明文件都会作为一个单独的库，发布到 npm 的@types名称空间之下
-    3. 找不到类型声明文件，需要自己写。
-      - 有时实在没有第三方库的类型声明文件，又很难完整给出该库的类型描述，这时你可以告诉 TypeScript 相关对象的类型是any
+   > 如果项目中使用了外部的某个第三方代码库，那么就需要这个库的类型声明文件。分成三种情况。
+  1. 这个库自带了类型声明文件。
+  2. 这个库没有自带，但是可以找到社区制作的类型声明文件。这些声明文件都会作为一个单独的库，发布到 npm 的 @types 名称空间之下
+  3. 找不到类型声明文件，需要自己写,或 使用 any

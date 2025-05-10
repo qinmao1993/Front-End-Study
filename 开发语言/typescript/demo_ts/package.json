@@ -1,0 +1,21 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "ts-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsc && src/index.js",
+    "start": "node dist/index.js",
+    "build": "tsc"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "qm",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.2"
+  }
+}

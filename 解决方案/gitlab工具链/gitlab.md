@@ -103,7 +103,6 @@
   - 如未安装先安装 docker compose
   - 本机环境：mac 16g内存 2.6 GHz 六核Intel Core i7
   ```bash
-
     # 在项目根目录下创建一个 docker-compose.yml 配置文件，在当前目录下运行
     docker compose down	      # 停止并删除所有容器、网络（-v 同时删除卷）
     docker compose up -d      # 根据 docker-compose.yml 文件 创建镜像启动服务
@@ -113,8 +112,6 @@
 
     # 版本升级，修改 Compose 文件中的镜像版本
     # 如：image: gitlab/gitlab-ce:16.0.0-ce.0
-
-    docker compose up -d --force-recreate     # 重新部署
 
     docker exec -it gitlab /bin/bash
 
@@ -189,7 +186,7 @@
     docker exec -it gitlab /bin/bash
     grep 'Password:' /etc/gitlab/initial_root_password
 
-    # 点击右上角用户头像 → Preferences → Password
+    # 修改默认密码：点击右上角用户头像 → Preferences → Password
 
     # 找不到 initial_root_password 文件,可重置密码
     docker exec -it gitlab gitlab-rake "gitlab:password:reset[root]"

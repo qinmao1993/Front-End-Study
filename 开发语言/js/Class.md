@@ -15,12 +15,13 @@
       getClassName() {
         return Me.name; // name 属性总是返回紧跟在 class 关键字后面的类名。
     }
-        let inst = new MyClass();
-        inst.getClassName() // Me 
 
-        Me.name // ReferenceError: Me is not defined
-        // 这个类的名字是 MyClass而不是 Me，Me只在 Class 的内部代码可用，指代当前类。
-        // 类的内部没用到的话，可以省略Me
+    const inst = new MyClass();
+    inst.getClassName() // Me 
+    Me.name // ReferenceError: Me is not defined
+
+    // 这个类的名字是 MyClass 而不是 Me，Me只在 Class 的内部代码可用，指代当前类。
+    // 类的内部没用到的话，可以省略Me
     };
   ```
 ## 私有方法、私有属性
@@ -76,7 +77,7 @@
             super(value) // 可以看成 Parent.call(this, value)
         }
       }
-      let child = new Child(1)
+      const child = new Child(1)
       child.getValue() // 1
       child instanceof Parent // true
 
@@ -84,19 +85,20 @@
     class Point {}
     class ColorPoint extends Point {}
     // 由于没有部署任何代码，所以这两个类完全一样，等于复制了一个Point类
+
     class ColorPoint extends Point {
         constructor(x, y, color) {
-            super(x, y); // 调用父类的constructor(x, y)
+            super(x, y); // 调用父类的 constructor(x, y)
             this.color = color;
         }
         toString() {
             return this.color + ' ' + super.toString(); // 调用父类的toString()
         }
-        // super 它在这里表示父类的构造函数，用来新建父类的this对象。
+        // super 它在这里表示父类的构造函数，用来新建父类的 this 对象
 
-        // 注意：子类必须在 constructor 方法中调用 super 方法，否则新建实例时会报错。这是因为子类没有自己的 this 对象，而是继承父类的 this 对象，然后对其进行加工。如果不调用super方法，子类就得不到this对象。
+        // 注意：子类必须在 constructor 方法中调用 super 方法，否则新建实例时会报错。这是因为子类没有自己的 this 对象，而是继承父类的 this 对象，然后对其进行加工。如果不调用super方法，子类就得不到this对象
     }
-    * es5 与 es6 继承的区别:
-      - es5 是先创造子类的实例对象 this，然后再将父类的方法添加到 this 上面（Parent.apply(this)）
-      - ES6 实质是先创造父类的实例对象 this（所以必须先调用super方法），然后再用子类的构造函数修改 this。
+    // es5 与 es6 继承的区别:
+    // es5 是先创造子类的实例对象 this，然后再将父类的方法添加到 this 上面（Parent.apply(this)）
+    // es6 实质是先创造父类的实例对象 this（所以必须先调用super方法），然后再用子类的构造函数修改 this。
   ``` 
