@@ -61,10 +61,7 @@
 
 ## docker 安装部署
 1. mac|windows 安装 Docker Desktop 安装后启动,服务器使用命令行安装
-2. 拉取 GitLab CE 镜像
-  ```bash
-    docker pull gitlab/gitlab-ce:latest
-  ```
+2. 预拉取 GitLab CE 镜像
 3. 运行 GitLab 容器（按需调整参数）
   ```bash
       # --restart always: 容器随 Docker 自动重启
@@ -94,7 +91,7 @@
         logging['logrotate_frequency'] = 'daily';
         logging['logrotate_size'] = '100M';
        " \
-       gitlab/gitlab-ce:latest
+       gitlab/gitlab-ce:17.11.2-ce.0
 
        docker logs -f gitlab  # 查看安装日志，当看到 GitLab Shell self-check successful 表示启动成功
   ```
@@ -109,9 +106,6 @@
 
     # 查看实时日志
     docker compose logs -f gitlab
-
-    # 版本升级，修改 Compose 文件中的镜像版本
-    # 如：image: gitlab/gitlab-ce:16.0.0-ce.0
 
     docker exec -it gitlab /bin/bash
 

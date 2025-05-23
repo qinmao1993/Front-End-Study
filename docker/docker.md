@@ -88,6 +88,10 @@
   ```bash
     docker load -i <文件名>.tar  # 示例：docker load -i nginx.tar
     
+    # 批量导入
+    for file in *.tar; do
+        docker load -i "$file"
+    done
     docker images   # 验证镜像是否导入成功
   ```
 4. 运行容器

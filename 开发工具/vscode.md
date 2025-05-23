@@ -5,8 +5,31 @@
   - 原来官网的地址：https://az764295.vo.msecnd.net/stable/129500ee4c8ab7263461ffe327268ba56b9f210d/VSCodeUserSetup-x64-1.72.1.exe
   - 修改为：https://vscode.cdn.azure.cn/stable/129500ee4c8ab7263461ffe327268ba56b9f210d/VSCodeUserSetup-x64-1.72.1.exe
 * 截止2024 8月1号，官网直接下载已经很快了
-## 插件安装（离线）
-* 找到本机插件的安装地址，/Users/xxx/.vscode 将 extensions 文件拷贝的目标机器上
+
+## 插件离线安装
+找到本机插件的安装地址，/Users/xxx/.vscode 将 extensions 文件拷贝的目标机器上
+
+## 终端中使用 VS Code 打开文件或文件夹
+* 在 macOS / Linux 上：系统配置（如果命令无效）
+  1. 打开 VS Code。
+  2. 按 Ctrl/Cmd + Shift + P 打开命令面板。
+  3. 输入 Shell Command: Install 'code' command in PATH，选择并运行。
+* Windows
+  1. 安装 VS Code 时勾选 “添加到 PATH” 选项
+  2. 如果已安装但未勾选，可重新运行安装程序并选择修改配置
+
+* 常用命令
+  ```bash
+    code --version
+    code ~/project/index.html  # 打开指定文件
+    code .                     # 打开当前目录
+    code ..                    # 打开上级目录
+    code -n 文件路径            # 新建窗口打开
+    code --goto 文件路径:行号
+
+    code file1.txt file2.txt   # 同时打开多个文件
+
+  ```
 
 ## 调试
 ### c/c++
@@ -130,8 +153,8 @@
       ssh-copy-id -i ~/.ssh/id_rsa.pub root@你的IP地址
     ```
 
-## 远程开发遇到的问题
-* 离线环境拷贝nodejs项目，需要 npm rebuild 下包
-* vite vue 项目 
-  - 报 esbuild 权限问题，给赋予执行权限
-  - 报 esbuild/install.js 的问题
+* 远程开发遇到的问题
+  - 离线环境拷贝nodejs项目，需要 npm rebuild 下包
+  + vite vue 项目 
+    - 报 esbuild 权限问题，给赋予执行权限
+    - 报 esbuild/install.js 的问题

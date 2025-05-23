@@ -67,13 +67,10 @@
 * 是什么
   - 用于在指定环境中 执行 CI/CD 流水线中定义的任务（Jobs）
   - GitLab 本身不内置 GitLab Runner，需要用户自行安装和配置
-* Runner的类型
-  - GitLab 托管的 runner：完全由 GitLab 管理，可直接使用，不支持容器
-  - 自我管理的runner：自己安装和管理，根据需求进行定制，支持各种 executor（包括 Shell、Docker 和 Kubernetes）。
-* 安装运行自建runner
+* 安装运行自建 runner
    - 已集成到[docker-compose](../docker-compose.yml)  
   ```bash
-    # 验证 GitLab Runner 服务状态
+    # 查看 GitLab Runner 服务状态
     # 默认未注册会显示： gitlab-runner: exit status 1
     docker compose exec gitlab-runner gitlab-runner status
 
@@ -96,39 +93,40 @@
   1. runner必须首先在 GitLab 中注册， 它在 runner 和 GitLab 之间建立持久连接
   2. 当触发流水线时 GitLab 将 job 被放置在队列中,等待匹配 runner
   3. 检查可用的 runner 通过标签匹配 job，每个 runner 一个作业，然后执行它们
-  4. 结果实时报告回 GitLab。
-* 注册 GitLab Runner
-  - 可以注册到 项目（Project）、群组（Group） 或 所有项目（All projects），这里注册到最大的，所有项目和组都可以用这个Runner
-  - 注意：在 16.0+，要注册 runner，您可以使用 runner 身份验证令牌, 而不是 Runner 注册令牌。运行器注册令牌已弃用
-  - 访问 http://localhost:8090
+  4. 结果实时报告回 GitLab
+* 新建实例runner
+  + 实例runner类型： 项目（Project）、群组（Group）、全局（以全局为例）
+  - 注意：在 16.0+，要注册 runner，使用 runner 身份验证令牌, Runner 注册令牌已弃用。
+  - 访问 gitlab 实例的url 地址
     - 获取全局 runner 身份令牌： 用管理员账号登录 → 进入 “设置 → CI/CD → Runner” → 点击 “新建 Runner” → 复制 “身份验证令牌”
     - 获取项目级 runner 身份令牌：项目→ 进入 “设置 → CI/CD → Runner” → 点击 “新建 Runner” → 复制 “身份验证令牌”
   ```bash
-    # 执行注册,注册运行程序后，配置将保存到 .config.toml
-
+    # 注册运行程序后，配置将保存到 .config.toml
     # RUNNER_TOKEN 就是上面获取到的 “身份验证令牌”
-    export RUNNER_TOKEN=glrt-dDoxCnU6MVnoShbJwNugRcdF8u97BoAQ.0w0bcc2f3
+    export RUNNER_TOKEN=glrt-dDoxCnU6MXFLHwnGJ_T-9kXi8ImP30oQ.0w0pzm0qy
 
     # 注册方式一：以交互的形式执行注册
-    docker-compose exec gitlab-runner gitlab-runner register
+    docker compose exec gitlab-runner gitlab-runner register
 
     # 注册方式二：以非交互的形式执行注册 --non-interactive
-    docker-compose exec gitlab-runner gitlab-runner register \
+    docker compose exec gitlab-runner gitlab-runner register \
     --non-interactive \
-    --url "http://gitlab:8090" \
+    --url "http://172.20.10.2:8090" \
     --name "fe-deploy" \
     --token $RUNNER_TOKEN \
     --executor "docker" \
     --docker-image node:22.15.0-slim
 
-    docker compose logs -f gitlab-runner 
+    docker compose exec gitlab-runner gitlab-runner status # 查看服务状态
+
+    # 手动验证 runner 是否可以选中作业，执行后可以看到能接收到 job,和执行结果
+    docker compose exec gitlab-runner gitlab-runner run
 
     # 进入 gitlab 的容器中
-    docker  exec   -it gitlab-runner /bin/bash
+    docker  exec  -it gitlab-runner /bin/bash
 
-    # 容器内 gitlab-runnenr 常用命令
+    # gitlab-runnenr 常用命令
     gitlab-runner unregister --all-runners
-
     gitlab-runner restart
     gitlab-runner --version
     gitlab-runner status
@@ -140,12 +138,20 @@
 
   ```
   - 验证 Runner 状态:回到 GitLab 界面 → Settings → CI/CD → Runners，确认 Runner 显示为 Online
-  
+
+### cicd 自动发布 npm 包
+> 通过 GitLab Package Registry 可以将 GitLab 作为私有 npm 仓库
 * 以实现一个 npm 包自动发布为例
-  - 配置一个流水线的配置文件：gitlab 会检测项目根目录里的 .github-ci.yml文件，根据文件中的流水线自动构建
-  - 见配置文件[gitlabCI](./.gitlab-ci.yml)，当 main 分支上传代码就会触发流水线，runner 开始执行流水线中的job
-  
-## GitHub上的CI/CD实践
+  - gitlab 会检测项目根目录里的 .github-ci.yml文件，根据该文件流水线自动构建
+  - 见配置文件[gitlabCI](./npm/.gitlab-ci.yml)，main 分支推送代码就会触发流水线，runner 开始执行流水线中的 job
+
+### cicd 自动部署前端项目
+TODO
+
+### cicd 自动部署后端项目
+TODO
+
+## GitHub 上的 CI/CD 实践
   - TODO
 * 如何为 GitHub 上托管的开源项目用 Travis CI 进行持续集成?
     1. Travis CI是什么东东？

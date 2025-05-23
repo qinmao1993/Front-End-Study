@@ -562,17 +562,6 @@
       1. 如果该闭包会一直使用，那么它可以作为全局变量而存在；但如果使用频率不高，而且占用内存又比较大的话，那就尽量让它成为一个局部变量。
       2. 使用完闭包后，及时清除。（将闭包变量 赋值为 null）
 
-## JSON 转换 
-* object 转 string:JSON.stringify()
-  ```js
-    // 语法
-    JSON.stringify(value: any, replacer?: (this: any, key: string, value: any) => any, space?: string | number): string (+1 overload)
-    
-    // 第二个参数 null 表示不对结果进行任何替换，第三个参数 2 用于美化输出
-    console.log(JSON.stringify(treeData, null, 2))
-  ```
-* string 转 object:JSON.parse()   
-
 ## setTimeout|setInterval
 * js中的计时器能否精确计时？为什么
   - 硬件: 层面不可能

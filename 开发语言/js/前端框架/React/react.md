@@ -2,13 +2,12 @@
 
 ## 组件
 * 概念：
-  - 上类似于 js 函数。它接受任意的入参（即 “props”），并返回用于描述页面展示内容的 React 元素
+  - 类似于 js 函数。它接受任意的入参（即 “props”），并返回用于描述页面展示内容的 React 元素
 * state：
   - 组件的内部状态管理 
   - 使用场景:组件重新渲染时使用
   ```js
     import { useState } from 'react';
-
     function MyButton() {
         // 从 useState 中获得两样东西：当前的 state（count），以及用于更新它的函数（setCount）
         // 起任何名字，但按照惯例会像 [something, setSomething] 这样为它们命名
@@ -22,12 +21,10 @@
             </button>
         );
     }
-
   ```
 * props：
    ```js
    import { useState } from 'react';
-
     export default function MyApp() {
         const [count, setCount] = useState(0);
 
@@ -234,8 +231,8 @@
     npm create vite@latest demo-vite-react -- --template react
     npm create vite@latest demo-vite-react -- --template react-ts 
 
-    # SWC 是一个现代的 JavaScript 和 TypeScript 编译器，它的目标是提供比 Babel 更快的编译速度。
-    # SWC 使用 Rust 编写，更好的性能。支持多种  特性和规范，包括 ES6+ 和 TypeScript 的语法。
+    # 推荐 SWC 是一个现代的 JavaScript 和 TypeScript 编译器，它的目标是提供比 Babel 更快的编译速度。
+    # SWC 使用 Rust 编写，更好的性能。支持多种特性和规范，包括 ES6+ 和 TypeScript 的语法。
     npm create vite@latest demo-vite-react -- --template react-swc
     npm create vite@latest demo-vite-react -- --template react-swc-ts
 
