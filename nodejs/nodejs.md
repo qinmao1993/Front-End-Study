@@ -94,19 +94,43 @@
 ## 进程
 [nodejs进程](./nodejs进程.md)
 
+## 新版本新增的特性
+* v20
+  - 测试功能增强 node --test 并行测试多个文件
+    ```bash
+      node --test file1.js file2.js
+    ```
+  - 环境变量原生支持，直接读取.env,淘汰 dotenv 库
+    ```js
+      console.log(process.env.xxx)
+    ```
+    ```bash
+      node --env-file .env index.js
+    ```
+* v21
+  - 支持使用 fetch 淘汰 axios
+  - 内置彩色控制台输出，淘汰 chalk 库
+    ```js
+     const { styleText }=require('util')
+
+     console.log(styleText('red', '红色文本'));
+     // 多个样式嵌套写法
+     console.log(styleText('italic', styleText('bold', styleText('blue', '蓝色加粗斜体'))));
+    ```
+* v22
+  - 文件监听实时运行,淘汰 nodemon
+    ```js
+      node --watch index.js
+    ```
+  - 全文件搜索 glob、globSync
+
 ## web framework
 * 通用型
   - [express](https://www.expressjs.com.cn/)
   - [koa](http://www.ruanyifeng.com/blog/2017/08/koa.html)
 * 企业级：
   - [egg](https://eggjs.org/zh-cn/intro/index.html)
-  - nest(基于typescript)
-* koa-generator
-  - 非官方，狼叔开发的
-    ```bash
-      npm install koa-generator -g
-      koa2 projectName
-    ```
+  - nestjs(基于ts)
 
 ## 数据库
 * mysql
