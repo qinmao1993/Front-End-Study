@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>动态绘制点</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+    <style>
+        #canvas {
+            border: 1px solid red;
+        }
+    </style>
+    <body>
+        <canvas id="canvas"></canvas>
+        <div class="tips">点击屏幕试一下~</div>
+        <script type="module">
+            import { createShader, createProgram } from "./utils/shader.js";
+
+            function randomColor() {
+                return {
+                    r: Math.random() * 255,
+                    g: Math.random() * 255,
+                    b: Math.random() * 255,
+                    a: Math.random() * 1,
+                };
+            }
+
+            const canvas = document.querySelector("#canvas");
+            const glCtx =
+                canvas.getContext("webgl") ||
+                canvas.getContext("experimental-webgl");
+
+            const vertexShaderCode =`
+                // 接收 js 传递过来的点的坐标（X, Y）
+                attribute vec2 a_Position;
+
+                void main(){
+                    // 将 canvas 的坐标值 转换为 [-1.0, 1.0]的范围
+                    // 最终的顶点坐标
+                    gl_Position = vec4(a_Position, 0.0, 1.0);
+                    // 点的大小
+                    gl_PointSize = 10.0;
+                }
+
+            `
+            const fragmentShaderCode =`
+                // 浮点数设置为中等精度
+                precision mediump float;
+                // 全局变量，用来接收 Js 传递过来的颜色。
+                uniform vec4 u_Color;
+                void main(){
+                    // 将颜色处理成 GLSL 允许的范围[0， 1]。
+                    vec4 color = u_Color / vec4(255, 255, 255, 1);
+                    // 点的最终颜色。
+                    gl_FragColor = color;
+                }
+            `
+               
+            // 创建定点着色器
+            const vertexShader = createShader(
+                glCtx,
+                glCtx.VERTEX_SHADER,
+                vertexShaderCode
+            );
+            // 创建片段着色器
+            const fragmentShader = createShader(
+                glCtx,
+                glCtx.FRAGMENT_SHADER,
+                fragmentShaderCode
+            );
+
+            // 创建着色器程序
+            const program = createProgram(glCtx, vertexShader, fragmentShader);
+
+            // 使用该着色器程序
+            glCtx.useProgram(program);
+
+            // 获取顶点着色器中的变量 a_Position 的地址
+            const a_Position = glCtx.getAttribLocation(program, "a_Position");
+            // 获取片元着色器中的变量 u_Color 的地址
+            const u_Color = glCtx.getUniformLocation(program, "u_Color");
+
+
+            // 存储区顶点信息的容器
+            let points = [];
+            // 需求：在鼠标点击过的位置绘制一个点，而且这个点的颜色是随机的
+            // 通过 js 往着色器程序中传入顶点位置和颜色数据，从而改变点的位置和颜色
+            canvas.addEventListener("click", (e) => {
+                // 坐标轴转换：canvas的坐标轴转成webgl的坐标轴
+                const clientX = e.clientX;
+                const clientY = e.clientY;
+                const rect = e.target.getBoundingClientRect();
+                const x =
+                    (clientX - rect.left - canvas.width / 2) /
+                    (canvas.width / 2);
+                const y =
+                    (canvas.height / 2 - (clientY - rect.top)) /
+                    (canvas.height / 2);
+                const color = randomColor();
+                // 存储新的点的坐标和颜色。
+                points.push({ x, y, color });
+                render(glCtx);
+            });
+
+            // 绘制函数
+            function render(glCtx) {
+                // 清除屏幕
+                glCtx.clear(glCtx.COLOR_BUFFER_BIT);
+                for (let i = 0; i < points.length; i++) {
+                    const color = points[i].color;
+                    // 向片元着色器传递颜色信息
+                    glCtx.uniform4f(
+                        u_Color,
+                        color.r,
+                        color.g,
+                        color.b,
+                        color.a
+                    );
+                    // 向顶点着色器传递坐标信息
+                    glCtx.vertexAttrib2f(a_Position, points[i].x, points[i].y);
+                    // 绘制点
+                    glCtx.drawArrays(glCtx.POINTS, 0, 1);
+                }
+            }
+
+            // 设置屏幕清除颜色为黑色。
+            glCtx.clearColor(0, 0, 0, 1.0);
+
+            // 绘制
+            render(glCtx);
+        </script>
+    </body>
+</html>

@@ -17,16 +17,14 @@
     # 查看配置信息
     npm config list    
 
-    # 查看源
+    # 源设置
     npm config get registry
-
     npm config set registry https://registry.npmmirror.com
-    
     npm config set registry https://mirrors.tuna.tsinghua.edu.cn/npm/
     # 科学上网后或者发布时移掉
     npm config rm registry
   ```
-* 项目中 .npmrc 配置环境变量
+* 项目级 .npmrc 配置环境变量
     ```
     registry="https://registry.npmmirror.com"
     ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
@@ -81,11 +79,9 @@
     - npm uninstall -g <package>
     + npm <command> -h  quick help on <command>
     + npm docs 包名 查看包的文档
-
-* npm rebuild 重新构建包：
-    - 如：针对electron环境从新构建包
-    - npm rebuild --runtime=electron --target=1.1.3 --disturl=https://atom.io/download/atom-shell --abi=102
-
+* npm rebuild 重新构建包
+  - 如：针对 electron 环境从新构建包
+  - npm rebuild --runtime=electron --target=1.1.3 --disturl=https://atom.io/download/atom-shell --abi=102
 * npm ls -g  查看安装了哪些全局的包
 
 ## package.json
@@ -116,9 +112,7 @@
         "build:cjs": "rimraf ./lib && tsc --module commonjs --outDir lib -p tsconfig.build.json",
         "build:esm": "rimraf ./esm && tsc --module ESNext --outDir esm -p tsconfig.build.json",
         "build:umd": "rimraf ./dist && rollup -c && npm run size",
-
         "build:dev:watch": "npm run build:esm -- --watch",
-
         "dev": "vite",
         "start": "rimraf ./lib && tsc --module commonjs --outDir lib --watch",
         "tag": "node ./scripts/tag.mjs",
@@ -126,7 +120,7 @@
     },
     "dependencies":{},
     "devDependencies":{},
-     "publishConfig": {
+    "publishConfig": {
         "registry": "https://registry.npmjs.org/"
     },
   ```
@@ -191,6 +185,9 @@
 * 运行 npm run xxx 的时候，npm 会先在当前目录的 node_modules/.bin 查找要执行的程序，如果找到则运行；
 * 没有找到则从全局的 node_modules/.bin 中查找，npm i -g xxx就是安装到到全局目录；
 * 如果全局目录还是没找到，那么就从 path 环境变量中查找有没有其他同名的可执行程序。
+
+## npm包开发
+* [npm包开发](./npm包开发.md)
 
 ## npm私库搭建
 * [npm私库搭建](../解决方案/npm私库搭建/npm私有库搭建.md)

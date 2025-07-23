@@ -6,8 +6,11 @@
 * 构建速度:Go 语言编写的快速、轻量级的 js/ts 构建工具，比以 js 编写的打包器预构建依赖快 10-100 倍。
 
 ## 组成
-* 基于koa2的开发服务器提供了模块热更新
-* 3.x 中开发模式是 esbuild 进行代码编译，生产模式中使用 Rollup 打包，开发模式重在开发效率，esbuild 出现的较晚，在代码分割和css 处理不够成熟，Rollup 功能成熟稳定
+* 开发阶段
+  - 使用 esbuild 预构建依赖，将非js部分如（css、图片、vue等组件文件）转换并按需提供源码
+  - 源码模块进行协商缓存，依赖模块请求则会设置强缓存
+* 构建阶段
+  - 使用 Rollup，侧重包体积大小和广泛的生态
 
 ## 创建一个vue项目
   ```bash
@@ -28,14 +31,14 @@
   - 亲测谷歌版本 < 50 的，都不支持，以上的均可支持，40+ 版本的请升级版本吧！
   ```js
     // vite.config.js
-   import legacy from '@vitejs/plugin-legacy';
+    import legacy from '@vitejs/plugin-legacy';
     export default defineConfig({
-    plugins: [
-        legacy({
-            targets: ["chrome < 60"], // 需要兼容的目标列表，可以设置多个
-            additionalLegacyPolyfills: ["regenerator-runtime/runtime"], // 面向IE11时需要此插件
-        })
-    ]
+        plugins: [
+            legacy({
+                targets: ["chrome < 60"], // 需要兼容的目标列表，可以设置多个
+                additionalLegacyPolyfills: ["regenerator-runtime/runtime"], // 面向IE11时需要此插件
+            })
+        ]
     })
 
   ```
