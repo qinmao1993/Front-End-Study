@@ -129,8 +129,6 @@
     * 3d转换：transform-style:flat 2d平面呈现 perserve-3d 3d空间呈现 
 ## css 动画
 * 详见[浏览器动画](/浏览器/动画.md)
-## 单位
- - [前端界面单位及区别](./前端界面单位及区别.md)
 ## media 
  ```css
  @media (min-width: 750px) {

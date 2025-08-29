@@ -49,6 +49,7 @@
   - 继承自 flex 容器的 align-items 属性  
 * order: <integer>; 整数值，默认值是 0 
   - order 改变某一个flex子项的排序位置
-  - 某一个flex子项在最前面显示，可以设置比0小的整数，如-1就可以了。
+  - 某一个flex子项在最前面显示，可以设置比0小的整数，如-1就可以了
+
 ## 注意
-* 在flex布局中，flex子元素的设置 float，clear 以及 vertical-align 属性都是没有用的。
+* 在flex布局中，flex子元素的设置 float，clear 以及 vertical-align 属性无效
