@@ -50,4 +50,34 @@
 [MessageChannel](./MessageChannel.md)
 
 ## requestIdleCallback
+* 把埋点、日志丢进浏览器空闲时间，首帧零阻塞。
 [requestIdleCallback](./requestIdleCallback.md)
+
+## ResizeObserver
+* 精准监听任意 DOM 宽高变化，图表自适应、虚拟滚动必备。
+[ResizeObserver](./ResizeObserver.md)
+
+## IntersectionObserver 
+* 检测元素进出视口，一次搞定懒加载 + 曝光埋点，性能零损耗。
+[IntersectionObserver](./IntersectionObserver.md)
+
+## Page Visibility
+* 侦测标签页隐藏，自动暂停视频、停止轮询，移动端省电神器。
+  ```js
+    document.addEventListener('visibilitychange', () =>
+      document.hidden ? video.pause() : video.play()
+    );
+  ```
+  
+## Web Share
+* 一键唤起系统分享面板，直达微信、微博、Telegram，需 HTTPS。
+  ```js
+    navigator.share?.({ title: '好文', url: location.href });
+  ```
+
+## Wake Lock
+* 锁定屏幕常亮，直播、PPT、阅读器不再自动息屏。
+  ```js
+    await navigator.wakeLock.request('screen');
+  ```
+## 
