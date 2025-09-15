@@ -80,10 +80,9 @@
   + 隐式转换 变量在运算过程中发生的类型转换
     - console.log(!!"abc")
   + 显示（强制）转换:
-    - 转字符串：x.toString() number转string ''+number
+    - 转字符串：x.toString() number 转 string ''+number
     - 转数字型：parseInt parseFloat
-    - 转布尔型：
-    - 几种转换为 false: undefined NaN Null 0 -0 false "",其余全为true
+    - 转布尔:几种转换为 false, undefined NaN Null 0 -0 false "",其余全为true
     > tip:使用 parseInt(a,10)，否则会遇到0开头的八进制的问题，parseInt() 是解析而不简单的转换,简单的类型转换 Number(08)=8 会比 parseInt 快
 * 隐式类型转换
   + 如果对比双方的类型不一样的话，就会进行类型转换(判断流程如下)
@@ -106,6 +105,48 @@
         3. ' '==0-->Number(' ') = 0;
         4. 0==0 true
     ```
+* 进制转换
+  > js 主要通过 parseInt() 和 toString() 方法实现进制转换
+  + 其他进制转十进制
+    - 使用 parseInt(string, radix) string: 要解析的字符串,radix: 进制基数（2-36）
+    ```js
+        // 二进制转十进制
+        parseInt('1010', 2);    // 返回 10
+
+        // 八进制转十进制
+        parseInt('12', 8);      // 返回 10
+
+        // 十六进制转十进制
+        parseInt('A', 16);      // 返回 10
+    ```
+  + 十进制转其他进制
+    - 使用 number.toString(radix) 方法：radix: 目标进制基数（2-36）
+    ```js
+        // 十进制转二进制
+        (10).toString(2);       // 返回 "1010"
+
+        // 十进制转八进制
+        (10).toString(8);       // 返回 "12"
+
+        // 十进制转十六进制
+        (10).toString(16);      // 返回 "a"
+    ```
+  + 任意进制之间的转换
+    - 通过十进制作为中间桥梁进行转换：
+    ```js
+        function convertBase(number, fromBase, toBase) {
+            // 先转换为十进制，再转换为目标进制
+            let decimal = parseInt(number, fromBase);
+            return decimal.toString(toBase);
+        }
+
+        // 二进制转十六进制
+        convertBase('1010', 2, 16);  // 返回 "a"
+
+        // 八进制转二进制
+        convertBase('12', 8, 2);     // 返回 "1010"
+    ```
+    
 
 ## 引用类型-数组
 * 定义：用于存储有序数据集合

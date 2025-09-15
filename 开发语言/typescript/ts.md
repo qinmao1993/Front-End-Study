@@ -196,7 +196,7 @@
         Right = 'RIGHT',
     }
   ```
-## ts 中的工具类型
+## ts中的工具类型
 * Record
   - 快速构造对象类型，严格约束键名和值类型。
   ```ts
@@ -607,10 +607,10 @@
   - 模块（module）
   - 命名空间（namespace）
 * declare global
-  - 如果要为 js 引擎的原生对象添加属性和方法，可以使用declare global {}语法。
-  - 如为js原生的String对象添加了toSmallString()方法。declare global 给出这个新增方法的类型描述。
+  - 如果要为 js 引擎的原生对象添加属性和方法，可以使用 declare global {}语法。
+  - 如为js原生的 String 对象添加了 toSmallString()方法。declare global 给出这个新增方法的类型描述。
   ```ts
-    export {}; // 作用是强制编译器将这个脚本当作模块处理。这是因为declare global必须用在模块里面
+    export {}; // 作用是强制编译器将这个脚本当作模块处理。这是因为 declare global 必须用在模块里面
     declare global {
         interface String {
             toSmallString(): string;
@@ -680,8 +680,8 @@
   ```
 * ts 内置类型文件。
   - 安装 TypeScript 语言时，会同时安装一些内置的类型声明文件，主要是内置的全局对象（JavaScript 语言接口和运行环境 API）的类型声明。
-  - 这些只是声明类型，没有具体的 JS 实现，TS 就给单独设计了一种文件类型，也就是 d.ts， d 是 declare 的意思
-  - TypeScript 编译器会自动根据编译目标 target 的值，加载对应的内置声明文件，所以不需要特别的配置。但是，可以使用编译选项lib，指定加载哪些内置声明文件。
+  - 这些只是声明类型，没有具体的 JS 实现，也就是 d.ts， d 是 declare 的意思
+  - TypeScript 编译器会自动根据编译目标 target 的值，加载对应的内置声明文件。但是，可以使用编译选项lib，指定加载哪些内置声明文件。
   ```json
     {
         "compilerOptions": {

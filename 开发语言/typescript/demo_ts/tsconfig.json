@@ -3,8 +3,14 @@
     "exclude": ["node_modules", "test", "dist", "**/*spec.ts"],
     "compilerOptions": {
        /* 基本选项 */
-      "target": "ESNext",                        /* 将 TypeScript 代码转换为 JavaScript 代码时应使用的 ESNext 生成最新的 ECMAScript 标准的代码 */
+      "target": "ESNext",                        /* 将 ts 代码转换为 js 代码时应使用的 ESNext 生成最新的 ECMAScript 标准的代码 */
       "module": "ESNext",                        /* 生成代码的模块标准 */
+      
+      // 在 nodejs 环境中使用ES模块
+      // "module": "nodenext",
+      // "moduleResolution": "nodenext",
+      // "resolvePackageJsonExports": true,
+
       "baseUrl": "./",
       "paths": {
         "@/*": ["src/*"]
