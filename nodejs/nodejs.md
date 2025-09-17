@@ -105,8 +105,11 @@
 ## 串口技术
 * [串口技术](./串口通信.md)
 
-## 调测
+## 调试
 * [Nodejs调试](./nodejs调试.md)
+
+## 测试（v18.x+）
+[测试案例](./case/test/index.js)
 
 ## Nodejs c++扩展
 * [Nodejs-c++扩展](./nodejs-c++.md)

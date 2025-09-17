@@ -9,7 +9,7 @@
 ## 插件离线安装
 找到本机插件的安装地址，/Users/xxx/.vscode 将 extensions 文件拷贝的目标机器上
 
-## 终端中使用 VS Code 打开文件或文件夹
+## 命令行打开
 * 在 macOS / Linux 上：系统配置（如果命令无效）
   1. 打开 VS Code。
   2. 按 Ctrl/Cmd + Shift + P 打开命令面板。
@@ -17,23 +17,23 @@
 * Windows
   1. 安装 VS Code 时勾选 “添加到 PATH” 选项
   2. 如果已安装但未勾选，可重新运行安装程序并选择修改配置
-
 * 常用命令
   ```bash
-    code --version
+    code -v
     code ~/project/index.html  # 打开指定文件
+    code file1.txt file2.txt   # 同时打开多个文件
+
     code .                     # 打开当前目录
     code ..                    # 打开上级目录
+
     code -n 文件路径            # 新建窗口打开
     code --goto 文件路径:行号
-
-    code file1.txt file2.txt   # 同时打开多个文件
 
   ```
 
 ## 调试
 ### c/c++
-* tasks.json 编译构建设置
+* tasks.json 编译器构建设置
   - type 有三个值：shell、process、cppbuild
   - command:设置指定要运行的程序
   - args 数组指定传递给 clang 的命令行参数,有顺序
@@ -45,71 +45,78 @@
     {
         "tasks": [
             {
-            "type": "shell",
-            "label": "编译C程序",
-            "command": "/usr/bin/clang",
-            "args": [
-                "-fcolor-diagnostics",
-                "-fansi-escape-codes",
-                "-g",
-                "src/*.c",
-                "-o",
-                "dist/${fileBasenameNoExtension}"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": ["$gcc"],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "detail": "调试器生成的任务。"
+                "type": "cppbuild",
+                "label": "C/C++: clang 生成活动文件",
+                "command": "/usr/bin/clang",
+                "args": [
+                    "-fcolor-diagnostics",
+                    "-fansi-escape-codes",
+                    "-g", // 生成调试信息，这是调试的关键！
+                    "${file}", // 当前活动文件
+                    "-o",      // 指定输出文件
+                    "${fileDirname}/${fileBasenameNoExtension}" // 输出文件路径（与源文件同名无扩展名）
+                ],
+                "options": {
+                    "cwd": "${workspaceFolder}"
+                },
+                "problemMatcher": ["$gcc"],
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "detail": "调试器生成的任务。"
             }
         ],
         "version": "2.0.0"
     }
 
   ```
-* launch.json 调试配置文件 
-    - request 调试模式：launch、attach（附加到已经运行的进程）
-    - type: cppdbg
-    - program 要调试的程序的绝对路径。
-    - cwd 指定调试器的当前工作目录,它是代码中使用的任何相对路径的基本文件夹,若省略，则默认为${workspaceFolder}
-    - ${fileDirname}/${fileBasenameNoExtension} 要调试的活动文件夹和文件名
-    - env 为调试器进程设置可选的环境变量，这些变量的值必须作为字符串输入。
-    - args 传递给程序进行调试的参数
-    - stopAtEntry 默认是false，不打任何断点，设置true 在 main 函数开始处打断点
-    - preLaunchTask 对应 task.json 中的定义的label
-    - runtimeExecutable 要使用的运行时可执行文件的绝对路径。默认为 node
-    ```json
-        {
+* launch.json 调试器设置 
+  ```json
+    {
         // 使用 IntelliSense 了解相关属性。
         // 悬停以查看现有属性的描述。
         // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
         "version": "0.2.0",
         "configurations": [
             {
-                "name": "C/C++: build and debug active file",
+                "name": "C/C++: build and debug active file", // 调试配置的名称
                 "type": "cppdbg",
-                "request": "launch",
-                "program": "${workspaceFolder}/dist/${fileBasenameNoExtension}",
-                "args": [],
-                "stopAtEntry": false,
-                "cwd": "${workspaceFolder}",
+                "request": "launch", // 请求类型，launch 表示启动新程序进行调试
+                "program": "${workspaceFolder}/dist/${fileBasenameNoExtension}",  // 调试程序路径，应与 tasks.json 中的输出一致
+                "args": [], // 传递给程序的命令行参数，例如 ["arg1", "arg2"]
+                "stopAtEntry": false, // 是否在 main 函数入口处暂停，默认为 false
+                "cwd": "${workspaceFolder}", // 程序运行时的工作目录
                 "environment": [],
-                "externalConsole": false,
-                "MIMode": "lldb",
-                "preLaunchTask": "编译C程序"
+                "externalConsole": false, // 为 true 则使用外部系统终端，false 使用 VS Code 集成终端
+                "MIMode": "lldb", //  调试器类型，Windows 上常用 gdb，macOS 上可能为 lldb
+                "preLaunchTask": "C/C++: clang 生成活动文件" // 调试前要执行的任务，必须与 tasks.json 中的 "label" 一致
             }
         ]
-        }
-
-    
+    }
     ```
-* c_cpp_properties.json (compiler path and IntelliSense settings)
-### 其他语言项目
-* TODO
+* c_cpp_properties.json 编译器路径和 IntelliSense 设置
+  ```json
+    {
+        "configurations": [
+            {
+                "name": "Mac",
+                "includePath": [
+                    "${workspaceFolder}/**"
+                ],
+                "defines": [],
+                "macFrameworkPath": [
+                    "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
+                ],
+                "compilerPath": "/usr/bin/clang",
+                "cStandard": "c17",
+                "cppStandard": "c++17",
+                "intelliSenseMode": "macos-clang-x64"
+            }
+        ],
+        "version": 4
+    }
+  ```
 
 ## 远程开发(linux)
 * 依赖：git>2.0、vscode-server（远程服务器）
@@ -152,7 +159,6 @@
       ssh-keygen -t rsa
       ssh-copy-id -i ~/.ssh/id_rsa.pub root@你的IP地址
     ```
-
 * 远程开发遇到的问题
   - 离线环境拷贝nodejs项目，需要 npm rebuild 下包
   + vite vue 项目 

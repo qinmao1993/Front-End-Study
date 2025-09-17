@@ -1,13 +1,18 @@
 # C 基础
+
 ## 开发环境配置
-* [环境配置](./%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.md)
+* [vscode调试](/开发工具/vscode.md)
 
 ## C语言标准
 * c89（c90） -> c99 -> c11 -> c17 ->C23（2023）
 
 ## 流行的编译器
 * GCC
+  - 第三方跨平台编译器
+  - 系统自带的 gcc 和 g++ 命令可能实际指向 Clang。要使用真正的 GCC，需安装后使用 gcc-版本号 命令
   ```bash
+    brew install gcc
+
     # 编译 hello.c 文件，默认会在当前目录下生成一个编译产物文件 a.out
     # 执行该文件，就会在屏幕上输出 Hello World。
     gcc hello.c
@@ -22,7 +27,13 @@
     # -Wall”，让编译器明确指出程序代码中存在的 所有语法使用不恰当的地方。
     gcc demo.c -o demo -Wall && ./demo
   ```
-* Clang 对标准的支持更好
+* Clang(macOS默认) 对标准的支持更好
+  - LLDB：通常与 LLVM/Clang 配套，是 macOS 上的默认调试器
+  ```bash
+    clang -v
+    xcode-select --install # 不存在安装
+  ```
+
 * MSVC 微软的编译器
 
 ## C语言的编译过程
@@ -42,16 +53,77 @@
 
 ## 入门程序说明
   ```c
-    // #include 预处理器指令
-    // 将 stdio.h 文件中的内筒包含在当前程序中，stdio.h 是c编译器包标准部分，提供键盘输入和屏幕输出的支持
+    // #include 预处理器指令，将 stdio.h 文件中的内容包含在当前程序中
+    // 在c语言中称为头文件，他的作用：声明接口，隐藏实现
+    // stdio.h 是c标准库部分，提供键盘输入和屏幕输出的支持
     #include <stdio.h>  
+
+    // main 是c语言的入口函数
     int main()
     {
-        /* 我的第一个 C 程序 */
         printf("Hello, World! \n");
         return 0;
     }
   ```
+
+## 头文件
+* 主要作用
+  - 声明接口，隐藏实现
+  - 促进代码复用
+  - 保证一致性
+  - 组织大型项目
+  > 对比其他语言，类似于模块系统的概念
+* 为什么要有头文件？
+  - 分离编译：C语言将每个.c文件单独编译成目标文件，最后链接在一起
+  - 需要声明：编译器编译一个文件时，需要知道使用的函数、类型等的存在和格式
+  - 避免重复：将声明集中到头文件中，避免在每个.c文件中重复编写相同声明
+* 头文件的最佳实践
+  - 包含防护（Include Guards）:防止头文件被多次包含导致的重复定义错误。
+   ```c
+    // math_utils.h
+    #ifndef MATH_UTILS_H  // 如果没有定义MATH_UTILS_H
+    #define MATH_UTILS_H  // 定义MATH_UTILS_H
+    // 头文件内容
+    int add(int a, int b);
+    #endif // MATH_UTILS_H
+   ```
+  - 仅包含必要的内容:避免形成复杂的包含依赖关系。
+  ```c
+    // 正确：只包含需要的头文件
+    #include <stdio.h>
+    #include "math_utils.h"
+
+    // 避免：包含不需要的头文件
+    // #include "unrelated_header.h"
+  ```
+
+## 汇编语言
+> 是一种低级编程语言，语言使用的指令与具体平台紧密相关,针对不同 CPU 体系架构（指令集）设计的汇编语言无法共用，也不具备可移植性。
+* 常用的助记符
+  - mov
+  - add
+  - push 压栈
+  - pop  出栈
+  - call 调用
+* c程序中运行汇编代码
+    ```c
+    #include <stdio.h>
+    int main(void) {
+        int src=1;
+        int dst;
+        asm ("mov %1, %0\n\t"
+            "add $1, %0"
+            : "=r" (dst)
+            : "r" (src));
+        printf("%d\n", dst);
+    }
+    ```
+* 在c中调试汇编代码（vs）
+  - 第一步开始调试，断点停住后，在调试中，选择窗口，反汇编
+* 寄存器
+  - 有时也被称为“寄存器文件(Register File)”
+  - 把它简单理解为由 CPU 提供 的一组位于芯片上的高速存储器硬件，可用于存储数据
+  - 寄存器拥有最快的数据访问速度和最低的延迟
 
 ## 数据量的单位
   - bit  比特位 最小的存储单位，每个位可以存二进制码码值的0或1
@@ -63,8 +135,10 @@
 
 ## 数据类型
 ### 基本的数据类型
-  + int（整数类型）
-    - 有符号的整数，不同计算机的int类型的大小是不一样的。常见的是使用4个字节（32位）存储一个int类型的值 ISO C 规定 -32768-32768
+* int（整数类型）
+  - 有符号的整数，不同计算机的int类型的大小是不一样的。常见的是使用4个字节（32位）存储一个int类型的值 ISO C 规定 -32768-32768
+  - 自动适配目标平台，性能最优
+  - 需要精确的二进制表示或跨平台一致性时使用 <stdint.h>中的 int32_t、uint64_t 等类型。
   + 整数类型的变式:
     - int 类型使用4个或8个字节表示一个整数，对于小整数，这样做很浪费空间。另一方面，某些场合需要更大的整数，8个字节还不够。为了解决这些问题，C 语言在int类型之外，又提供了三个整数的子类型
     - short int（简写为short） 一般占用2个字节（整数范围为-32768～32767)
@@ -77,9 +151,12 @@
         long int b;
         long long int c;
       ```
-  + char 字符数据类型
-    - 指定字母和其他字符，如#、$、%、*，也可表示较小的整数，每个字符对应一个整数（由 ASCII 码确定），比如B对应整数66
-    - 字符类型使用一个字节存储
+* 类型大小 sizeof
+  - 同一个C程序在不同平台上编译时，int 的大小可能不同，应使用 sizeof(int) 来了解当前平台的情况
+  - 以字节为单位输出指定类型的的大小 如 sizeof(int)、sizeof(float)
+* char 字符数据类型
+  - 指定字母和其他字符，如#、$、%、*，也可表示较小的整数，每个字符对应一个整数（由 ASCII 码确定），比如B对应整数66
+  - 字符类型使用一个字节存储
     ```c
         // 只要在字符类型的范围之内，整数与字符是可以互换的，都可以赋值给字符类型的变量。
         char c = 66;
@@ -101,11 +178,11 @@
         char x = '\x42'; // 十六进制
 
     ```
-  + float|double|long double （表示带小数点的数）
+* float|double|long double （表示带小数点的数）
     - float 占用4个字节，其中8位存放指数的值和符号，剩下24位存放小数的值和符号
-    - double： 双精度浮点，占用8个字节，至少提供13位有效数字。
-    - long double：通常占用16个字节。
-  + _Bool（布尔类型 ）
+    - double 双精度浮点，占用8个字节，至少提供13位有效数字。
+    - long double 通常占用16个字节。
+* _Bool（布尔类型 ）
     - C 语言原来并没有为布尔值单独设置一个类型，而是使用整数0表示伪，所有非零值表示真。
     - C99 标准添加了类型_Bool，表示布尔值。但是，这个类型其实只是整数类型的别名，还是使用0表示伪，1表示真
     ```c
@@ -122,8 +199,7 @@
 * 整数和浮点数的区别
   - 对我们书写方式不同，对计算机来说就是存储方式不同，浮点数使用二进制来存储，小数在二进制中是无限循环的，表示的是近视值。
   - 应用上存在计算精度的问题
-* 类型大小 sizeof
-  - 以字节为单位输出指定类型的的大小 如sizeof(int)、sizeof(float)
+
 ### 字符串和输入输出
 > C 语言没有单独的字符串类型，字符串被当作char类型的数组，用双引号包裹表示，以 空字符 \0 结尾。
 * 字符串变量的声明
@@ -157,7 +233,7 @@
     - printf("%s",arr1) 输出字符串
     - printf("%c",ch)   输出字符值
     - printf("%p",p)    输出指针的地址
-  + scanf  读取键盘的输入 
+  + scanf 读取键盘的输入
     - 注意：安全警告，把 #define _CRT_SECURE_NO_WARNINGS 放第一行
     - 处理数值占位符时，会自动过滤空白字符，包括空格、制表符、换行符等
     ```c
@@ -198,34 +274,6 @@
         printf("%d\n",num);
     }
 ```
-
-## 汇编语言
-> 是一种低级编程语言，语言使用的指令与具体平台紧密相关,针对不同 CPU 体系架构（指令集）设计的汇编语言无法共用，也不具备可移植性。
-* 常用的助记符
-  - mov
-  - add
-  - push 压栈
-  - pop  出栈
-  - call 调用
-* c程序中运行汇编代码
-    ```c
-    #include <stdio.h>
-    int main(void) {
-        int src=1;
-        int dst;
-        asm ("mov %1, %0\n\t"
-            "add $1, %0"
-            : "=r" (dst)
-            : "r" (src));
-        printf("%d\n", dst);
-    }
-    ```
-* 在c中调试汇编代码（vs）
-  - 第一步开始调试，断点停住后，在调试中，选择窗口，反汇编
-* 寄存器
-  - 有时也被称为“寄存器文件(Register File)”
-  - 把它简单理解为由 CPU 提供 的一组位于芯片上的高速存储器硬件，可用于存储数据
-  - 寄存器拥有最快的数据访问速度和最低的延迟
 
 ## 函数
 * 参数的传值引用
@@ -462,6 +510,132 @@
   - 不会忽略起首的空白字符，总是返回当前读取的第一个字符
   - 读取失败，返回常量 EOF，由于 EOF 通常是-1，所以返回值的类型要设为 int，而不是 char。
 
+## 结构体和其他数据形式
+> C语言内置的数据类型，除了最基本的几种原始类型，只有数组属于复合类型。C语言没有其他语言的对象（object）和类（class）的概念，struct 结构很大程度上提供了对象和类的功能。
+* struct(结构体)
+  - 声明与赋值
+   ```c
+    // 方式一：注意结尾分好不能省略
+    struct fraction {
+        int numerator;
+        int denominator;
+    };
+    struct fraction f1;
+    f1.numerator = 22;
+    f1.denominator = 7;
+
+    // 方式二： 一次性对 struct 结构的所有属性赋值
+    struct car {
+        char* name;
+        float price;
+        int speed;
+    };
+    struct car saturn = { "Saturn SL/2", 16000.99, 175 };
+
+    // 方式三：声明变量的同时，对变量赋值。
+    struct {
+        char title[500];
+        char author[100];
+        float value;
+    } b1 = {"Harry Potter", "J. K. Rowling", 10.0},
+    b2 = {"Cancer Ward", "Aleksandr Solzhenitsyn", 7.85};
+
+  ```
+  + 结构体的存储空间
+    - struct 结构占用的存储空间，不是各个属性存储空间的总和，而是最大内存占用属性的存储空间的倍数，其他属性会添加空位与之对齐。这样可以提高读写效率。
+    - 这是为了加快读写速度，把内存占用划分成等长的区块，就可以快速在 Struct 结构体中定位到每个属性的起始地址。
+  + struct 的复制
+    - 赋值运算符（=）可以将 struct 结构每个属性的值，一模一样复制一份，拷贝给另一个 struct 变量。这一点跟数组完全不同，使用赋值运算符复制数组，不会复制数据，只会共享地址。
+  - struct 的嵌套
+    ```c
+        struct species {
+            char* name;
+            int kinds;
+        };
+
+        struct fish {
+            char* name;
+            int age;
+            struct species breed;
+        };
+    // 写法一
+    struct fish shark = {"shark", 9, {"Selachimorpha", 500}};
+    // 写法二
+    struct species myBreed = {"Selachimorpha", 500};
+    struct fish shark = {"shark", 9, myBreed};
+    // 写法三
+    struct fish shark = {
+        .name="shark",
+        .age=9,
+        .breed={"Selachimorpha", 500}
+        
+        // .breed.name="Selachimorpha",
+        // .breed.kinds=500
+    };
+    printf("Shark's species is %s", shark.breed.name);
+
+    ```
+  - 位字段：用来定义二进制位组成的数据结构，这对于操作底层的二进制数据非常有用
+   ```c
+    struct {
+        unsigned int ab:1;
+        unsigned int cd:1;
+        unsigned int ef:1;
+        unsigned int gh:1;
+    } synth;
+
+    synth.ab = 0;
+    synth.cd = 1;
+    // 每个属性后面的:1，表示指定这些属性只占用一个二进制位，所以这个数据结构一共是4个二进制位。
+    // 注意，定义二进制位时，结构内部的各个属性只能是整数类型。
+   ```
+* union 结构
+  - 有时需要一种数据结构，不同的场合表示不同的数据类型,C语言提供了 Union 结构，用来自定义可以灵活变更的数据结构
+  ```c
+    union quantity {
+        short count;
+        float weight;
+        float volume;
+    };
+
+   // 写法一
+    union quantity q;
+    q.count = 4;
+
+    // 写法二
+    union quantity q = {.count=4};
+    // Union 结构的好处，主要是节省空间。它将一段内存空间，重用于不同类型的数据。定义了三个属性，但同一时间只用到一个，使用 Union 结构就可以节省另外两个属性的空间。Union 结构占用的内存长度，等于它内部最长属性的长度。
+  ```
+* Enum 类型
+  ```c
+    // C 语言会自动从0开始递增，为常量赋值。但是，C 语言也允许为 ENUM 常量指定值，不过只能指定为整数，不能是其他类型
+    enum colors {
+        RED,
+        GREEN,
+        BLUE
+    };
+    printf("%d\n", RED); // 0
+    printf("%d\n", GREEN);  // 1
+
+    enum { ONE = 1, TWO = 2 };
+    printf("%d %d", ONE, TWO);  // 1 2
+  ```
+* typedef
+  > 用来为某个类型起别名
+  ```c
+    // typedef 命令可以为 struct 结构指定一个别名
+    typedef struct cell_phone {
+        int cell_no;
+        float minutes_of_charge;
+    } phone;
+
+    phone p = { 5551234, 5 };
+  ```
+  + 好处：
+    - 更好的代码可读性，为 struct、union、enum 等命令定义的复杂数据结构创建别名，从而便于引用
+    - typedef 方便以后为变量改类型。
+    - 可移植性:某一个值在不同计算机上的类型，可能是不一样的。C 语言的解决办法，就是提供了类型别名，在不同计算机上会解释成不同类型，比如int32_t
+
 ## 内存管理
 > C 语言的内存管理，分成两部分。一部分是系统管理的，另一部分是用户手动管理的。
 * 系统管理的内存：
@@ -648,131 +822,6 @@
 
   ```
 
-## 结构体和其他数据形式
-> C语言内置的数据类型，除了最基本的几种原始类型，只有数组属于复合类型。C 语言没有其他语言的对象（object）和类（class）的概念，struct 结构很大程度上提供了对象和类的功能。
-* struct(结构体)
-  - 声明与赋值
-   ```c
-    // 方式一：注意结尾分好不能省略
-    struct fraction {
-        int numerator;
-        int denominator;
-    };
-    struct fraction f1;
-    f1.numerator = 22;
-    f1.denominator = 7;
-
-    // 方式二： 一次性对 struct 结构的所有属性赋值
-    struct car {
-        char* name;
-        float price;
-        int speed;
-    };
-    struct car saturn = { "Saturn SL/2", 16000.99, 175 };
-
-    // 方式三：声明变量的同时，对变量赋值。
-    struct {
-        char title[500];
-        char author[100];
-        float value;
-    } b1 = {"Harry Potter", "J. K. Rowling", 10.0},
-    b2 = {"Cancer Ward", "Aleksandr Solzhenitsyn", 7.85};
-
-  ```
-  + 结构体的存储空间
-    - struct 结构占用的存储空间，不是各个属性存储空间的总和，而是最大内存占用属性的存储空间的倍数，其他属性会添加空位与之对齐。这样可以提高读写效率。
-    - 这是为了加快读写速度，把内存占用划分成等长的区块，就可以快速在 Struct 结构体中定位到每个属性的起始地址。
-  + struct 的复制
-    - 赋值运算符（=）可以将 struct 结构每个属性的值，一模一样复制一份，拷贝给另一个 struct 变量。这一点跟数组完全不同，使用赋值运算符复制数组，不会复制数据，只会共享地址。
-  - struct 的嵌套
-    ```c
-        struct species {
-            char* name;
-            int kinds;
-        };
-
-        struct fish {
-            char* name;
-            int age;
-            struct species breed;
-        };
-    // 写法一
-    struct fish shark = {"shark", 9, {"Selachimorpha", 500}};
-    // 写法二
-    struct species myBreed = {"Selachimorpha", 500};
-    struct fish shark = {"shark", 9, myBreed};
-    // 写法三
-    struct fish shark = {
-        .name="shark",
-        .age=9,
-        .breed={"Selachimorpha", 500}
-        
-        // .breed.name="Selachimorpha",
-        // .breed.kinds=500
-    };
-    printf("Shark's species is %s", shark.breed.name);
-
-    ```
-  - 位字段：用来定义二进制位组成的数据结构，这对于操作底层的二进制数据非常有用
-   ```c
-    struct {
-        unsigned int ab:1;
-        unsigned int cd:1;
-        unsigned int ef:1;
-        unsigned int gh:1;
-    } synth;
-
-    synth.ab = 0;
-    synth.cd = 1;
-    // 每个属性后面的:1，表示指定这些属性只占用一个二进制位，所以这个数据结构一共是4个二进制位。
-    // 注意，定义二进制位时，结构内部的各个属性只能是整数类型。
-   ```
-* union 结构
-  - 有时需要一种数据结构，不同的场合表示不同的数据类型,C 语言提供了 Union 结构，用来自定义可以灵活变更的数据结构
-  ```c
-    union quantity {
-        short count;
-        float weight;
-        float volume;
-    };
-
-   // 写法一
-    union quantity q;
-    q.count = 4;
-
-    // 写法二
-    union quantity q = {.count=4};
-    // Union 结构的好处，主要是节省空间。它将一段内存空间，重用于不同类型的数据。定义了三个属性，但同一时间只用到一个，使用 Union 结构就可以节省另外两个属性的空间。Union 结构占用的内存长度，等于它内部最长属性的长度。
-  ```
-* Enum 类型
-  ```c
-    // C 语言会自动从0开始递增，为常量赋值。但是，C 语言也允许为 ENUM 常量指定值，不过只能指定为整数，不能是其他类型
-    enum colors {
-        RED,
-        GREEN,
-        BLUE
-    };
-    printf("%d\n", RED); // 0
-    printf("%d\n", GREEN);  // 1
-
-    enum { ONE = 1, TWO = 2 };
-    printf("%d %d", ONE, TWO);  // 1 2
-  ```
-* typedef
-  > 用来为某个类型起别名
-  ```c
-    // typedef 命令可以为 struct 结构指定一个别名
-    typedef struct cell_phone {
-        int cell_no;
-        float minutes_of_charge;
-    } phone;
-
-    phone p = { 5551234, 5 };
-  ```
-  + 好处：
-    - 更好的代码可读性，为 struct、union、enum 等命令定义的复杂数据结构创建别名，从而便于引用
-    - typedef 方便以后为变量改类型。
-    - 可移植性:某一个值在不同计算机上的类型，可能是不一样的。C 语言的解决办法，就是提供了类型别名，在不同计算机上会解释成不同类型，比如int32_t
 
 ## 位操作
   ```c
@@ -829,7 +878,7 @@
     10001010 >> 2
   ```
 
-## c预处理器与c库
+## 预处理器与c库
 > 预处理器首先会清理代码，进行删除注释、多行语句合成一个逻辑行等工作。 然后，执行 # 开头的预处理指令。预处理指令可以出现在程序的任何地方，但是习惯上，往往放在代码的开头部分。所有预处理指令都是一行的，除非在行尾使用反斜杠，将其折行。指令结尾处不需要分号。
 * 预处理指令
   + #define 
@@ -968,14 +1017,12 @@
 * make 命令
   - 大型项目的编译，如果全部手动完成，是非常麻烦的，容易出错。一般会使用专门的自动化编译工具如 make
   - make 是一个命令行工具，使用时会自动在当前目录下搜索配置文件 makefile（也可以写成 Makefile）
-  - 该文件定义了所有的编译规则，每个编译规则对应一个编译产物。为了得到这个编译产物，它需要知道两件事。依赖项（生成该编译产物，需要用到哪些文件），生成命令（生成该编译产物的命令）
 
 ## 命令行环境
 > C 语言提供了 getenv()函数（原型在stdlib.h）用来读取命令行环境变量。
   ```c
     #include <stdio.h>
     #include <stdlib.h>
-
     int main(void) {
         char* val = getenv("HOME");
 
@@ -983,7 +1030,6 @@
             printf("Cannot find the HOME environment variable\n");
             return 1;
         }
-
         printf("Value: %s\n", val);
         return 0;
     }
@@ -992,4 +1038,31 @@
 ## 断言
 > 我们通常会使用断言，来对某种需要支持程序正常运行的假设性条件进行检 查。而当条件不满足时，则在程序编译或运行时终止，并向用户抛出相应的错误信息
 * 静态断言:会在代码编译时进行检查
-* 动态断言:则会在程序运行过程中，执行到该断言语句时再进行检查。
+* 动态断言:则会在程序运行过程中，执行到该断言语句时再进行检查
+* 示例
+  ```c
+    // 断言是通过标准库 <assert.h> 中定义的宏 assert 来实现的
+    // void assert(int expression);
+    
+    #include <stdio.h>
+    #define NDEBUG   // 定义这个宏将禁用所有assert 在生产环境禁用
+    #include <assert.h> // 必须包含这个头文件
+
+    int divide(int a, int b) {
+        // 断言：除数b不能为0
+        assert(b != 0);
+        return a / b;
+    }
+
+    int main() {
+        int result = divide(10, 2);
+        printf("Result: %d\n", result); // 正常执行，输出5
+
+        result = divide(10, 0); // 这里会触发断言失败！
+        printf("Result: %d\n", result); // 这行不会被执行
+
+        return 0;
+    }
+
+  ```
+  
