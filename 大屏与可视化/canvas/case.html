@@ -7,36 +7,25 @@
 </head>
 
 <body>
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" ></canvas>
     <script>
-        var canvas = document.getElementById("canvas")
+        const canvas = document.getElementById("canvas")
         canvas.width = 500;
         canvas.height = 400;
+
         canvas.style.border = "1px solid red";
-        var ctx = canvas.getContext("2d")
-        var w = canvas.width,
+
+        const ctx = canvas.getContext("2d")
+
+        const w = canvas.width,
             h = canvas.height;
-        //1，绘制矩形
-        // ctx.strokeStyle="red"
-        // ctx.strokeRect(150, 150, 50, 50);
-
-        // ctx.fillStyle="gold"
-        // ctx.fillRect(200, 200, 50, 50);
-
-        //2，绘制圆
-        //CanvasRenderingContext2D.arc( x, y, radius. startAngle. endAngle, anticlockwise )
-        //数 anticlockwise 表示是否采用默认的正向角度, 如果传入 true 表示逆指针为正. 该参数可选.
-
-        // ctx.beginPath();
-        // ctx.arc(w / 2, h / 2, 180, 0, 2 * Math.PI);
-        // ctx.stroke();
-
 
         //3，绘制扇形
         // 将弧度转换为度数
         function toAngle(radian) {
             return 180 * radian / Math.PI;
         }
+       
         /**
          * 将度数转换为弧度
          * @param {*} angle 
@@ -44,14 +33,7 @@
         function toRadian(angle) {
             return Math.PI * angle / 180;
         }
-        // var start = -30,
-        //     end = -150;
 
-        // ctx.moveTo(w / 2, h / 2);
-        // ctx.arc(w / 2, h / 2, 120, toRadian(start), toRadian(end), true);
-        // ctx.closePath();
-        // ctx.stroke();
-        // ctx.fill();
 
         //4，绘制直角坐标系
         var padding = 20;
@@ -85,6 +67,7 @@
             ctx.closePath();
             ctx.fill();
         }
+        
         // drawAxises(padding, arrowHeight, arrowWidth);
 
         // //5,绘制折线图

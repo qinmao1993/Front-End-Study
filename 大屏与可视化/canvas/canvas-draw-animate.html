@@ -20,22 +20,26 @@
          * 将度数转换为弧度
          * @param {*} angle 
          */
+
         function toRadian(angle) {
             return Math.PI * angle / 180;
         }
-        var canvas = document.getElementById("canvas")
+        const canvas = document.getElementById("canvas")
         canvas.width = 500;
         canvas.height = 400;
+
         canvas.style.border = "1px solid red";
-        var ctx = canvas.getContext("2d")
-        var w = canvas.width,
+
+        const ctx = canvas.getContext("2d")
+        const w = canvas.width,
             h = canvas.height;
-        var data = [{
+
+        let data = [{
             title: 'QQ',
             value: 500
         }, {
             title: 'WeChat',
-            value: 550
+            value: 550  
         }, {
             title: 'MoMo',
             value: 200
@@ -46,21 +50,20 @@
             title: 'FeiQiu',
             value: 50
         }];
+
         // 1: 确定扇形的填充颜色
-        var colors = 'lightsalmon,lightseagreen,lightskyblue,lightslategray,lightsteelblue,lightyellow'.split(',');
+        const colors = 'lightsalmon,lightseagreen,lightskyblue,lightslategray,lightsteelblue,lightyellow'.split(',');
         // 2: 样本总数
-        var sum = 0;
-        data.forEach(function (v) {
-            sum += v.value;
-        });
+        let sum = 0;
 
         // 3: 求每个数据所占用的总角度（弧度）
         data.forEach(function (v) {
+            sum += v.value;
             v.angle = v.value * 2 * Math.PI / sum;
         });
 
         // 4: 绘制扇形
-        var start = -Math.PI / 2, // 绘制扇形的起始角度
+        let start = -Math.PI / 2, // 绘制扇形的起始角度
             end; // 存储当前扇形的终止角度
 
         data.forEach(function (v, i, a) {
