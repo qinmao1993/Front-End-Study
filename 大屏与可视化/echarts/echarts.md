@@ -1,10 +1,11 @@
-# ECharts v5.6
+# ECharts v5+
 ## 基础概念
 * 实例 instance
    ```js
     const instance = echarts.init(el)
    ```
-* 系列 series :一组数值以及他们映射成的图，可以理解为是专门绘制“图”的组件
+* 系列 series
+  - 一组数值以及他们映射成的图，可以理解为是专门绘制“图”的组件
   ```js
    series:[
       // 饼图
@@ -32,7 +33,7 @@
   ```
 * 组件 component
   ```js
-   // 用 option 描述 `数据`、`数据如何映射成图形`、`交互行为` 等。
+   // 用 option 描述 `数据`、`数据如何映射成图形`、`交互行为` 等
    const option = {
       legend: {...},   // 图例
       grid: {...},     // 直角坐标系底板

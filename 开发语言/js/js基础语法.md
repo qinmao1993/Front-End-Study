@@ -80,9 +80,9 @@
   + 隐式转换 变量在运算过程中发生的类型转换
     - console.log(!!"abc")
   + 显示（强制）转换:
-    - 转字符串：x.toString() number 转 string ''+number
-    - 转数字型：parseInt parseFloat
-    - 转布尔:几种转换为 false, undefined NaN Null 0 -0 false "",其余全为true
+    - 转字符串: number 转 string ''+number
+    - 转数字型：parseInt、 parseFloat、Number(str)
+    - 转布尔:几种转换为 false, undefined NaN Null 0 -0 false "",其余全为 true
     > tip:使用 parseInt(a,10)，否则会遇到0开头的八进制的问题，parseInt() 是解析而不简单的转换,简单的类型转换 Number(08)=8 会比 parseInt 快
 * 隐式类型转换
   + 如果对比双方的类型不一样的话，就会进行类型转换(判断流程如下)
@@ -267,12 +267,11 @@
     ``` 
 * 对象的属性
   + 两种访问方式：
-    - obj.propertyName  底层调用get
-    - obj["propertyName"] 遍历属性并赋值时常用到 底层调用get区别在于 会判断propertyName是不是symbol,是返回，否转成String
+    - obj.propertyName  底层调用 get
+    - obj["propertyName"] 遍历属性并赋值时常用到 底层调用get区别在于 会判断propertyName是不是 symbol,是返回，否转成 String
   + hasOwnProperty
     - 语法：<对象>.hasOwnProperty('propertyName')
     - 功能：用来判断指定的属性是否为该对象自己拥有的，而不是继承下来的。
-    - eg:obj.hasOwnProperty("name") // true
   + Object.hasOwn 比“obj.hasOwnProperty”方法更加方便、安全
     ```js
         let obj = { age: 24 }
