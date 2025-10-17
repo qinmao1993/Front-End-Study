@@ -144,6 +144,7 @@
         });
     }
   ```
+
 ## 实现一个 sleep 函数
 * 使用 Promise 和 setTimeout,这是最常见的方式，利用 Promise 和 setTimeout 实现异步延迟
   ```js

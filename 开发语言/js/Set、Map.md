@@ -8,7 +8,8 @@
   - delete(value) 删除某个值，返回一个布尔值
   - has(value)    返回一个布尔值，表示该值是否为Set的成员
   - clear()  清除所有成员，没有返回值。
-  - size 返回Set实例的成员总数。
+  - size 返回 Set 实例的成员总数。
+
 * 示例
   ```js
     const set = new Set();
@@ -35,7 +36,6 @@
     ```js
        // 由于 Set 结构没有键名，只有键值（或者说键名和键值是同一个值），所以 keys 方法和 values 方法的行为完全一致。
         let set = new Set(['red', 'green', 'blue']);
-
         for (let item of set.keys()) {
             console.log(item);
         }
@@ -97,6 +97,7 @@
 * 定义：
   - 是一种 键值对的集合，其中的键 唯一（不允许重复）。
   - 类似于对象，但键可以是任意类型（对象、函数等）。
+  - Map 会记住键的原始插入顺序
 * 常用方法
   - set(key, value)：添加键值对。
   - get(key)：获取值。
@@ -125,8 +126,6 @@
     map.size // 2
     map.has('name') // true
     map.get('name') // "张三"
-    map.has('title') // true
-    map.get('title') // "Author"
   ```
 * 遍历
   ```js
@@ -185,14 +184,33 @@
     [...map]
     // [[1,'one'], [2, 'two'], [3, 'three']]
   ```
+* 应用场景
+  - 保持插入顺序
+  ```js
+    const map = new Map();
+    map.set('z', 1);
+    map.set('a', 2);
+    map.set('m', 3);
+
+    // 遍历时保持插入顺序
+    for (let [key, value] of map) {
+        console.log(key); // z, a, m (插入顺序)
+    }
+
+    const obj = { z: 1, a: 2, m: 3 };
+    // 对象属性顺序不保证
+    for (let key in obj) {
+        console.log(key); // 可能是 a, m, z (不一定)
+    }
+  ```
 
 ## WeakSet
 * 定义
-  - WeakSet 是一种 值的集合，其中的值 必须是对象，且是 弱引用
+  - WeakSet 是一种值的集合，其中的值必须是对象，且是弱引用
   - 弱引用意味着如果对象没有被其他地方引用，它会被垃圾回收
 * 特点：
-  - 值必须是对象。
-  - 不可遍历（没有 size、forEach 等方法）。
+  - 值必须是对象
+  - 不可遍历（没有 size、forEach 等方法）
   - 弱引用，不会阻止垃圾回收
 * 常用方法
   - add(value)：添加值。
@@ -208,7 +226,7 @@
  
 ## WeakMap
 * 定义
-  - WeakMap 是一种 键值对的集合，其中的键 必须是对象，且是 弱引用。
+  - WeakMap 是一种键值对的集合，其中的键必须是对象，且是弱引用。
   - 弱引用意味着如果键对象没有被其他地方引用，它会被垃圾回收。
   - 不可遍历（没有 size、forEach 等方法）。
 * 常用方法
