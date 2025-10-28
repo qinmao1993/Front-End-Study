@@ -1,4 +1,5 @@
 # node
+
 ## 总体上的感知
 * Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine. 
 * Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient.
@@ -28,31 +29,7 @@
 * npm install -g es-checker
 * 运行：es-checker
 
-## 软件管理包
-* [npm](../包管理/npm.md)
-
-## nodejs架构
-![node架构](./imgs/node结构.jpg)
-
-## 模块
-[core-module](./core-module.md)
-
-## RPC（远程过程调用）
-* 是什么东西
-  - 一种用于实现分布式系统中进程间通信的技术。它允许一个进程（或程序）调用另一个进程（或程序）中的函数或方法，就像调用本地函数一样，而无需程序员显式地处理底层通信细节。
-
-* 应用场景：
-
-* 优缺点：
-  - 优点：简化分布式系统开发、提高代码复用性、隐藏底层通信细节等。
-  - 缺点： 如网络延迟、序列化和反序列化开销、服务发现和负载均衡等问题
-* 常见的框架
-  - gRPC：由 Google 开发的高性能、通用的远程过程调用框架，基于 HTTP/2 协议和 Protocol Buffers（protobuf）进行通信和数据序列化
-  
-## 进程
-[nodejs进程](./nodejs进程.md)
-
-## 新版本新增的特性
+## 新版本特性
 * v20
   - 测试功能增强 node --test 并行测试多个文件
     ```bash
@@ -81,6 +58,30 @@
       node --watch index.js
     ```
   - 全文件搜索 glob、globSync
+
+## 软件管理包
+* [npm](../包管理/npm.md)
+
+## nodejs架构
+![node架构](./imgs/node结构.jpg)
+
+## 模块
+[core-module](./core-module.md)
+
+## RPC（远程过程调用）
+* 是什么东西
+  - 一种用于实现分布式系统中进程间通信的技术。它允许一个进程（或程序）调用另一个进程（或程序）中的函数或方法，就像调用本地函数一样，而无需程序员显式地处理底层通信细节。
+
+* 应用场景：
+
+* 优缺点：
+  - 优点：简化分布式系统开发、提高代码复用性、隐藏底层通信细节等。
+  - 缺点： 如网络延迟、序列化和反序列化开销、服务发现和负载均衡等问题
+* 常见的框架
+  - gRPC：由 Google 开发的高性能、通用的远程过程调用框架，基于 HTTP/2 协议和 Protocol Buffers（protobuf）进行通信和数据序列化
+  
+## 进程
+[nodejs进程](./nodejs进程.md)
 
 ## web framework
 * 通用型

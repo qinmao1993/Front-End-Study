@@ -1,15 +1,9 @@
 # java-web 
 
-## Java SE
-这是Java的标准版，是所有Java应用的基础
-
 ## 主流 web 框架
-* Spring Boot
-  - 不是新的框架，而是Spring的“脚手架”。它解决了Spring项目配置繁琐、部署复杂的问题
-  - 企业级应用首选，微服务，REST API
 * Spring MVC
-  - 经典的MVC框架，灵活可控
-  - 传统Web应用，需要精细控制的项目
+  - 经典的MVC框架，灵活可控，类似于 nodejs 中的 Express.js / Koa
+  - 核心是处理 HTTP 请求（路由、中间件、控制器）、数据绑定和视图渲染。它很强大，但需要手动配置很多组件。
 * Jakarta EE (原Java EE)
   - 官方标准，容器管理
   - 传统企业应用，遵循标准规范的项目
@@ -20,7 +14,38 @@
   - 面向GraalVM，超快启动	
   - Kubernetes原生，容器化部署
 
-## 数据持久层
+## Spring Boot
+* 是什么？
+  - 类似于 nestjs-cli、create-react-app 等脚手架工具
+  - 基于 Spring MVC框架，内嵌服务器（Tomcat）、依赖管理、自动配置和默认设置，可开箱即用
+  - 传统方式需要将应用打包成 WAR 文件，然后部署到外部的 Tomcat 服务器上。
+* Spring Boot 版本如何选？
+  + 选取意见
+    1. java 版本：Spring Boot 3.x 必须 JDK 17+，Spring Boot 2.x 支持 JDK 8/11/17
+    2. 长期支持版本：Spring Boot 3.x (当前主要 LTS)
+    3. 新项目：无脑选择 Spring Boot 3.x 的最新小版本（如 3.2.x）。
+  + 版本差异
+    - 3.5.x: Java 17+、Spring Framework 6.x+
+    - 4.0.x: Java 17+、推荐Java21 Spring Framework 7.x+
+* 项目结构
+  ```text
+    project/
+    ├── src/
+    │   └── main/
+    │       ├── java/
+    │       │   └── com/example/
+    │       │       ├── Application.java
+    │       │       ├── controller/
+    │       │       ├── service/
+    │       │       └── repository/
+    │       └── resources/
+    │           ├── application.properties
+    │           └── static/
+    ├── pom.xml
+    └── .vscode/
+  ```
+
+## 常用依赖
 * ORM框架
   - Spring Data JPA	基于JPA标准，Repository模式，开发效率极高
   - MyBatis SQL与代码分离，灵活控制SQL
@@ -223,11 +248,11 @@
         <artifactId>spring-cloud-starter-openfeign</artifactId>
     </dependency>
   ```
-  
-## 技术栈组合
 * 基础Web开发栈
   - Spring Boot + Spring MVC + Thymeleaf + Spring Data JPA + MySQL + Spring Security
 * 前后端分离栈
   - Spring Boot + Spring Web + MyBatis/Plus + MySQL + Redis + Spring Security + JWT
 * 微服务栈
   - Spring Boot + Spring Cloud + Spring Cloud Gateway + Nacos + Sentinel + OpenFeign
+
+## 服务部署

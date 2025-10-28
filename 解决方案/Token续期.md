@@ -10,9 +10,10 @@
 
 ## 解决方案一（双 Token 方案 Refresh Token 和 Access Token）
 > 短期 Token + 刷新 Token 机制 + 黑名单机制（主动吊销 Token）
-* 解决思路：用户登录后，服务器返回两个 Token
-  - accessToken 有效期短 如 30m,用于访问受保护的资源
-  - refreshToken 用于获取新的 accessToken，它的有效期更长 如 7d，并且存储在服务端（如数据库或Redis）以便于验证和撤销
+* 解决思路：
+  1. 用户登录后，服务器返回两个 Token，accessToken 有效期短 如 30m,用于访问受保护的资源。 refreshToken 用于获取新的 accessToken，它的有效期更长 如 7d，使用 HttpOnly cookies 存储 Refresh Token
+  2. 当接口报 accessToken 过期时，用 refreshToken 置换新 token，在置换期间，新的请求直接返回同样置换token请求实例。置换完拿新token,重试请求
+
 * 适用场景
   - SPA、移动端
 * 优势
@@ -81,4 +82,4 @@
       ```
   + 适用场景：
     - 适用于需要高安全性和简化前端逻辑的 Web 应用（如传统多页应用、SSR 项目）
-  + 优势：：自动续期，无感知登录
+  + 优势：自动续期，无感知登录

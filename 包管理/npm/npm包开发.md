@@ -1,5 +1,5 @@
 # npm 包库开发
-npm 包开发详细步骤（Vite + TypeScript 专业方案）
+npm 包开发详细步骤（Vite（库模式）+ TypeScript 方案）
 
 ## 初始化项目
   - 从零配置或通过成熟的脚手架工具生成模版项目
@@ -14,7 +14,27 @@ npm 包开发详细步骤（Vite + TypeScript 专业方案）
 
   ```
 
-## 配置 TypeScript
+## package.json 的配置
+  - 只支持esm模块标准包
+  - tsc && vite build 先生成类型声明再打包
+  ```package.json
+    {
+        "name": "my-lib",
+        "type": "module",
+        "files": ["dist"],
+        "main": "./dist/index.js",
+        "module": "./dist/index.js",
+        "types": "./dist/index.d.ts",
+         "scripts": {
+            "dev": "vite",
+            "build": "tsc && vite build"
+        },
+    }
+  ```
+
+## 配置 tsconfig.json
+  - Vite 忽略 tsconfig.json 中的 target 值，遵循与 esbuild 相同的行为,默认值为 esnext
+  - 也可以 在 build.target修改，build.target 选项优先于 esbuild.target
 ```json
 {
     "include": ["src/**/*"],
@@ -27,7 +47,6 @@ npm 包开发详细步骤（Vite + TypeScript 专业方案）
       "paths": {
         "@/*": ["src/*"]
       },
-      "rootDir": "./src",                        /* 输入文件的根目录 */
       "outDir": "./dist",                        /* 指定输出目录 */
 
       /* 项目选项 */
@@ -66,7 +85,6 @@ npm 包开发详细步骤（Vite + TypeScript 专业方案）
   
       /* Emit */
       "declaration": true,                       /* 生成 .d.ts 文件 */
-      "declarationDir": "./types",               /* 生成 .d.ts 文件路径 */
       "sourceMap": false,                        /* 默认值 false 生成 .map 文件 */
       "removeComments": true,                    /* 删除注释. */
       "pretty": true,                            /* 让编译器输出更具可读性的错误信息 */
@@ -88,7 +106,7 @@ npm 包开发详细步骤（Vite + TypeScript 专业方案）
 ```
 
 ## 配置打包工具
-```js
+  ```js
     // vite.config.js
     import { dirname, resolve } from "node:path";
     import { fileURLToPath } from "node:url";
@@ -100,36 +118,34 @@ npm 包开发详细步骤（Vite + TypeScript 专业方案）
         build: {
             lib: {
                 // 库模式
-                entry: resolve(__dirname, "lib/main.js")
+                // lib/main.js 入口文件将包含可以被您的包的用户导入的导出内容：
+                entry: resolve(__dirname, "lib/main.js"),
+                fileName: 'my-lib',
             },
             rollupOptions: {
                 // https://cn.rollupjs.org/configuration-options/
                 // 确保外部化处理那些,你不想打包进库的依赖
-                external: ["vue"],
-                output: {
-                    // 在 UMD 构建模式下为这些外部化的依赖,提供一个全局变量
-                    globals: {
-                    vue: "Vue",
-                    },
-                },
+                // external: ["vue"],
+                // output: {
+                //     // 在 UMD 构建模式下为这些外部化的依赖,提供一个全局变量
+                //     globals: {
+                //         vue: "Vue",
+                //     },
+                // },
             },
         },
     });
+  ```
 
-```
 
 ## 编写库代码
-  ```basn
-    mkdir src
-    touch src/index.ts src/utils.ts
-  ```
   ```js
-    // src/utils.ts
+    // lib/utils.ts
     export const greet = (name: string) => {
         return `Hello ${name}!`;
     };
 
-    // src/index.ts
+    // lib/index.ts
     export * from './utils';  // 统一导出入口
   ```
 

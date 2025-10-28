@@ -102,7 +102,6 @@
     },
     "license": "MIT",
     "author": "https://github.com/orgs/antvis/people",
-
     "main": "lib/index.js",
     "module": "esm/index.js",
     "types": "lib/index.d.ts",
@@ -120,6 +119,7 @@
     },
     "dependencies":{},
     "devDependencies":{},
+    "peerDependencies":{},
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
     },
@@ -134,8 +134,10 @@
   - homepage 项目官方网站或文档的 URL
   - bugs 报告项目问题的地址（通常是 GitHub Issues）
   - repository: 代码仓库的地址和类型
-  - "license": "MIT" 项目的开源许可证类型（此处为 MIT 许可证）。
+  - license: "MIT" 项目的开源许可证类型（此处为 MIT 许可证）。
   - author:项目作者或组织信息
+  
+  - peerDependencies 通常用于框架类库（如 vue、react），表示宿主必须提供该依赖，避免重复打包。并配合 peerDependenciesMeta 指定可选性。
 
 * 模块入口与构建配置
   - main: 定义 CommonJS 模块的入口文件

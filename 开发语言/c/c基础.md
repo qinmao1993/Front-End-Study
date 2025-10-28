@@ -1,40 +1,10 @@
 # C 基础
 
 ## 开发环境配置
-* [vscode调试](/开发工具/vscode.md)
+* [开发环境配置](./开发环境配置.md)
 
 ## C语言标准
 * c89（c90） -> c99 -> c11 -> c17 ->C23（2023）
-
-## 流行的编译器
-* GCC
-  - 第三方跨平台编译器
-  - 系统自带的 gcc 和 g++ 命令可能实际指向 Clang。要使用真正的 GCC，需安装后使用 gcc-版本号 命令
-  ```bash
-    brew install gcc
-
-    # 编译 hello.c 文件，默认会在当前目录下生成一个编译产物文件 a.out
-    # 执行该文件，就会在屏幕上输出 Hello World。
-    gcc hello.c
-
-    # -o参数（output 的缩写）可以指定编译产物的文件名。
-    gcc hello.c -o hello
-
-    # GCC 的-std=参数（standard 的缩写）还可以指定按照哪个 C 语言的标准进行编译。
-    gcc -std=c17 hello.c
-    
-    # 编译并运行，
-    # -Wall”，让编译器明确指出程序代码中存在的 所有语法使用不恰当的地方。
-    gcc demo.c -o demo -Wall && ./demo
-  ```
-* Clang(macOS默认) 对标准的支持更好
-  - LLDB：通常与 LLVM/Clang 配套，是 macOS 上的默认调试器
-  ```bash
-    clang -v
-    xcode-select --install # 不存在安装
-  ```
-
-* MSVC 微软的编译器
 
 ## C语言的编译过程
 1. 预处理

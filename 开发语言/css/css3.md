@@ -10,7 +10,7 @@
 * 伪类：
     - E:first-child 选中父元素中的第一个E子元素
     - E:last-child  选中父元素中的最后一个E子元素
-    - E:nth-child(n) 选中父元素中第n个子元素（元素0开始，n从0开始）n(数字，表达式 -5+n,2n+1,odd,even)
+    - E:nth-child(n) 选中父元素中第n个子元素（n从0开始）n(数字，表达式 -5+n,2n+1,odd,even)
     - E:nth-last-child(n)  选中父元素中倒数第n个子元素（元素0开始，n从0开始）
 
     - E:empty 选中内容为空，或没有子元素

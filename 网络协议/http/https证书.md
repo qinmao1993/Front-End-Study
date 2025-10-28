@@ -18,8 +18,9 @@
   openssl x509 -req -days 365 -in csr.pem -signkey private-key.pem  -out public-certificate.pem
    
   ```
+
 ## nodejs 使用 mkcert 创建自签名证书
-> Create self signed tls certificates without OpenSSL.
+  > Create self signed tls certificates without OpenSSL.
   ```bash
     npm install -g mkcert
     # 创建证书颁发机构
@@ -60,6 +61,7 @@
     5. 确认导入：按照指示导入证书，可能需要输入管理员密码。
     6. 重启浏览器：关闭并重新打开 Chrome，以确保更改生效。
   - [mac设置参考](https://www.cnblogs.com/mysticbinary/p/12577673.html)
+  
 ## 商用证书
 * Let's Encrypt（免费） 有效期3月到期续签
 
