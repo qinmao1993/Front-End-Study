@@ -255,4 +255,61 @@
 * 微服务栈
   - Spring Boot + Spring Cloud + Spring Cloud Gateway + Nacos + Sentinel + OpenFeign
 
-## 服务部署
+## 服务部署（Spring Boot 项目）
+* 优势
+  - 内嵌 Tomcat，无需额外安装 Web 服务器
+  - 单个文件部署，简单方便
+  - 支持各种环境
+* 部署前准备
+  - 配置打包插件（通常Spring Boot默认已经配置）
+  ```xml
+    <!-- pom.xml 配置 -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+  ```
+  ```bash
+    # 打包命令
+    mvn clean package -DskipTests
+
+    # 打包结果
+    # target/your-app-1.0.0.jar (可执行 JAR)
+  ```
+* 部署
+  ```bash
+    # 1. 上传文件到服务器
+    scp target/myapp.jar user@server:/opt/app/
+
+    # 2. 创建服务文件
+    sudo vim /etc/systemd/system/myapp.service
+  ```
+  ```ini
+    # /etc/systemd/system/myapp.service
+    [Unit]
+    Description=My Java Application
+    After=syslog.target network.target
+
+    [Service]
+    Type=simple
+    User=appuser
+    WorkingDirectory=/opt/app
+    ExecStart=/usr/bin/java -jar myapp.jar
+    ExecStop=/bin/kill -15 $MAINPID
+    Restart=on-failure
+    RestartSec=10
+
+    [Install]
+    WantedBy=multi-user.target
+  ```
+  ```bash
+    # 3. 启动服务
+    sudo systemctl daemon-reload
+    sudo systemctl enable myapp
+    sudo systemctl start myapp
+    sudo systemctl status myapp
+  ```

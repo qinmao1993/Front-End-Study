@@ -17,8 +17,11 @@
  ```bash 
   nest -v 
   nest -h
+  nest info        # 查看项目环境信息（Nest版本，Node版本等）
+
   # 生成一个rest风格的 usesr CRUD
   nest g res user
+
   # 生成在指定目录下
   nest g res user-center/user
  ```
@@ -41,11 +44,115 @@
   ```
 
 ## 核心库
-* @nestjs/cli
+### 核心框架层
+  > 这是构建 NestJS 应用的基石，包含了定义应用结构、依赖注入、模块化等最基础的功能
+* @nestjs/common
+  > 这是最常用、最核心的库，包含了大量的装饰器、枚举、类和工具函数。
+  - 装饰器：用于声明类和各种元数据
+  - @Module(): 定义一个模块
+  - @Controller(): 定义一个控制器，用于处理路由
+  - @Injectable(): 定义一个可被依赖注入的提供者（如 Service、Repository）
+  - @Inject(): 手动注入一个依赖
+  - @Get(), @Post(), @Put(), @Delete() 等：定义 HTTP 请求方法
+  - @Body(), @Param(), @Query(), @Headers(): 提取请求中的数据
+
+  - HttpException: 用于抛出标准 HTTP 异常。
+  - 接口： 如 OnModuleInit, OnApplicationBootstrap 等生命周期钩子接口
+
 * @nestjs/core 
-* @nestjs/common 
+  > 是 NestJS 的运行时引擎，它实现了依赖注入容器、模块系统、生命周期管理等核心运行时逻辑
+  - NestFactory: 用于创建 NestJS 应用实例的静态类，例如 NestFactory.create(AppModule)
+  - 依赖注入容器： 负责解析模块、提供者、控制器之间的依赖关系，并创建和管理它们的实例
+  - 模块引用： 通过 ModulesContainer 等提供对已加载模块的访问
+  - 应用生命周期： 管理应用的启动、停止等生命周期事件
+  - 中间件、守卫、拦截器、管道 的执行上下文和调用链
+
+### 平台抽象层
+> NestJS 的核心设计是平台无关的。它通过平台适配器来支持不同的底层 HTTP 服务器框架。
+* @nestjs/platform-express
+  > 这是默认的平台适配器，将 NestJS 应用适配到 Express.js 框架上
+  - 它创建了一个 Express 应用实例，并将 NestJS 的请求/响应对象映射到 Express 的 req 和 res 对象上。
+  - 当你使用 NestFactory.create 时，默认使用的就是这个平台。
+  - 可以通过 app.getHttpAdapter() 获取到底层的 Express 实例，以便使用特定的 Express 中间件。
+* @nestjs/platform-fastify
+  > 这是另一个官方支持的平台适配器，将 NestJS 应用适配到 Fastify 框架上。高性能和低开销
+  - 使用方式： NestFactory.create(AppModule, new FastifyAdapter())
+  - Fastify 提供了自己的一套请求/响应对象，该适配器负责将它们与 NestJS 的抽象进行桥接
+
+### 官方集成库（常用）
+* @nestjs/typeorm 与 @nestjs/mongoose
+  - @nestjs/typeorm: 集成 TypeORM，主要用于关系型数据库（如 PostgreSQL, MySQL, SQLite）
+  - @nestjs/mongoose: 集成 Mongoose，用于 MongoDB
+
+* @nestjs/config
+  > 用于管理应用程序的环境变量和配置
+  - 基于流行的 dotenv 库
+  - 提供 ConfigModule 和 ConfigService，支持 .env 文件、环境特定的配置、配置验证等功能
+  - 是现代 NestJS 应用管理配置的首选方式
+
+* @nestjs/jwt 与 @nestjs/passport
+  > 实现身份认证和授权
+  - @nestjs/jwt: 提供 JWT 的生成和验证工具。
+  - @nestjs/passport: 集成了 Passport.js 这个流行的认证库，简化了各种认证策略（如 JWT, Local, OAuth）的实现。通常会与 @nestjs/jwt 结合使用来实现 JWT 策略
+
+* @nestjs/swagger
+  > 用于自动生成 OpenAPI 文档。
+  - 通过一系列装饰器（如 @ApiProperty(), @ApiResponse()）为你的 DTO 和控制器添加元数据
+  - 可以自动生成一个交互式的 API 文档界面（Swagger UI），极大地方便了前后端联调和 API 文档维护
+
+* @nestjs/websockets 与 @nestjs/serve-static
+  - @nestjs/websockets: 用于实现 WebSocket 网关，支持双向实时通信
+  - @nestjs/serve-static: 用于提供静态资源服务（如图片、CSS、HTML 文件）
+
+* @nestjs/microservices
+  - 提供了一组装饰器（如 @MessagePattern(), @EventPattern()）和客户端，使 NestJS 应用能够轻松地作为微服务运行
+  - 支持多种传输层协议，包括 TCP、Redis、MQTT、gRPC、Nats 等
+
+### 其他核心包
+* @nestjs/cli
+  - NestJS 的命令行工具，是开发 NestJS 应用的脚手架和构建工具
+  - 项目初始化、代码生成、项目构建与运行
+
+* @nestjs/mapped-types
+  - 一个基于 DTO 创建派生类的工具包，避免代码重复，特别是在创建类似的输入验证模型时
+  - 它不仅会复制类的属性，还会复制相关的验证装饰器 和 Swagger 装饰器，确保派生类也拥有正确的验证规则和 API 文档元数据
+  + 常见使用场景
+    > 假设你有一个 CreateUserDto，用于创建用户时的验证。现在你需要一个 UpdateUserDto 用于更新用户，但更新时所有字段都应该是可选的。
+   - 不使用 mapped-types：你需要手动复制 CreateUserDto 的所有字段，然后为每个字段加上 @IsOptional() 装饰器，非常繁琐且容易出错。
+   - 使用 mapped-types：可以轻松地从 CreateUserDto 派生出 UpdateUserDto
+   ```ts
+    import { PartialType } from '@nestjs/mapped-types';
+
+    // PartialType：生成一个新类，其中所有属性都变为可选的
+    export class UpdateUserDto extends PartialType(CreateUserDto) {}
+
+    // PickType：从原有类中挑选一组属性生成新类
+    export class UserLoginDto extends PickType(CreateUserDto, ['email', 'password'] as const) {}
+
+    // OmitType：从原有类中排除一组属性生成新类
+    export class UserPublicProfileDto extends OmitType(User, ['password'] as const) {}
+
+    // IntersectionType：将两个类合并成一个新类。
+    export class UserWithRoleDto extends IntersectionType(User, Role) {}
+   ```
+
+
 * rxjs 
+  > 一个用于响应式编程的库，用于使用 Observables 处理异步数据流。
+  ```ts
+    @Get()
+    findAll(): Observable<User[]> {
+        return this.userService.findAll$(); // 假设这个方法返回一个 Observable
+    }
+  ```
+
 * reflect-metadata
+  - 一个 Polyfill 库，为 JavaScript 提供了元数据反射 API
+  - 问题：TypeScript 装饰器（如 @Injectable(), @Controller(), @Inject()）本身只是语法糖，它们需要一种机制来存储和读取附加到类、方法或属性上的元数据
+  + 解决方案：reflect-metadata 就是这个机制。它允许 NestJS 在运行时：
+    - 知道一个类是否被 @Injectable() 装饰了（是一个提供者）。
+    - 知道一个类是否被 @Controller('users') 装饰了，以及它的路由前缀是什么。
+    - 知道一个构造函数的参数需要注入什么依赖（通过 @Inject('SomeService') 或基于类型）。
 
 ## 请求过程
 * DTO（数据传输对象）

@@ -137,7 +137,28 @@
   - license: "MIT" 项目的开源许可证类型（此处为 MIT 许可证）。
   - author:项目作者或组织信息
   
-  - peerDependencies 通常用于框架类库（如 vue、react），表示宿主必须提供该依赖，避免重复打包。并配合 peerDependenciesMeta 指定可选性。
+  - peerDependencies 通常用于框架类库，表示宿主必须提供该依赖，避免重复打包。并配合 peerDependenciesMeta 指定可选性。如下
+    ```json
+        "peerDependencies": {
+            "@fastify/static": "^8.0.0",
+            "@nestjs/common": "^11.0.1",
+            "@nestjs/core": "^11.0.1",
+            "class-transformer": "*",
+            "class-validator": "*",
+            "reflect-metadata": "^0.1.12 || ^0.2.0"
+        },
+        "peerDependenciesMeta": {
+            "@fastify/static": {
+                "optional": true
+            },
+            "class-transformer": {
+                "optional": true
+            },
+            "class-validator": {
+                "optional": true
+            }
+        },
+    ```
 
 * 模块入口与构建配置
   - main: 定义 CommonJS 模块的入口文件

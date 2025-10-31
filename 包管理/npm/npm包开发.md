@@ -150,7 +150,17 @@ npm 包开发详细步骤（Vite（库模式）+ TypeScript 方案）
   ```
 
 ## 配置测试环境
-TODO
+- 离线环境安装测试
+```bash
+    # 在包目录中创建 .tgz 文件
+    cd /path/to/your-package
+    npm pack
+
+    # 在测试项目中安装
+    cd /path/to/your-test-project
+    npm install ../path/to/your-package/your-package-1.0.0.tgz
+    
+```
 
 ## 配置 npm 脚本
   ```json
@@ -183,8 +193,8 @@ TODO
     # 登录 npm
     npm login
 
-    # 版本管理
-    npm version patch  # minor|major
+    # 版本管理 自动升级版本号 1.0.0->1.0.1
+    npm version patch  # major|minor|patch
 
     # 发布
     npm publish
@@ -194,10 +204,21 @@ TODO
   ```bash
     npm install -D typedoc
   ```
-
+  - typedoc.json
+  ```json
+    {
+        "out": "docs",
+        "entryPoints": ["src/index.ts", "src/core/*.ts"],
+        "entryPointStrategy": "expand",
+        "exclude": ["**/*.test.ts", "**/*.spec.ts", "node_modules/**"],
+        "theme": "default",
+        "includeVersion": true,
+        "readme": "README.md"
+    }
+  ```
   ```json
     "scripts": {
-        "docs": "typedoc --out docs src"
+        "docs:build": "typedoc && echo '文档生成完成'"
     }
   ```
 
