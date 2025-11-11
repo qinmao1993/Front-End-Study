@@ -7,7 +7,12 @@ import {
     generateKeyPairSync,
     publicEncrypt,
     privateDecrypt,
+    createPublicKey,
+    createPrivateKey,
+    publicDecrypt,
+    privateEncrypt,
 } from "node:crypto";
+
 
 /**
  * 对称加密: 在加密和解密时，使用同一个秘钥以及iv
@@ -54,25 +59,27 @@ function dcDecrypt(text, iv, password) {
 }
 
 /**
- * 非对称加密
- * @param {*} text
+ * 非对称-公钥加密
+ * @param {*} text 要加密内容
  * @param {*} publicKey 公钥
  * @returns
  */
-function fdcEncrypt(text, publicKey) {
+function fdcPublicEncrypt(text, publicKey) {
     const buffer = Buffer.from(text);
     const encrypted = publicEncrypt(publicKey, buffer);
-    return encrypted.toString("hex");
+    // return encrypted.toString("hex");
+    return encrypted.toString("base64");
 }
 
 /**
- * 非对称解密
+ * 非对称-私钥解密
  * @param {*} encryptedText
  * @param {*} privateKey
  * @returns
  */
-function fdcDecrypt(encryptedText, privateKey) {
-    const buffer = Buffer.from(encryptedText, "hex");
+function fdcPrivateDecrypt(encryptedText, privateKey) {
+    // const buffer = Buffer.from(encryptedText, "hex");
+    const buffer = Buffer.from(encryptedText, "base64");
     const decrypted = privateDecrypt(privateKey, buffer);
     // const decrypted = privateDecrypt(
     //     {
@@ -94,25 +101,41 @@ function fdcDecrypt(encryptedText, privateKey) {
 // console.log("decryptedText:", decryptedText);
 
 // 生成公钥和私钥
-const { privateKey, publicKey } = generateKeyPairSync("rsa", {
-    modulusLength: 4096, // 越长越安全
-    publicKeyEncoding: {
-        type: "spki",
-        format: "pem",
-    },
-    privateKeyEncoding: {
-        type: "pkcs8",
-        format: "pem",
-        // cipher: "aes-256-cbc",
-        // passphrase: "password", // 私钥的密码,如果设置，解密时需要提供
-    },
+// const { privateKey, publicKey } = generateKeyPairSync("rsa", {
+//     modulusLength: 4096, // 越长越安全
+//     publicKeyEncoding: {
+//         type: "spki",
+//         format: "pem",
+//     },
+//     privateKeyEncoding: {
+//         type: "pkcs8",
+//         format: "pem",
+//         // cipher: "aes-256-cbc",
+//         // passphrase: "password", // 私钥的密码,如果设置，解密时需要提供
+//     },
+// });
+
+// 公钥和私钥
+const publicKeyBase64 = `MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCjk5Av7vgojaGBFhOdGWuAtLUCD0WGI6XHtWi0VrFHyr79AD4x9Jo4zI1lHzORr/Nq+uX1Ma8tyYvgjl/9TC3OJDY1dB7D8fzAXXAUoFWc4zheHPIjgcnibNjxgWG2YcpKZGNJHUnIctVQwLMxA7SUwNA8I6YTeF7cFq8uOByp3QIDAQAB`;
+const keyBytes = Buffer.from(publicKeyBase64, "base64");
+const publicKey = createPublicKey({
+    key: keyBytes,
+    format: "der",
+    type: "spki",
 });
 
-// 明文
-const plainText = "Hello, 非对称加密！";
-// 加密
-const encryptedText = fdcEncrypt(plainText, publicKey);
-console.log("加密后的内容:", encryptedText);
-// 解密
-const decryptedText = fdcDecrypt(encryptedText, privateKey);
-console.log("解密后的内容:", decryptedText);
+const privateKeyBase64 = `MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKOTkC/u+CiNoYEWE50Za4C0tQIPRYYjpce1aLRWsUfKvv0APjH0mjjMjWUfM5Gv82r65fUxry3Ji+COX/1MLc4kNjV0HsPx/MBdcBSgVZzjOF4c8iOByeJs2PGBYbZhykpkY0kdSchy1VDAszEDtJTA0DwjphN4XtwWry44HKndAgMBAAECgYAXzSDt2JfDTthxMAUqlshNsf2kjxROsGEu7faORw8EozunFKH4It9N5HWugRu/1xpUNq2/P7t9rhXsVssg0DTZzii8VcDKZZ6SyS3t9S/VMOsZ3Kad9ae8NmGBuHduwNFq/iIvnvSXHCxPWE0BcqJqxGSi0JtlTeX13qsYCxBYAQJBAN5t239v6IzW2NyHzswAZVcUhvehX+GMCpbeexCBnIQe+OzkPXLSxKB/TguA302uZIXiNQKfgYvcC11+Qh6INfkCQQC8Q8Y869ilVjcwIu1DNgMf4/sEqIhzauTFt6sBYaAWXNOgYJv1FxEd12tjrwz+8MgZ3zr2HuUA03dBwX5nh3wFAkBBCAuJ2dU7AEHNUGOU33TBnf3L/sGCtygNbiS68boqIsgSsrSIkrjsV+wgjuA63QcE4dsv1iTRGFe2UQjR1m85AkARopugO0t4+WGEDdGB2T5jr1xlLFBT13CEoNbQ808mqR1dyY7yX23ICNTTaqNiAjYMTl/cjDpRYH2sWC66DfPtAkEAlSFJ/RXXW/RzsEu7HtTJc5X0qV48sl5Khi+aTXliyPsm3FmFRrddeAovMBwBQxstSyGbWkSawumlqjoNJ9WDrA==`;
+const privateKeyBytes = Buffer.from(privateKeyBase64, "base64");
+const privateKey = createPrivateKey({
+    key: privateKeyBytes,
+    format: "der",
+    type: "pkcs8",
+});
+
+// 公钥加密 -> 私钥解密
+// const plainText = 'hello,world'
+// const encryptedText1 = fdcPublicEncrypt(plainText, publicKey);
+// console.log("公钥加密后的内容: ", encryptedText1);
+
+// const decryptedText1 = fdcPrivateDecrypt(encryptedText1, privateKey);
+// console.log("私钥解密后的内容: ", decryptedText1);
