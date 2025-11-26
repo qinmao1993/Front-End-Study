@@ -10,7 +10,8 @@
 [存储 API](./本地存储.md)
 
 ## 网络API
-[网络请求](./网络请求.md)
+* [fetch-xhr](./fetch-xhr.md)
+* [webSocket](./websocket/websocket.md)
 
 ## 地理位置API
 * navigator.geolocation：用于获取用户的地理位置
@@ -38,16 +39,34 @@
     navigator.geolocation.watchPosition(success, error)
   ```
 
+## 访问设备的方向和运动传感器
+  ```js
+    // 设备方向
+    window.addEventListener('deviceorientation', event => {
+    console.log('Alpha:', event.alpha); // Z轴旋转
+    console.log('Beta:', event.beta);   // X轴旋转
+    console.log('Gamma:', event.gamma); // Y轴旋转
+    });
+
+    // 设备运动
+    window.addEventListener('devicemotion', event => {
+    console.log('加速度:', event.acceleration);
+    });
+  ```
+
 ## 多媒体API
-* MediaDevices：用于访问用户的摄像头和麦克风
-  - navigator.mediaDevices.getUserMedia(constraints)
-* HTMLMediaElement：用于控制音频和视频播放
+* [视频](/音视频/视频技术.md)
+* [音频](/音视频/音频技术.md)
+
+## File API
+[文件api](/开发语言/js/图像与二进制.md)
 
 ## Web Workers API
 [web-workers](./web-workers.md)
 
 ## MessageChannel
-[MessageChannel](./MessageChannel.md)
+* 同源的不同浏览器上下文间通信。
+* [MessageChannel](./MessageChannel.md)
 
 ## requestIdleCallback
 * 把埋点、日志丢进浏览器空闲时间，首帧零阻塞。
@@ -58,7 +77,8 @@
 [ResizeObserver](./ResizeObserver.md)
 
 ## IntersectionObserver 
-* 检测元素进出视口，一次搞定懒加载 + 曝光埋点，性能零损耗。
+* 检测元素进出视口，
+  - 应用场景：懒加载 + 曝光埋点，性能零损耗
 [IntersectionObserver](./IntersectionObserver.md)
 
 ## Page Visibility
@@ -80,4 +100,59 @@
   ```js
     await navigator.wakeLock.request('screen');
   ```
-## 
+
+## Notification API
+  ```js
+    // 请求权限
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        new Notification('Hello!', {
+            body: '这是一个通知',
+            icon: '/icon.png'
+        });
+      }
+    });
+  ```
+
+## Clipboard API
+  ```js
+    // 写入剪贴板
+    navigator.clipboard.writeText('要复制的文本')
+    .then(() => console.log('文本已复制'))
+    .catch(err => console.error('复制失败:', err));
+
+    // 读取剪贴板
+    navigator.clipboard.readText()
+    .then(text => console.log('剪贴板内容:', text));
+  ```
+
+## Performance API
+  ```js
+    // 测量代码执行时间
+    performance.mark('start');
+    // 执行一些操作...
+    performance.mark('end');
+    performance.measure('myMeasurement', 'start', 'end');
+
+    // 获取性能指标
+    const navigationTiming = performance.getEntriesByType('navigation')[0];
+      console.log(
+        "导航耗时:",
+        navigationTiming.responseStart - navigationTiming.navigationStart
+    );
+    console.log(
+        "服务器响应耗时:",
+        navigationTiming.responseEnd - navigationTiming.requestStart
+    );
+    // 衡量页面开始呈现并能与用户交互的时间
+    console.log(
+        "DOM 加载耗时:",
+        navigationTiming.domContentLoadedEventEnd -
+            navigationTiming.domContentLoadedEventStart
+    );
+    // 加载所有资源（如图片、样式等）所花费的时间。
+    console.log(
+        "Load 加载完整耗时:",
+        navigationTiming.loadEventEnd - navigationTiming.loadEventStart
+    );
+  ```

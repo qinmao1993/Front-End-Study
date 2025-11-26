@@ -1,4 +1,4 @@
-# socket
+# websocket
 
 ## websocket
 > WebSocket是一种在单个TCP连接上进行全双工通信的协议。它允许客户端和服务器之间进行双向通信，以实现实时数据传输。WebSocket通常用于实时聊天应用程序、大部分现代浏览器端支持，无需插件
@@ -30,12 +30,6 @@
     };
 
   ```
-
-## ws
-  - ws 是一个纯粹的 WebSocket 库，专注于提供简单、高效的 WebSocket 连接。相比于 Socket.io，它的功能相对较少，主要专注于 WebSocket 的基本功能。
-  - ws 也是一个基于 Node.js 的库，主要用于服务器端，但也有一些第三方库用于在浏览器端实现 WebSocket 连接。
-  - 专注于 WebSocket 协议，不支持其他传输协议。
-
 
 ## Socket.io(推荐使用)：
   - Socket.io 是一个提供实时、双向通信的库，它支持 WebSocket 连接以及其他传输协议，如轮询和长轮询。Socket.io 提供了许多功能，包括自动重新连接、广播、命名空间和房间管理等。

@@ -174,6 +174,9 @@ npm 包开发详细步骤（Vite（库模式）+ TypeScript 方案）
         "files": ["dist"],                // 包含发布文件
     }
   ```
+  
+## 代码安全
+  - [源码混淆](/安全/源码混淆.md)
 
 ## 配置忽略文件
   ```gitignore
@@ -200,7 +203,7 @@ npm 包开发详细步骤（Vite（库模式）+ TypeScript 方案）
     npm publish
   ```
 
-## 自动生成文档 - 使用 TypeDoc
+## 自动生成文档（TypeDoc）
   ```bash
     npm install -D typedoc
   ```
@@ -239,3 +242,4 @@ npm 包开发详细步骤（Vite（库模式）+ TypeScript 方案）
         - run: npm test
   ```
 * 持续集成- gitlab 私库
+  - TODO

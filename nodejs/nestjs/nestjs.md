@@ -100,9 +100,8 @@
   - 通过一系列装饰器（如 @ApiProperty(), @ApiResponse()）为你的 DTO 和控制器添加元数据
   - 可以自动生成一个交互式的 API 文档界面（Swagger UI），极大地方便了前后端联调和 API 文档维护
 
-* @nestjs/websockets 与 @nestjs/serve-static
+* @nestjs/websockets
   - @nestjs/websockets: 用于实现 WebSocket 网关，支持双向实时通信
-  - @nestjs/serve-static: 用于提供静态资源服务（如图片、CSS、HTML 文件）
 
 * @nestjs/microservices
   - 提供了一组装饰器（如 @MessagePattern(), @EventPattern()）和客户端，使 NestJS 应用能够轻松地作为微服务运行
@@ -149,7 +148,7 @@
 * reflect-metadata
   - 一个 Polyfill 库，为 JavaScript 提供了元数据反射 API
   - 问题：TypeScript 装饰器（如 @Injectable(), @Controller(), @Inject()）本身只是语法糖，它们需要一种机制来存储和读取附加到类、方法或属性上的元数据
-  + 解决方案：reflect-metadata 就是这个机制。它允许 NestJS 在运行时：
+  + 解决方案：reflect-metadata 就是这个机制。它允许 NestJS 在运行时
     - 知道一个类是否被 @Injectable() 装饰了（是一个提供者）。
     - 知道一个类是否被 @Controller('users') 装饰了，以及它的路由前缀是什么。
     - 知道一个构造函数的参数需要注入什么依赖（通过 @Inject('SomeService') 或基于类型）。

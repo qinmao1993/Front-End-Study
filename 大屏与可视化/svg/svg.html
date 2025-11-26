@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SVG应用场景示例</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            body {
+                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                color: #333;
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            header {
+                text-align: center;
+                margin-bottom: 40px;
+                padding: 20px;
+                background: rgba(255, 255, 255, 0.8);
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            h1 {
+                color: #2c3e50;
+                margin-bottom: 10px;
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                color: #7f8c8d;
+                font-size: 1.2rem;
+            }
+
+            .section {
+                background: white;
+                border-radius: 10px;
+                padding: 25px;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease;
+            }
+
+            .section:hover {
+                transform: translateY(-5px);
+            }
+
+            h2 {
+                color: #3498db;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            .example-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                justify-content: space-between;
+            }
+
+            .example {
+                flex: 1;
+                min-width: 300px;
+                padding: 15px;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                background: #f9f9f9;
+            }
+
+            .example h3 {
+                color: #2c3e50;
+                margin-bottom: 15px;
+            }
+
+            .svg-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 15px 0;
+                min-height: 150px;
+                background: white;
+                border-radius: 5px;
+                padding: 10px;
+            }
+
+            .description {
+                margin-top: 15px;
+                font-size: 0.9rem;
+                color: #555;
+            }
+
+            .interactive-demo {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                margin-top: 15px;
+            }
+
+            .controls {
+                display: flex;
+                gap: 10px;
+                margin-top: 15px;
+                flex-wrap: wrap;
+            }
+
+            button {
+                padding: 8px 15px;
+                background: #3498db;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background 0.3s;
+            }
+
+            button:hover {
+                background: #2980b9;
+            }
+
+            input[type="range"] {
+                width: 100%;
+            }
+
+            footer {
+                text-align: center;
+                margin-top: 40px;
+                padding: 20px;
+                color: #7f8c8d;
+                font-size: 0.9rem;
+            }
+
+            @media (max-width: 768px) {
+                .example-container {
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <header>
+                <h1>SVG在Web开发中的应用场景</h1>
+                <p class="subtitle">探索SVG在现代前端开发中的多样化应用</p>
+            </header>
+
+            <section class="section">
+                <h2>1. 图标系统</h2>
+                <div class="example-container">
+                    <div class="example">
+                        <h3>可缩放矢量图标</h3>
+                        <div class="svg-container">
+                            <svg
+                                width="120"
+                                height="120"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                    fill="#FFD700"
+                                    stroke="#FFA500"
+                                    stroke-width="1.5"
+                                />
+                            </svg>
+                        </div>
+                        <p class="description">
+                            SVG图标可以无限缩放而不失真，适合各种屏幕密度。可以通过CSS轻松修改颜色、大小和动画效果。
+                        </p>
+                    </div>
+
+                    <div class="example">
+                        <h3>交互式图标</h3>
+                        <div class="svg-container">
+                            <svg
+                                id="interactive-icon"
+                                width="120"
+                                height="120"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M19 14C19 16.2091 17.2091 18 15 18C12.7909 18 11 16.2091 11 14C11 11.7909 15 7 15 7C15 7 19 11.7909 19 14Z"
+                                    fill="#e74c3c"
+                                    stroke="#c0392b"
+                                    stroke-width="1.5"
+                                />
+                                <path
+                                    d="M12 7H18"
+                                    stroke="#c0392b"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                />
+                                <path
+                                    d="M15 4V7"
+                                    stroke="#c0392b"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                />
+                            </svg>
+                        </div>
+                        <p class="description">
+                            SVG图标可以添加交互效果，如悬停、点击动画等，提升用户体验。
+                        </p>
+                        <div class="controls">
+                            <button id="color-btn">改变颜色</button>
+                            <button id="animate-btn">播放动画</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>2. 数据可视化</h2>
+                <div class="example-container">
+                    <div class="example">
+                        <h3>动态饼图</h3>
+                        <div class="svg-container">
+                            <svg
+                                width="200"
+                                height="200"
+                                viewBox="0 0 42 42"
+                                class="donut"
+                            >
+                                <circle
+                                    class="donut-hole"
+                                    cx="21"
+                                    cy="21"
+                                    r="15.915"
+                                    fill="#fff"
+                                ></circle>
+                                <circle
+                                    class="donut-ring"
+                                    cx="21"
+                                    cy="21"
+                                    r="15.915"
+                                    fill="transparent"
+                                    stroke="#d2d3d4"
+                                    stroke-width="3"
+                                ></circle>
+                                <circle
+                                    class="donut-segment"
+                                    cx="21"
+                                    cy="21"
+                                    r="15.915"
+                                    fill="transparent"
+                                    stroke="#3498db"
+                                    stroke-width="3"
+                                    stroke-dasharray="40 60"
+                                    stroke-dashoffset="25"
+                                ></circle>
+                                <circle
+                                    class="donut-segment"
+                                    cx="21"
+                                    cy="21"
+                                    r="15.915"
+                                    fill="transparent"
+                                    stroke="#e74c3c"
+                                    stroke-width="3"
+                                    stroke-dasharray="20 80"
+                                    stroke-dashoffset="85"
+                                ></circle>
+                                <circle
+                                    class="donut-segment"
+                                    cx="21"
+                                    cy="21"
+                                    r="15.915"
+                                    fill="transparent"
+                                    stroke="#2ecc71"
+                                    stroke-width="3"
+                                    stroke-dasharray="30 70"
+                                    stroke-dashoffset="65"
+                                ></circle>
+                            </svg>
+                        </div>
+                        <p class="description">
+                            SVG非常适合创建动态图表，如饼图、柱状图等，可以实时更新数据并添加过渡动画。
+                        </p>
+                    </div>
+
+                    <div class="example">
+                        <h3>进度指示器</h3>
+                        <div class="svg-container">
+                            <svg width="150" height="150" viewBox="0 0 42 42">
+                                <circle
+                                    cx="21"
+                                    cy="21"
+                                    r="15.915"
+                                    fill="transparent"
+                                    stroke="#eee"
+                                    stroke-width="3"
+                                ></circle>
+                                <circle
+                                    id="progress-circle"
+                                    cx="21"
+                                    cy="21"
+                                    r="15.915"
+                                    fill="transparent"
+                                    stroke="#3498db"
+                                    stroke-width="3"
+                                    stroke-dasharray="60 100"
+                                    stroke-linecap="round"
+                                    transform="rotate(-90 21 21)"
+                                ></circle>
+                                <text
+                                    x="21"
+                                    y="24"
+                                    text-anchor="middle"
+                                    font-size="8"
+                                    fill="#3498db"
+                                >
+                                    60%
+                                </text>
+                            </svg>
+                        </div>
+                        <p class="description">
+                            使用SVG的stroke-dasharray属性可以轻松创建圆形进度条和加载指示器。
+                        </p>
+                        <div class="interactive-demo">
+                            <p>调整进度:</p>
+                            <input
+                                type="range"
+                                id="progress-slider"
+                                min="0"
+                                max="100"
+                                value="60"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>3. 交互式图形与动画</h2>
+                <div class="example-container">
+                    <div class="example">
+                        <h3>可交互地图</h3>
+                        <div class="svg-container">
+                            <svg width="200" height="150" viewBox="0 0 200 150">
+                                <!-- 简化版地图 -->
+                                <path
+                                    id="region1"
+                                    d="M50,50 L100,30 L120,70 L80,90 Z"
+                                    fill="#3498db"
+                                    stroke="#2980b9"
+                                    stroke-width="2"
+                                />
+                                <path
+                                    id="region2"
+                                    d="M120,70 L160,50 L180,90 L140,110 Z"
+                                    fill="#e74c3c"
+                                    stroke="#c0392b"
+                                    stroke-width="2"
+                                />
+                                <path
+                                    id="region3"
+                                    d="M80,90 L140,110 L120,140 L60,120 Z"
+                                    fill="#2ecc71"
+                                    stroke="#27ae60"
+                                    stroke-width="2"
+                                />
+                            </svg>
+                        </div>
+                        <p class="description">
+                            SVG地图支持区域高亮、点击交互和数据可视化，广泛应用于地理信息系统。
+                        </p>
+                        <div class="controls">
+                            <button id="reset-map">重置地图</button>
+                        </div>
+                    </div>
+
+                    <div class="example">
+                        <h3>SVG动画</h3>
+                        <div class="svg-container">
+                            <svg width="150" height="150" viewBox="0 0 100 100">
+                                <!-- 动画星星 -->
+                                <polygon
+                                    id="animated-star"
+                                    points="50,15 61,40 88,40 66,55 72,80 50,67 28,80 34,55 12,40 39,40"
+                                    fill="#FFD700"
+                                    stroke="#FFA500"
+                                    stroke-width="2"
+                                >
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0.3;1;0.3"
+                                        dur="2s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animateTransform
+                                        attributeName="transform"
+                                        type="scale"
+                                        values="1;1.2;1"
+                                        dur="2s"
+                                        repeatCount="indefinite"
+                                    />
+                                </polygon>
+                            </svg>
+                        </div>
+                        <p class="description">
+                            SVG支持原生SMIL动画，也可以通过CSS和JavaScript控制，创建复杂的交互动画效果。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>4. 响应式图形与UI组件</h2>
+                <div class="example-container">
+                    <div class="example">
+                        <h3>响应式Logo</h3>
+                        <div class="svg-container">
+                            <svg
+                                width="180"
+                                height="80"
+                                viewBox="0 0 180 80"
+                                preserveAspectRatio="xMidYMid meet"
+                            >
+                                <rect
+                                    x="10"
+                                    y="10"
+                                    width="60"
+                                    height="60"
+                                    rx="10"
+                                    fill="#3498db"
+                                />
+                                <text
+                                    x="90"
+                                    y="45"
+                                    font-family="Arial"
+                                    font-size="24"
+                                    fill="#2c3e50"
+                                >
+                                    SVG Logo
+                                </text>
+                            </svg>
+                        </div>
+                        <p class="description">
+                            SVG
+                            Logo可以完美适应任何屏幕尺寸，保持清晰度和比例，无需为不同设备提供多个版本。
+                        </p>
+                    </div>
+
+                    <div class="example">
+                        <h3>自定义UI组件</h3>
+                        <div class="svg-container">
+                            <svg width="150" height="80" viewBox="0 0 150 80">
+                                <!-- 自定义滑块 -->
+                                <rect
+                                    x="10"
+                                    y="35"
+                                    width="130"
+                                    height="10"
+                                    rx="5"
+                                    fill="#e0e0e0"
+                                />
+                                <rect
+                                    id="slider-progress"
+                                    x="10"
+                                    y="35"
+                                    width="65"
+                                    height="10"
+                                    rx="5"
+                                    fill="#3498db"
+                                />
+                                <circle
+                                    id="slider-handle"
+                                    cx="75"
+                                    cy="40"
+                                    r="12"
+                                    fill="#fff"
+                                    stroke="#3498db"
+                                    stroke-width="3"
+                                />
+                            </svg>
+                        </div>
+                        <p class="description">
+                            使用SVG可以创建独特的、品牌化的UI组件，如滑块、开关和按钮，突破传统HTML元素的样式限制。
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <script>
+            // 交互式图标功能
+            document
+                .getElementById("color-btn")
+                .addEventListener("click", function () {
+                    const icon = document.getElementById("interactive-icon");
+                    const paths = icon.querySelectorAll("path");
+                    const colors = [
+                        "#e74c3c",
+                        "#3498db",
+                        "#2ecc71",
+                        "#f39c12",
+                        "#9b59b6",
+                    ];
+                    const randomColor =
+                        colors[Math.floor(Math.random() * colors.length)];
+
+                    paths[0].style.fill = randomColor;
+                    paths[0].style.stroke = darkenColor(randomColor, 20);
+                    paths[1].style.stroke = darkenColor(randomColor, 20);
+                    paths[2].style.stroke = darkenColor(randomColor, 20);
+                });
+
+            document
+                .getElementById("animate-btn")
+                .addEventListener("click", function () {
+                    const icon = document.getElementById("interactive-icon");
+                    icon.style.transform = "scale(1.2)";
+                    setTimeout(() => {
+                        icon.style.transform = "scale(1)";
+                    }, 300);
+                });
+
+            // 进度条功能
+            document
+                .getElementById("progress-slider")
+                .addEventListener("input", function () {
+                    const value = this.value;
+                    const circle = document.getElementById("progress-circle");
+                    const text = document.querySelector(
+                        "#progress-circle + text"
+                    );
+
+                    circle.setAttribute("stroke-dasharray", `${value} 100`);
+                    text.textContent = `${value}%`;
+                });
+
+            // 交互式地图功能
+            const regions = document.querySelectorAll(
+                "#region1, #region2, #region3"
+            );
+            const originalColors = [];
+
+            regions.forEach((region, index) => {
+                originalColors[index] = {
+                    fill: region.getAttribute("fill"),
+                    stroke: region.getAttribute("stroke"),
+                };
+
+                region.addEventListener("mouseover", function () {
+                    this.style.fill = "#f1c40f";
+                    this.style.stroke = "#f39c12";
+                });
+
+                region.addEventListener("mouseout", function () {
+                    this.style.fill = originalColors[index].fill;
+                    this.style.stroke = originalColors[index].stroke;
+                });
+
+                region.addEventListener("click", function () {
+                    alert(`您点击了区域 ${index + 1}`);
+                });
+            });
+
+            document
+                .getElementById("reset-map")
+                .addEventListener("click", function () {
+                    regions.forEach((region, index) => {
+                        region.style.fill = originalColors[index].fill;
+                        region.style.stroke = originalColors[index].stroke;
+                    });
+                });
+
+            // 工具函数
+            function darkenColor(color, percent) {
+                const num = parseInt(color.slice(1), 16);
+                const amt = Math.round(2.55 * percent);
+                const R = (num >> 16) - amt;
+                const G = ((num >> 8) & 0x00ff) - amt;
+                const B = (num & 0x0000ff) - amt;
+
+                return (
+                    "#" +
+                    (
+                        0x1000000 +
+                        (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+                        (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+                        (B < 255 ? (B < 1 ? 0 : B) : 255)
+                    )
+                        .toString(16)
+                        .slice(1)
+                );
+            }
+        </script>
+    </body>
+</html>

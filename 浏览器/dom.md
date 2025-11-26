@@ -411,7 +411,9 @@
    const rect=DOM.getBoundingClientRect()
    // rect.width
   ````
-
+* window.innerWidth、window.innerHeight
+  - 视口宽高
+  
 ## DocumentFragment
 * [DocumentFragment](./documentFragment.md)
 

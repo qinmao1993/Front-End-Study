@@ -540,15 +540,12 @@
 * app体积优化 
 TODO
 ## 安全
-* Code signingz:代码签名是一种用来证明应用是由你创建的一种安全技术。您应该对应用程序进行签名，以使它不会触发用户操作系统的安全检查
+* Code signingz
+  - 代码签名是一种用来证明应用是由你创建的一种安全技术。您应该对应用程序进行签名，以使它不会触发用户操作系统的安全检查
 * 保护用户界面不被捕获
   ```js
     win.setContentProtection(true);
   ```
-* 源码混淆：
-  - javascript-obfuscator 使用16进制、数组、匿名函数等手段来混淆代码。增加了源码逆向的难度，也降低了一定的执行效率
-  ```bash
-    npm i  javascript-obfuscator -D
-    javascript-obfuscator test.js
-  ```
+* 源码混淆
+  - [源码混淆](/安全/源码混淆.md)
   
