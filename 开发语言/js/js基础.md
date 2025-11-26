@@ -609,12 +609,93 @@
   - 标准w3c：>=5的嵌套层级，最小4ms
   - 事件循环:回调函数执行时，必须等待调用栈执行完毕
   
-## globalThis
-* 是 js 中的一个全局对象，它提供了一种标准化的方式来访问不同运行环境中的全局作用域
-* 在不同的 JavaScript 运行环境中，全局对象的名称是不同的：
-  - 在浏览器中，全局对象是 window
-  - 在 Node.js 中，全局对象是 global
-  - 在 Web Workers 中，全局对象是 self。
+## js中常用全局Api
+* globalThis
+  - 是 js 中的一个全局对象，它提供了一种标准化的方式来访问不同运行环境中的全局作用域
+  + 在不同的 JavaScript 运行环境中，全局对象的名称是不同的：
+    - 在浏览器中，全局对象是 window
+    - 在 Node.js 中，全局对象是 global
+    - 在 Web Workers 中，全局对象是 self。
+
+* 编码解码函数
+  ```js
+    // URI 编码解码
+    const uri = 'https://example.com/测试路径?name=值&age=20';
+
+    // 编码整个 URI（保留合法字符）
+    const encodedURI = encodeURI(uri);
+    console.log(encodedURI);
+    const decodedURI = decodeURI(encodedURI);
+
+    // 编码 URI 组件（编码更多字符）
+    const encodedComponent = encodeURIComponent('测试路径?name=值');
+    console.log(encodedComponent);
+    const decodedComponent = decodeURIComponent(encodedComponent);
+  ```
+
+* Math 对象
+  ```js
+    // 数学常数
+    console.log(Math.PI);        // 3.141592653589793
+    console.log(Math.E);         // 2.718281828459045
+
+    // 四舍五入方法
+    console.log(Math.round(4.7));    // 5
+    console.log(Math.floor(4.7));    // 4
+    console.log(Math.ceil(4.2));     // 5
+    console.log(Math.trunc(4.7));    // 4
+
+    // 随机数和极值
+    console.log(Math.random());      // 0-1之间的随机数
+    console.log(Math.max(1, 3, 2));  // 3
+    console.log(Math.min(1, 3, 2));  // 1
+
+    // 三角函数
+    console.log(Math.sin(Math.PI / 2));  // 1
+    console.log(Math.cos(Math.PI));      // -1
+  ```
+* Date 对象
+  ```js
+    // 创建日期
+    const now = new Date();
+    const specificDate = new Date('2023-12-25');
+    const timestamp = new Date(1700000000000);
+
+    // 获取日期组件
+    console.log(now.getFullYear());    // 2023
+    console.log(now.getMonth());       // 0-11
+    console.log(now.getDate());        // 1-31
+    console.log(now.getDay());         // 0-6 (星期)
+    console.log(now.getHours());       // 0-23
+
+    // 设置日期
+    const date = new Date();
+    date.setFullYear(2024);
+    date.setMonth(11); // 12月
+
+    // 日期格式化
+    console.log(now.toISOString());    // "2023-12-25T10:30:00.000Z"
+    console.log(now.toLocaleString()); // 本地化格式 '2025/11/26 13:24:58'
+  ```
+
+* Intl 对象
+  ```js
+    // 日期格式化
+    const date = new Date();
+    console.log(new Intl.DateTimeFormat('zh-CN').format(date)); // 2025/11/26
+    console.log(new Intl.DateTimeFormat('en-US').format(date));
+
+    // 数字格式化
+    const number = 123456.789;
+    console.log(new Intl.NumberFormat('zh-CN').format(number)); // 123,456.789
+    console.log(new Intl.NumberFormat('de-DE').format(number)); // 123.456,789
+
+    // 货币格式化
+    console.log(new Intl.NumberFormat('zh-CN', {
+        style: 'currency',
+        currency: 'CNY'
+    }).format(1234.56)); // ¥1,234.56
+  ```
 
 ## js异常
 > js中所有的异常都是Error的实例，可通过构造函数，自定义一个异常对象
