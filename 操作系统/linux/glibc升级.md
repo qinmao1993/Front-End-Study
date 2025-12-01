@@ -2,8 +2,9 @@
 
 ## 背景
 * 在离线环境下，有些软件包依赖高版本的glbc,如
-  - centos7 安装nodejs18以上
+  - centos7 安装nodejs18+
   - insightface 需要glibc 2.28及以上
+
 ## 查看版本
   ```bash
     ldd --version
@@ -22,7 +23,7 @@
 
 ## 依赖升级
 * centos7 升级GCC(默认为4 升级为8)
-* centos7 升级 make(默认为3.82 升级为4.3) 4.4版本网上反映编译glibc报错
+* centos7 升级 make(默认为3.82 升级为4.3) 4.4版本网上反映编译 glibc 报错
 
 ## 离线安装依赖
   ```bash
@@ -67,6 +68,7 @@
     # 检查版本
     ldd --version 
 ```
+
 ## 升级后中文乱码问题
   - [参考](https://blog.csdn.net/guitar___/article/details/77651983)
   ```bash

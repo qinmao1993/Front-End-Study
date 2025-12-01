@@ -1,18 +1,29 @@
 # linux(CentOS)
 >基于 linux 的内核，常见流行的发行版有centos,ubuntu
-## 常见的镜像文件类型
-* DVD ISO:普通光盘完整安装版镜像，可离线安装到计算机硬盘上，包含大量的常用软件，一般选择这种镜像类型即可。
-* Everything ISO：包含了完整安装版的内容，并对其进行补充，集成了所 有软件(可视化)。
-* Minimal ISO：这个版本为精简版的镜像，可以安装一个基本的CentOS系 统，包含了可启动系统基本所需的最小安装包。
-* LiveCD/DVD ISO: 是一个光盘Centos系统，可通过光盘直接在电脑上启动系统，也可以将系统安装到计算机上使用，部分内容还需要再次下载。根据系统桌面不同live版的又可分为LiveGNOME ISO、LiveKDE ISO种。
-* Netinstal：在线安装版本，启动后需要联网边下载边安装。
-## 常见的发行版
-* Red Hat
-* Fedora
-* Centos
-* 界面做的比较好的
-  - Debian
-  - Ubuntu
+
+## 系统的安装与修复
+[系统的安装与修复](./系统安装修复.md)
+
+## 系统信息
+* 操作系统
+  - cat /etc/redhat-release  查看操作系统版本
+  - arch                     查看架构
+  - uptime 显示系统运行了多少时间、当前登录的用户数，操作系统在过去的1、5、15分钟内的平均负载。
+  - users 显示系统当前登录的用户
+  - uname -r 查看内核版本号
+  - yum install kernel-3.10.0 升级内核版本
+  - yum update 升级其他软件包和补丁
+* 磁盘
+  - df 查看磁盘的使用情况
+  - iostat 查看磁盘速率
+* 网络
+  - sar -n DEV num1 num2     （-n 查看网络，DEV 查看网络接口）
+* CPU
+  - 查看物理CPU的个数： cat /proc/cpuinfo |grep "physical id"|sort |uniq|wc -l    
+  - 查看逻辑CPU的个数： cat /proc/cpuinfo |grep "processor"|wc -l
+  - 查看CPU是几核：    cat /proc/cpuinfo |grep "cores"|uniq
+  - 查看CPU的主频：    cat /proc/cpuinfo |grep MHz|uniq
+  
 ## 目录结构（常用的）
 * / 根目录
 * usr 包含所有的命令、程序库、文档和其它文件。这些文件在正常操作中不会被改变的。
@@ -115,8 +126,15 @@
   - echo `pwd`
 ## 文件打包与压缩
 * tar
-  - .tar 打包文件，没有体积的减少
-  - .gz 极大的压缩体积
+  + 格式
+    - .tar 打包文件，没有体积的减少
+    - .gz 极大的压缩体积
+  + 归档工具命令
+    - x：提取（解压缩）
+    - z：通过 gzip 解压,新版本的 tar 通常能自动检测压缩类型，-z 参数可以省略
+    - f：指定文件
+    - v: 表示详细模式，会在解压缩过程中显示正在提取的文件列表。
+
   + 常用打包压缩命令
     - tar -cvf test.tar 1.txt 2.txt 3.txt   把 1.txt 2.txt 3.txt 打包到 test.tar 文件内
     - tar -zcvf test.tar.gz 1.txt 2.txt 3.txt  使用 gzip 模式压缩到 test.tar.gz
@@ -124,7 +142,9 @@
   + 常用解包组合
     - tar -xvf test.tar 解压 test.tar 到当前目录
     - tar -xvf test.tar -C /home/xxx  解压到指定目录
-    - tar -zxvf test.tar.gz 以 gzip 的模式解压
+    - tar -xvf test.tar.gz 以 gzip 的模式解压
+    - tar -xvf vscode-server-linux-x64.tar.gz --strip-components 1 解压时去掉第一层目录结构
+
   - 解压示例
    ```bash
     xz -d node-v16.15.1-linux-x64.tar.xz
@@ -327,9 +347,9 @@
   - 注册端口：1024-49151 用于松散绑定（用户自定义）
   - 动态端口：49152-65535 用于临时使用
 ## 包管理
-* [yum](../../包管理/yum.md)
-* [dnf](../../包管理/dnf.md)
-* [apt](../../包管理/apt.md)
+* [yum](/包管理/yum.md)
+* [dnf](/包管理/dnf.md)
+* [apt](/包管理/apt.md)
 ## 进程管理
 [进程与线程](./进程与线程.md)
 ## SELinux
@@ -385,25 +405,6 @@
    ln -s  /usr/local/node-v16.15.1-linux-x64/bin/node /usr/local/bin/node 
    ln -s  /usr/local/node-v16.15.1-linux-x64/bin/npm /usr/local/bin/npm 
   ``` 
-## 系统信息
-* 操作系统
-  - cat /etc/redhat-release  查看操作系统版本
-  - arch                     查看架构
-  - uptime 显示系统运行了多少时间、当前登录的用户数，操作系统在过去的1、5、15分钟内的平均负载。
-  - users 显示系统当前登录的用户
-  - uname -r 查看内核版本号
-  - yum install kernel-3.10.0 升级内核版本
-  - yum update 升级其他软件包和补丁
-* 磁盘
-  - df 查看磁盘的使用情况
-  - iostat 查看磁盘速率
-* 网络
-  - sar -n DEV num1 num2     （-n 查看网络，DEV 查看网络接口）
-* CPU
-  - 查看物理CPU的个数： cat /proc/cpuinfo |grep "physical id"|sort |uniq|wc -l    
-  - 查看逻辑CPU的个数： cat /proc/cpuinfo |grep "processor"|wc -l
-  - 查看CPU是几核：    cat /proc/cpuinfo |grep "cores"|uniq
-  - 查看CPU的主频：    cat /proc/cpuinfo |grep MHz|uniq
 ## 日期设置
 * cal 查看当前日历  
   - 查看某年的 cal -y 2022

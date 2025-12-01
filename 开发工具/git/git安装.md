@@ -26,5 +26,4 @@
 
     # 用软连接的形式
     ln -s /usr/local/git-2.8.0/bin/git /usr/bin/git
-   
   ```
