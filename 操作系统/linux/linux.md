@@ -11,8 +11,6 @@
   - uptime 显示系统运行了多少时间、当前登录的用户数，操作系统在过去的1、5、15分钟内的平均负载。
   - users 显示系统当前登录的用户
   - uname -r 查看内核版本号
-  - yum install kernel-3.10.0 升级内核版本
-  - yum update 升级其他软件包和补丁
 * 磁盘
   - df 查看磁盘的使用情况
   - iostat 查看磁盘速率
@@ -24,20 +22,96 @@
   - 查看CPU是几核：    cat /proc/cpuinfo |grep "cores"|uniq
   - 查看CPU的主频：    cat /proc/cpuinfo |grep MHz|uniq
   
-## 目录结构（常用的）
-* / 根目录
-* usr 包含所有的命令、程序库、文档和其它文件。这些文件在正常操作中不会被改变的。
-  - /usr/local 本地管理员安装的应用程序
-* var 包含在正常操作中被改变的文件，为了保持/usr 的相对稳定，那些经常被修改的 目录可以放在这个目录下，
-* home 用户的文件，这个目录在系统升级时应该保留。
-* bin 系统启动时需要的执行文件(二进制)，这些文件可以被普通用户使用。
-* etc 操作系统的配置文件目录。
-* root 系统管理员(也叫超级用户或根用户)的 Home 目录。
-* opt 目录，是给主机额外安装软件所摆放的目录，是用户级的程序目录，这里常用于放置额外的大型软件；
+## 标准文件夹结构
+* 根目录 (/) - 文件系统起点
+  ```text
+    /
+    ├── bin/          # 二进制可执行文件 (基础命令)
+    ├── boot/         # 启动加载程序文件
+    ├── dev/          # 设备文件
+    ├── etc/          # 系统配置文件
+    ├── home/         # 用户主目录
+    ├── lib/          # 共享库文件
+    ├── media/        # 可移动媒体挂载点
+    ├── mnt/          # 临时挂载点
+    ├── opt/          # 可选应用软件包
+    ├── proc/         # 进程信息虚拟文件系统
+    ├── root/         # root用户主目录
+    ├── run/          # 运行时的临时数据
+    ├── sbin/         # 系统管理命令
+    ├── srv/          # 服务相关数据
+    ├── sys/          # 系统内核信息
+    ├── tmp/          # 临时文件
+    ├── usr/          # 用户程序和数据
+    └── var/          # 可变数据
+  ```
+* /etc/ - 配置文件中心
+  ```text
+    /etc/
+    ├── ssh/              # SSH服务配置
+    │   ├── sshd_config      # SSH服务器配置
+    │   └── ssh_config       # SSH客户端配置
+    ├── nginx/            # Nginx配置
+    ├── apache2/          # Apache配置
+    ├── mysql/            # MySQL配置
+    ├── systemd/          # 系统服务配置
+    ├── cron.d/           # 定时任务配置
+    ├── hosts             # 主机名映射
+    ├── fstab             # 文件系统挂载表
+    ├── passwd            # 用户账户信息
+    ├── group             # 用户组信息
+    └── resolv.conf       # DNS解析配置
+  ```
+* /var/ - 可变数据
+  ```text
+    /var/
+    ├── log/              # 系统日志
+    │   ├── syslog           # 系统日志
+    │   ├── auth.log         # 认证日志
+    │   ├── nginx/           # Nginx访问/错误日志
+    │   └── mysql/           # MySQL日志
+    ├── www/              # 网站文件 (常见)
+    ├── lib/              # 应用程序状态信息
+    ├── spool/            # 队列数据 (邮件、打印等)
+    ├── tmp/              # 临时文件 (重启保留)
+    └── backup/           # 备份目录 (自定义)
+  ```
+* /home/ - 用户数据
+  ```text
+    /home/
+    ├── username/         # 普通用户目录
+    │   ├── .ssh/            # SSH密钥
+    │   ├── public_html/     # 个人网站
+    │   ├── .bashrc         # Bash配置
+    │   └── .bash_history   # 命令历史
+    └── www-data/         # Web服务用户目录
+  ```
+* /usr/ - 用户程序
+  ```text
+    /usr/
+    ├── bin/              # 用户命令
+    ├── sbin/             # 系统管理命令
+    ├── lib/              # 共享库
+    ├── local/            # 本地安装软件
+    │   ├── bin/
+    │   ├── sbin/
+    │   └── src/
+    ├── share/            # 架构无关数据
+    └── src/              # 源代码
+  ```
+* /opt/ - 可选软件包
+  ```text
+    /opt/
+    ├── application1/     # 商业或独立应用
+    ├── custom_app/       # 自定义应用
+    └── vendor_software/  # 第三方软件
+  ```
+
 ## 特殊路径符
 * . 表示当前目录
 * .. 表示上一级目录
 * ~  表示home目录
+
 ## 开关机命令
   ```bash
     reboot     # 重启
@@ -47,6 +121,7 @@
     poweroff        # 立刻关机
     shutdown -h now # 立刻关机(root用户使用,安全地将系统关机)
   ```
+
 ## 终端快捷键
 * Ctrl + l 清除屏幕内容，效果等同于 clear
 * Ctrl + c 强制停止
@@ -54,6 +129,7 @@
 * history 显示所有执行过的编号+历史命令。这个可以配合!编辑来执行某某命令
 * Ctrl + r 在历史命令中查找 (这个非常好用，输入关键字就调出以前的命令了)
 * Ctrl + 键盘左右键 光标左右跳单词
+
 ## 帮助命令
 * man   
   - man ls
@@ -62,6 +138,7 @@
   2. 外部命令 ls --help
 * info  
    - info ls
+
 ## 文件相关命令
 * pwd 显示目前的目录
 * ls 列出当前文件下文件目录
@@ -73,187 +150,332 @@
   - ls -ahl
   - ls /root /home
 * cd 切换当前所在工作目录
-   - 如：cd /usr/local 绝对路径
-   - cd ..            相对路径
-   - cd ~
-* mkdir：创建一个新的目录 
-  - -p 确保目录名称存在，不存在的就建一个
-  - mkdir /a/b/c
-* rm: 移除文件或目录 
-  - rm [-r -f ] 参数1 参数2
-  - -r 表示删除文件夹
-  - -f 表示强制删除
-  - 示例： rm -rf /var/log/httpd/access1  /var/log/httpd/access2
-  - rm -rf test* 删除以test开头的文件夹
-* cp: 复制文件或目录，
-  - -r 复制目录
-  - -v 显示复制进度
-  - 如：cp -r test test1 表示把 test 复制到 test1
-* mv: 移动文件与目录，或修改文件与目录的名称
-  - mv test1 test2
-* touch 创建一个新的文件
-  - touch text.txt
-## 文本查看命令
-* cat 文本内容显示到终端
-  - cat text.txt
-* head  查看文件开头
-  - head /temp/text
-* tail  查看文件结尾
-  - -f 文件内容更新后，显示信息同步更新
-  - tail -f /test/text.txt
-* wc 统计文件内容信息
-  - 语法：wc [-c -m -l -w] 文件路径
-  - -c 字节数量
-  - -m 字符数量
-  - -l 行数
-  - -w 单词数量
-* more 查看文件内容与cat不同的是支持翻页
-  - 按q退出查看
-## 查找相关命令
-* which 要查找的命令程序文件位置
-  - which cd 
-* find 
-  + 按文件名查找文件
-    - 语法： find 起始路径 -name '被查找文件名'
-    - find / -name '*test'
-  + 按文件大小
-    - find . -type f -size +1M  -print0 | xargs -0 du -h | sort -nr 
-* grep 从文件中通过关键字过滤文件行
-  - 语法：grep [-n] 关键字 文件路径  -n 可选显示匹配的行号
-  - grep -n 'text' ./text.txt
-* | 管道符 左边命令的结果作为右边的输入
-* echo 输出的内容
-  - echo `pwd`
+  ```bash
+    # 相对路径,返回上级
+    cd ..   
+    # 回到 home目录
+    cd ~        
+
+    # 进入绝对路径
+    cd /usr/local 
+  ```
+* 创建一个新目录、新文件
+  ```bash
+    # -p 保证存在，不存在创建
+    mkdir -p /a/b/c
+    # 创建新文件
+    touch text.txt
+  ```
+* 删除文件或目录 
+  ```bash
+    # -r 表示删除文件夹,-f 表示强制删除
+    rm -rf /home/text
+
+    # 删除多个
+    rm -rf /var/log/httpd/access1  /var/log/httpd/access2
+
+    #  删除以test开头的文件夹
+    rm -rf test*
+  ```
+* 移动与拷贝
+  ```bash
+    # -r 复制目录,-v 显示复制进度
+    # 把 test 复制到 test1
+    cp -r test test1 
+
+    # 将 test1 移动到test2
+    mv test1 test2
+  ```
+
+## 文本查看与编辑
+```bash
+   # 文本内容显示到终端
+   cat text.txt
+
+   # 打开 host文件
+   vi /etc/hosts
+
+   # 按 i 键切换进入编辑模式
+   # HOME/END 键移动光标到行首/行尾
+   # Page Up/Page Down，上/下翻页
+
+   # ESC键，切换到普通模式 
+
+   # 输入 :wq ，保存文件退出程序
+
+```
+
+## 过滤查找
+```bash
+  # which 要查找的命令程序文件位置
+  which node
+
+  # find 起始路径 -name '被查找文件名'
+  find / -name '*test'
+  
+  # grep 过滤关键字
+  # grep [-n] 关键字 文件路径  -n 可选显示匹配的行号
+  grep -n 'text' ./text.txt
+
+  # |  管道符 左边命令的结果作为右边的输入
+  ps -ef|grep node
+
+  # 输出的内容
+  echo  `pwd`
+
+```
+
 ## 文件打包与压缩
-* tar
-  + 格式
-    - .tar 打包文件，没有体积的减少
-    - .gz 极大的压缩体积
-  + 归档工具命令
-    - x：提取（解压缩）
-    - z：通过 gzip 解压,新版本的 tar 通常能自动检测压缩类型，-z 参数可以省略
-    - f：指定文件
-    - v: 表示详细模式，会在解压缩过程中显示正在提取的文件列表。
+* tar 归档工具命令
+  ```bash
+    # 格式：.tar 打包文件，没有体积的减少，.gz 极大的压缩体积
+    # x：提取（解压缩），z：通过 gzip 解压,新版本的 tar 通常能自动检测压缩类型，-z 参数可以省略
+    # f：指定文件，v: 表示详细模式，会在解压缩过程中显示正在提取的文件列表。
 
-  + 常用打包压缩命令
-    - tar -cvf test.tar 1.txt 2.txt 3.txt   把 1.txt 2.txt 3.txt 打包到 test.tar 文件内
-    - tar -zcvf test.tar.gz 1.txt 2.txt 3.txt  使用 gzip 模式压缩到 test.tar.gz
-    - ls -lh test.tar 查看文件大小
-  + 常用解包组合
-    - tar -xvf test.tar 解压 test.tar 到当前目录
-    - tar -xvf test.tar -C /home/xxx  解压到指定目录
-    - tar -xvf test.tar.gz 以 gzip 的模式解压
-    - tar -xvf vscode-server-linux-x64.tar.gz --strip-components 1 解压时去掉第一层目录结构
+    # 打包: 把 1.txt 2.txt 3.txt 打包到 test.tar 文件内
+    tar -cvf test.tar 1.txt 2.txt 3.txt  
 
-  - 解压示例
-   ```bash
+    # 使用 gzip 模式压缩到 test.tar.gzs
+    tar -cvf test.tar.gz 1.txt 2.txt 3.txt
+
+    ls -lh test.tar # 查看文件大小
+
+    # 解包
     xz -d node-v16.15.1-linux-x64.tar.xz
     tar -xvf node-v16.15.1-linux-x64.tar
-   ```
-* zip
-  + 压缩
-    - zip -r xxx.zip ./*  当前目录下的所有文件和文件夹全部压缩为xxx.zip文件
-  + 解压
-    - unzip filename.zip  解压zip文件到当前目录
-    - unzip -o -d /home/sunny myfile.zip 把myfile.zip文件解压到 /home/sunny/
-    - -o:不提示的情况下覆盖文件；
-    - 如果没安装zip、unzip 可用 jar xvf xxx.zip 解压
-## 文件传输
-* scp :命令用于Linux之间复制文件和目录，-r：递归复制整个目录。
-  + 本地到远程
-    - scp local_file remote_username@remote_ip:remote_folder 
-    - 或者 
-    - scp local_file remote_username@remote_ip:remote_file 
-    - 或者 
-    - scp local_file remote_ip:remote_folder 
-    - 或者 
-    - scp local_file remote_ip:remote_file 
-    > 例子:'scp -r dist/* root@39.96.190.20:/data/www/static' 
 
-  + 远程到本地
-    - scp remote_username@remote_ip:remote_folder  local_file
-    > 例子：scp -r www.runoob.com:/home/root/others/ /home/space/music/
-## vim编辑器使用
-> vim 共分为4种模式，分别是正常模式、插入模式、命令模式、可视模式,输入vim 进入，输入 :q 退出
-* 命令模式
-  - :wq 切换到命令模式，保存文件退出程序
-* 插入模式:按 i 切换进入
-  - HOME/END，移动光标到行首/行尾
-  - Page Up/Page Down，上/下翻页
-  - ESC，切换到普通模式 
->例如:打开 host  sudo vi /etc/hosts
-## 用户管理
-> root才有权限操作
+    tar -xvf test.tar.gz #以 gzip 的模式解压
+
+    # 解压到指定目录
+    tar -xvf test.tar -C /home/xxx  
+    # 解压时去掉第一层目录结构
+    tar -xvf vscode-server-linux-x64.tar.gz --strip-components 1 
+  ```
+
+* zip
   ```bash
-    # 新建用户
-    useradd qm
-    # 给qm用户设置密码，自己登录后，直接 passwd
-    passwd qm  
-    
-    # 确认是否存在用户信息
-    id qm
+    # 压缩目录（需要 -r 递归参数）
+    zip -r archive.zip directory/
+
+    unzip filename.zip  解压zip文件到当前目录
+    # 把 myfile.zip文件解压到 /home/sunny/
+    # -o 不提示的情况下覆盖文件；
+    unzip -o -d /home/sunny myfile.zip 
+
+    # 如果没安装zip、unzip 可用 jar xvf xxx.zip 解压
+  ```
+
+## 文件传输
+* scp:命令用于Linux之间复制文件和目录，-r：递归复制整个目录
+  ```bash
+    # 本地到远程
+    # scp local_file user@ip:filePath
+    scp -r dist/* root@39.96.190.20:/data/www/static
+
+    # 远程到本地
+    # scp user@remote_ip:remote_folder  local_file
+    scp -r www.runoob.com:/home/root/others/ /home/space/music/
+  ```
+
+
+## 用户管理
+* 用户类型
+  1. 超级用户 (root)
+    - UID = 0
+    - 拥有系统最高权限
+    - 用户名通常是 root
+  2. 系统用户
+    - UID = 1-999 (CentOS/RHEL) 或 1-999 (Debian/Ubuntu)
+    - 用于运行系统服务和守护进程
+    - 示例：www-data, mysql, postgres
+  3. 普通用户
+    - UID ≥ 1000
+    - 由管理员创建，用于日常操作
+    - 权限受限，不能修改系统关键文件
+* 用户相关配置文件
+  ```bash
+    # 用户信息存储在以下文件中：
+    # /etc/passwd - 用户账户信息
+    # 格式：username:password:UID:GID:comment:home_directory:shell
+    # 示例：
+    root:x:0:0:root:/root:/bin/bash
+    ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash
+
+    # /etc/shadow - 用户密码和过期信息（只有root可读）
+    # 格式：username:encrypted_password:last_change:min_age:max_age:warn:inactive:expire
+    ubuntu:$6$rounds=...:18645:0:99999:7:::
+
+    # /etc/group - 组信息
+    # 格式：group_name:password:GID:user_list
+    sudo:x:27:ubuntu
+    developers:x:1001:alice,bob
+
+    # /etc/gshadow - 组密码（很少使用）
+  ```
+* 创建和管理用户
+  ```bash
+    # 创建用户
+    sudo useradd -m -s /bin/bash username      # 创建用户并生成家目录
+    sudo useradd -m -g developers -G sudo username  # 指定主组和附加组
+
+    # 设置/修改密码
+    sudo passwd username                        # 设置密码
+    echo "newpassword" | sudo passwd --stdin username  # 脚本中设置密码
+
+    # 修改用户属性
+    sudo usermod -aG sudo username              # 添加到sudo组
+    sudo usermod -s /bin/zsh username           # 修改默认shell
+    sudo usermod -L username                    # 锁定用户
+    sudo usermod -U username                    # 解锁用户
 
     # 删除用户
-    userdel -r qm
+    sudo userdel username                       # 删除用户（保留家目录）
+    sudo userdel -r username                    # 删除用户及家目录
 
-    # 新建用户组
-    groupadd group1 
-    
-    # 删除用户组
-    groupdel group1
-
-    # 修改用户
-    # 修改用户的家目录
-    usermod -d /home/qm
-
-    # 修改qm用户组为group1或者添加时指定用户组
-    usermod -g group1 qm
-    useradd -g group1 qm
-
-    # root 用户 查看/etc/passwd 当前用户的一些情况
-    # x 表是否需要密码登录，第一1001 用户id第二1001 gid
-    # user1:x：1001:1001::/home/user1:/bin/bash
-
-    # 普通用户切换root用户
-    su - root 
-    # 回退上一个用户
-    exit
-
-    # 为普通的命令授权，临时以root身份执行
-    sudo xxx命令
+    # 查看用户信息
+    id username                                 # 显示用户UID、GID和组
+    whoami                                      # 显示当前用户名
+    w                                           # 显示已登录用户
+    last                                        # 显示登录历史
   ```
-## 权限管理
-* 查看文件权限
-  + 文件类型
-    - -普通文件
-    - d目录文件
-    - b块特殊文件
-    - c字符特殊文件
-    - l符号链接
-    - f命名管道
-    - s套接字文件
-  + 字符权限的表示方法
-    - r 读
-    - w 写
-    - x 执行
-  + 数字权限的表示方法
-    - r=4
-    - w=2
-    - x=1
+* 用户切换
   ```bash
-   # 示例
-   # rw- 文件属主的权限
-   # r-x 文件属组的权限
-   # r-- 其他用户的权限
-   -rw-r-xr-- 1 username groupname ntime filename
+    # 切换用户
+    su username              # 切换到用户，环境变量不变
+    su - username            # 完全切换到用户（登录shell）
+    sudo -u username command # 以指定用户执行命令
+
+    # 退出用户
+    exit                     # 退出当前用户shell
+    logout                   # 注销登录会话
+  ```
+* 组概念
+  + 主组 (Primary Group)
+    - 每个用户必须属于一个主组
+    - 创建文件时，文件所属组默认为用户的主组
+  + 附加组 (Supplementary Groups)
+    - 用户可以属于多个附加组
+    - 用于权限分配
+  + 私有组 (User Private Group, UPG)
+    - Ubuntu默认：每个用户有同名私有组作为主组
+* 组管理命令
+  ```bash
+    # 创建组
+    sudo groupadd groupname                     # 创建组
+    sudo groupadd -g 1500 groupname            # 指定GID创建组
+
+    # 修改组
+    sudo groupmod -n newname oldname           # 重命名组
+    sudo groupmod -g 2000 groupname            # 修改GID
+
+    # 删除组
+    sudo groupdel groupname
+
+    # 组成员管理
+    sudo gpasswd -a username groupname         # 添加用户到组
+    sudo gpasswd -d username groupname         # 从组移除用户
+    sudo gpasswd -A username groupname         # 设置组管理员
+
+    # 查看组信息
+    groups username                            # 查看用户所属组
+    getent group groupname                     # 查看组信息
+    cat /etc/group | grep groupname
+  ```
+
+## 文件权限
+* Linux权限系统的核心是
+  - 用户身份：你是谁（UID）
+  - 组成员：你属于哪些组（GID）
+  - 文件权限：你能做什么（rwx）
+  - 继承和特殊权限：SUID、SGID、Sticky Bit
+* 权限表示法
+  - 符号表示法
+  ```text
+    -rwxr-xr--
+    ↑ ↑↑↑↑↑↑↑↑
+    │ ││││││││
+    │ │││││││└── 其他用户权限 (o): r--
+    │ │││││└─── 所属组权限 (g): r-x
+    │ ││││└──── 所有者权限 (u): rwx
+    │ │││└───── 文件类型 (-:文件, d:目录, l:链接等)
+  ```
+  - 数字表示法（八进制）
+  ```bash
+    # 权限数字计算
+    # r(读) = 4, w(写) = 2, x(执行) = 1
+
+    # 示例：
+    rwxr-xr-- = 
+    所有者: rwx = 4+2+1 = 7
+    所属组: r-x = 4+0+1 = 5
+    其他用户: r-- = 4+0+0 = 4
+    权限 = 754
+  ```
+* 特殊权限位
+  ```bash
+    # SUID (Set User ID) - 执行时以文件所有者身份运行
+    # 位置：所有者执行位，显示为 s 或 S
+    chmod u+s file
+    chmod 4755 file        # rwsr-xr-x
+    # 示例：/usr/bin/passwd
+
+    # SGID (Set Group ID)
+    # 对文件：执行时以文件所属组身份运行
+    # 对目录：新建文件继承目录的所属组
+    chmod g+s directory
+    chmod 2755 directory   # rwxr-sr-x
+
+    # Sticky Bit (粘滞位)
+    # 目录：只有文件所有者、目录所有者或root才能删除文件
+    chmod +t directory
+    chmod 1777 directory   # rwxrwxrwt
+    # 示例：/tmp 目录
   ```
 * 修改文件权限
-  - chmod 修改文件、目录权限
-    ```bash
-        chmod u+x  /tmp/testfile
-        chmod 755  /tmp/testfile
-    ```
-  - chown 更改属组、属主
+  ```bash
+    # 符号模式
+    chmod u+rwx file        # 给所有者添加读写执行
+    chmod g-w file          # 移除所属组写权限
+    chmod o=r file          # 设置其他用户为只读
+    chmod a+x file          # 给所有用户添加执行权限
+    chmod u=rwx,g=rx,o= file  # 组合设置
+
+    # 数字模式
+    chmod 755 file          # rwxr-xr-x
+    chmod 644 file          # rw-r--r--
+    chmod 600 file          # rw-------
+
+    # 递归修改目录
+    chmod -R 755 directory
+    chmod -R u+rwX,g+rX,o+rX directory  # 大写X:只给目录执行权限
+  ```
+* 修改所有者和所属组
+  ```bash
+    # 修改所有者
+    chown username file
+    chown alice: file       # 只修改所有者
+
+    # 修改所属组
+    chown :groupname file
+    chown :developers file
+
+    # 同时修改所有者和组
+    chown username:groupname file
+    chown alice:developers file
+
+    # 递归修改
+    chown -R username:groupname directory
+
+    # 只修改组（使用chgrp）
+    chgrp groupname file
+    chgrp -R groupname directory
+  ```
+* 权限设置原则
+  - 最小权限原则：只给必要的权限
+  - 用户隔离：不同用户的数据互相隔离
+  - 组管理：使用组批量管理用户权限
+  - 定期审计：检查异常权限设置
+
 ## 网络管理
 * 网络状态的查看
   > 有两个工具包，net-tools 和 iproute,centos7以前主要用 net-tools，之后主推 iproute
@@ -346,12 +568,15 @@
   - 公认端口：1-1023 用于系统内置或常用软件绑定
   - 注册端口：1024-49151 用于松散绑定（用户自定义）
   - 动态端口：49152-65535 用于临时使用
+
 ## 包管理
 * [yum](/包管理/yum.md)
 * [dnf](/包管理/dnf.md)
 * [apt](/包管理/apt.md)
+
 ## 进程管理
 [进程与线程](./进程与线程.md)
+
 ## SELinux
 > 安全控制组件,可能影响性能
 * 查看命令
@@ -366,6 +591,7 @@
    setenforce 0
    /etc/selinux/sysconfig
   ```
+
 ## 内存与磁盘管理
 * 内存使用率
   ```bash
@@ -385,6 +611,7 @@
   - ext4
   - xfs（centos7）
   - NTFS(需安装额外软件)
+
 ## 环境变量
 * env 查看环境变量的值
 * $ 取环境变量的值
@@ -395,6 +622,7 @@
     - 当前用户生效  配置 在当前用户的 ~/.bashrc 
     - 所有用户生效  配置在系统的   /etc/profile 文件中
     - 执行 source 配置文件，进行立刻生效
+
 ## 软链接
 > 类似 windows 的快捷方式
 * ln -s 参数1 参数2
@@ -405,31 +633,7 @@
    ln -s  /usr/local/node-v16.15.1-linux-x64/bin/node /usr/local/bin/node 
    ln -s  /usr/local/node-v16.15.1-linux-x64/bin/npm /usr/local/bin/npm 
   ``` 
-## 日期设置
-* cal 查看当前日历  
-  - 查看某年的 cal -y 2022
-* date 查看当前系统的日期和时间
-  - date "+%Y-%m-%d %H:%M:%S"
-* 修改时区
-  ```bash
-    # 修改时区为东八区
-    rm -f /etc/localtime
-    sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-    # 或者用下面
-    timedatectl set-timezone Asia/Shanghai
-   ```
-* 时间校准
-  > ntp 联网自动校准时间工具，他会自动帮我们校准
-  ```bash
-   yum install ntp
-   ntpdate -u ntp.aliyun.com
 
-   # 离线直接设置或者内网自建 ntp 时间服务器
-    date -s "2024-2-6 21:00:00"
-
-    # 推荐使用
-    timedatectl set-time '2024-07-25 15:30:00'
-  ```
 ## 防火墙
 * 分类
   - 软件防火墙：CentOS 6 默认的iptables

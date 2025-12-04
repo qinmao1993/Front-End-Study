@@ -124,7 +124,7 @@
     chmod -R 700 /home/${user}/.vscode-server/
   ```
 3. SSH 连接卡在 “Installing VS Code Server”
-  - 在设置中启用 remote.SSH.showLoginTerminal，查看详细日志；
+  - 在设置中启用 remote.SSH.showLoginTerminal，查看详细日志
 4. 版本不匹配
   - 确认本地 VS Code 帮助 ⇒ 关于 中的 Commit 与上传包一致；
   - 如误上传了错误架构包，请重新下载对应平台 tar.gz。

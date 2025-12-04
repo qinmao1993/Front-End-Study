@@ -38,6 +38,7 @@
 
   # post 表单请求
   curl -X POST -d 'a=1&b=nihao' URL
+  
   # post json 请求
   curl -H "Content-Type: application/json" -X POST -d '{"abc":123,"bcd":"nihao"}' URL
 
