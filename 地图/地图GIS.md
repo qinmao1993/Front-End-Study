@@ -1,52 +1,51 @@
 # 地图GIS
-前端开发地图必备知识点
+>当我们试图在页面上加载地图时，我们通常不是从 0 开始的，而是会选择一款地图引擎。它们在展示地图时，有两个核心概念，分别是投影方式和坐标系
 
-## 投影方式和坐标系
-  > 当我们试图在页面上加载地图时，我们通常不是从 0 开始的，而是会选择一款地图引擎。它们在展示地图时，有两个核心概念，分别是投影方式和坐标系
-* 地图引擎
-  - 百度、高德、谷歌 等
-  - leaflet、OpenLayers 等
-  - mapbox、cesium 等
-
-* 投影方式
-  - 目前 web Gis 最常用的 投影方式 是 墨卡托投影，常规的地图厂商和地图引擎，都默认使用的这类投影方式。
+## 投影方式
+  - 目前 web Gis 最常用的投影方式是墨卡托投影，常规的地图厂商和地图引擎，都默认使用的这类投影方式。
   - 墨卡托投影的核心思路是，先把球形地图展开成柱状图，然后平铺成平面。
 
-* 主流的地心坐标系分为
-  + WGS84
-    - 国际标准（gps）有多个版本，如 WGS 84 (G1154)，精度在不断提高
+## 地图引擎
+[地图引擎](./地图引擎.md)
 
-  + CGCS2000
-    - 2000国家大地坐标系,中国法定的国家大地坐标系,于2008年7月1日起正式在全国使用
-    - 取代了之前的参心坐标系（北京54、西安80）。
-    - 特点：与WGS84非常接近，在厘米级精度内可以认为是一致的。但它是一个独立的坐标系，定义和实现方式有中国特色
+## 坐标系
+* WGS84
+  - 国际标准（gps）有多个版本，如 WGS 84 (G1154)，精度在不断提高
+* CGCS2000
+  - 2000国家大地坐标系,中国法定的国家大地坐标系,于2008年7月1日起正式在全国使用
+  - 取代了之前的参心坐标系（北京54、西安80）。
+  - 特点：与WGS84非常接近，在厘米级精度内可以认为是一致的。
+* GCJ-02
+  - 它是一个基于WGS84/CGCS2000的加密偏移结果。国测局标注（国标）戏称为火星坐标系
+* BD-09: 百度地图（在 GCJ-02 基础上再⼀次加密的 BD-09 坐标系）
+* 坐标系转换
+  - 社区中较认可的的
+  - [coordtransform](https://github.com/wandergis/coordtransform) 
 
-  + GCJ-02
-    - 它是一个基于WGS84/CGCS2000的加密偏移结果。国测局标注（国标）戏称为火星坐标系
-
-  + BD-09: 百度地图（在 GCJ-02 基础上再⼀次加密的 BD-09 坐标系）
-  > 坐标系转换社区中较认可的的[coordtransform](https://github.com/wandergis/coordtransform) 
-
-## 地图瓦片
-* 什么叫地图瓦片
-  - 地图上要展现出丰富的信息，显示街道、显示桥梁、显示房屋、显示湖泊……要支持缩小、支持放大，就必须有一个信息载体
-* 地图瓦片分类
-  - 矢量瓦片 （Vector Tile）体积更小、定制化能力更强，是目前主流地图厂商使用的瓦片提供方式
-  - 栅格瓦片 （Raster Tile）
-* 离线瓦片图资源
-  - [百度](http://www.wmksj.com/map.html) 
-* 在线瓦片服务
-  - 通过 "天地图" 获取在线瓦片服务,"天地图" 是由 "国家基础地理信息中心" 提供的一个地理信息服务平台。
-  - [天地图](www.tianditu.gov.cn)  注册后，访问控制台(console.tianditu.gov.cn/api/key)，申请 称为个人开发者，然后注册一个应用,获取秘钥，这个秘钥是获取瓦片的凭证
+## 图层数据源
+> 地图上要展现出丰富的信息，显示街道、显示桥梁、显示房屋、显示湖泊……要支持缩小、支持放大，就必须有一个信息载体，数据源有哪些？
+* 矢量数据源（Vector Tile）
+  - 描述：用点、线、面（多边形）等几何图形来表示地理要素，并包含属性信息（如名称、类型、高度等）。数据量小，适合进行空间分析。
+  - 常见格式：Shapefile (.shp)、GeoJSON (.geojson)、KML/KMZ (.kml/.kmz)、File Geodatabase (.gdb)、PostGIS（数据库格式）。
+  + 典型图层：
+    - 点图层： 兴趣点（POI）、车站、学校。
+    - 线图层： 道路、河流、行政边界、管线。
+    - 面图层： 行政区划、湖泊、建筑物轮廓、土地利用类型。
+* 栅格数据源（Raster Tile）
+  - 描述：由像素（像元）矩阵构成，每个像素代表一个区域并有一个值。数据量大，能表现连续变化的现象。
+  - 常见格式： GeoTIFF (.tiff)、JPEG2000 (.jp2)、IMG (.img)、NetCDF（常用于科学数据）。
+  + 典型图层
+    - 影像图层： 卫星影像（如Landsat, Sentinel-2）、航空摄影、无人机正射影像。
+    - 专题栅格： 数字高程模型（DEM）、坡度坡向图、温度分布图、人口密度图。
+* 切片数据源
+  - 描述：一种服务形式，通常由矢量或栅格数据预先渲染或转换成金字塔结构的图片（如PNG, JPEG），通过网络快速发布和加载。是互联网地图（如谷歌地图、百度地图）的主要形式。
+  - 常见标准： XYZ、TMS、WMTS。
+  - 典型图层： 几乎所有的在线地图底图（街道图、卫星图、地形图）都是切片图层。
 
 ## GeoJSON
 * 什么是 GeoJSON 
-  - GeoJSON 是一种数据格式。它被用来描述地理数据。
-* GeoJSON 格式:目前最新版支持以下类别的地理信息（Feature）描述
-    - 点: Point、点组（多个点 MultiPoint）
-    - 线: LineString、线组（多条线 MultiLineString）
-    - 多边形: Polygon、多边形组（多个多边形 MultiPolygon）
-    - 包含一组上述Feature的集合：FeatureCollection
+  - GeoJSON 是一种常用数据格式，它被用来描述地理数据。
+* GeoJSON 格式
     ```json
         {
             "type": "Feature", // 类别，支持的值只有： Feature 和 FeatureCollection
@@ -59,7 +58,7 @@
             }
         }
     ```
-* 地理形状的GeoJSON数据
+* 区域GeoJSON数据
   + 获取方式一
     - 访问此链接：https://geo.datav.aliyun.com/areas_v3/bound/100000.json 你能看到由 aliyun dataV 团队提供的 中国地理边界 GeoJSON 静态数据(商用数据)。
     - 如：100000 是中国的行政区编码，420000 表示湖北省
@@ -67,198 +66,18 @@
   + 获取方式二
     - [echarts-maps](https://github.com/echarts-maps)
 
+
+## 图层管理
+>在前端地图应用中，对多个地理信息图层进行组织、控制、渲染和交互的一系列技术和方法。它涉及图层的添加、删除、排序、显隐控制、样式调整、交互处理等。
+
 ## turf.js
 > 是一个用于地理空间分析强大 js 库，专为处理 GeoJSON 数据设计。它提供超过 200 种模块化函数，适用于浏览器和 Node.js 环境，以下是常用的方法
 [turf.js](./turfjs.md)
 
-## 地图引擎
-* 加载瓦片风格地图的案例
-  - 安装 npm i maplibre-gl
-  ```vue
-    <template>
-        <div ref="mapEl" class="map"></div>
-    </template>
-    <script setup>
-    import mapboxgl from 'maplibre-gl';
-    import 'maplibre-gl/dist/maplibre-gl.css';
-    import { onMounted, ref } from 'vue'
-    const mapEl = ref(null)
-    const initOption = {
-        style: {
-            "version": 8,
-            "id": "43f36e14-e3f5-43c1-84c0-50a9c80dc5c7",
-            "sources": {
-                "tdt-vec": {
-                    "type": "raster",
-                    "tiles": [`https://t0.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=${MY_KEY}`],
-                    "tileSize": 256
-                }
-            },
-            "layers": [{
-                "id": "tdt-tiles-layer",
-                "type": "raster",
-                "source": "tdt-vec",
-            }]
-        },
-    }
-
-    onMounted(() => {
-        const map = new mapboxgl.Map({
-            container: mapEl.value,
-            ...initOption,
-        });
-    })
-    </script>
-    <style lang="scss" scoped>
-      .map {
-        width: 600px;
-        height: 300px;
-       }
-    </style>
-
-  ```
-* 加载线框风格的地图的案例
-  ```vue
-    <template>
-        <div ref="mapEl" class="map"></div>
-    </template>
-    <script setup>
-    import { onMounted, ref } from 'vue'
-    import maplibregl from 'maplibre-gl'
-    import * as turf from '@turf/turf'
-
-    const mapEl = ref(null)
-    const initOption = {
-        zoom: 5,
-        center: [
-            113.07569050750635,
-            30.841719769976834
-        ],
-        style: {
-            "version": 8,
-            "id": "43f36e14-e3f5-43c1-84c0-50a9c80dc5c7",
-            "sources": {},
-            "light": {
-                "anchor": "map",
-                "color": "red",
-                "intensity": 1
-            },
-            "layers": [],
-            "glyphs": "/fonts/mapbox/{fontstack}/{range}.pbf" // 这行没有啥用，是为了 hack 字体无法显示的bug
-        },
-    }
-
-    const fetchGeoJSON = async (areaCode) => {
-        const response = await fetch(`https://pic.zhangshichun.top/geojson/merged/${areaCode}.json`, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        return response.json()
-    }
-    let map;
-    const emptyGeoJSON = { "type": "FeatureCollection", "features": [] }
-
-    const fitBounds = (feature, options = {}) => {
-        const bboxResult = turf.bbox(feature);
-        const [a, b, c, d] = bboxResult;
-        map?.fitBounds(
-            [
-            [a, b],
-            [c, d],
-            ],
-            options,
-        );
-    }
-
-    const loadArea = async (code) => {
-        const geoJSON = await fetchGeoJSON(code)
-        map?.getSource('bound-source').setData(geoJSON)
-        fitBounds(geoJSON)
-        map?.setFilter('areas-name', ['==', 'parentCode', Number(code)]);
-    }
-
-    onMounted(async () => {
-
-        map = new maplibregl.Map({
-            container: mapEl.value,
-            ...initOption,
-        });
-        map.on('style.load', async () => {
-            map.addSource('bound-source', {
-                type: 'geojson',
-                data: emptyGeoJSON
-            })
-            map.addLayer({
-                id: 'areas-surface',
-                type: 'fill',
-                source: 'bound-source',
-                layout: {},
-                paint: {
-                    'fill-color': '#0357aa',
-                    'fill-opacity': 1,
-                },
-            })
-            map.addLayer({
-                id: 'areas-surface-hight',
-                type: 'fill',
-                source: 'bound-source',
-                layout: {},
-                paint: {
-                    'fill-color': 'orange',
-                    'fill-opacity': 1,
-                },
-                filter: ['==', 'adcode', '']
-            })
-        map.addLayer({
-            id: 'areas-line',
-            type: 'line',
-            source: 'bound-source',
-            paint: {
-                'line-color': 'red',
-                'line-width': 2
-            }
-        })
-        map.on('click', 'areas-surface', (e) => {
-            const feature = e.features?.[0];
-            const code = feature?.properties?.adcode;
-            loadArea(code)
-        })
-        map.on('mousemove', 'areas-surface', (e) => {
-            const feature = e.features?.[0];
-            const code = feature?.properties?.adcode;
-            map?.setFilter('areas-surface-hight', ['==', 'adcode', Number(code)]);
-        })
-        loadArea(420000)
-
-        const areaNames = await fetchGeoJSON('420000-area-names')
-            map.addSource('names-source', {
-            type: 'geojson',
-            data: areaNames
-        })
-        map.addLayer({
-            id: 'areas-name',
-            source: 'names-source',
-            "type": "symbol",
-            "layout": {
-                "text-field": '{name}',
-                "text-size": 8,
-            },
-            "paint": {
-                "text-color": "black",
-                "text-halo-color": "rgba(0, 0, 0, 0)"
-            },
-            filter: ['==', 'parentCode', 420000]
-            })
-        })
-
-    })
-    </script>
-    <style lang="scss" scoped>
-    .map {
-        width: 600px;
-        height: 300px;
-        background-color: #fff;
-    }
-    </style>
-  ```
+## 地图瓦片
+* 离线瓦片图资源
+  - [百度](http://www.wmksj.com/map.html) 
+* 在线瓦片服务
+  - 通过 "天地图" 获取在线瓦片服务,"天地图" 是由 "国家基础地理信息中心" 提供的一个地理信息服务平台。
+  - [天地图](www.tianditu.gov.cn)  注册后，访问控制台(console.tianditu.gov.cn/api/key)，申请 称为个人开发者，然后注册一个应用,获取秘钥，这个秘钥是获取瓦片的凭证
+   

@@ -319,7 +319,6 @@
           // 同样也能实现阻止事件，但是还能阻止该事件目标执行别的注册事件。
           e.stopImmediatePropagation()
         }
-
        btn.addEventListener('click',fn,false)
     ```
 
