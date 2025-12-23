@@ -110,7 +110,7 @@
         .then((response) => response.json())
         .then((json) => {
             console.log(json);
-          });
+        });
    ```
 * text 文本请求
     ```js
