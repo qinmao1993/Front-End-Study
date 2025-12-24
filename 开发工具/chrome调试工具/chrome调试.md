@@ -8,13 +8,28 @@
     - 属性修改(attibute modifications）)
     - 删除节点(node removal)
   ![dom断点的调试1](./imgs/dom断点调试1.png)
-  2. 在框架内部看不出来源码是如何操作的，此时可以查看调用栈，一层层找到源码位置
-  ![dom断点的调试2](./imgs/dom断点调试2.png)
-
 
 ## Sources
 * 在浏览器中修改并运行网页的源代码？
   ![修改并运行网页的源代码](./imgs/修改网页源码.png)
+* 关键的断点调试策略
+  1. XHR/Fetch 断点
+    + 场景：最常用、最有效。当接口请求参数（如token、sign）被加密时，直接定位到参数生成的位置。
+    + 步骤
+       1. 在Sources面板找到XHR/fetch Breakpoints。
+       2. 点击+，输入接口URL中的关键词（如/api/login）。
+       3. 触发请求后，执行会自动在 send()方法前暂停，通过 Call Stack 回溯调用栈即可找到加密函数
+  2. 事件监听器断点
+    + 场景：当加密操作由用户点击、输入等事件触发时，用来快速找到事件处理函数
+    + 步骤：
+        1. 在 Sources 面板找到 Event Listener Breakpoints。
+        2. 展开类别（如Mouse），勾选click等事件。
+        3. 在页面触发该事件，代码会在事件处理函数处暂停。
+  3. DOM 断点
+    + 场景：当加密参数或数据的生成与特定DOM元素变化（如属性修改、节点插入）相关联时使用。
+    + 步骤：
+      1. 在Elements面板右键点击目标DOM元素。
+      2. 选择 Break on -> attribute modifications（属性修改）等选项
 
 ## Network
 * 接口重新请求

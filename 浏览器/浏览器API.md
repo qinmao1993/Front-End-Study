@@ -10,7 +10,7 @@
 [存储 API](./本地存储.md)
 
 ## 网络API
-* [fetch-xhr](./fetch-xhr.md)
+* [fetch-xhr](./Fetch-XHR.md)
 * [webSocket](./websocket/websocket.md)
 
 ## 地理位置API
@@ -115,16 +115,7 @@
   ```
 
 ## Clipboard API
-  ```js
-    // 写入剪贴板
-    navigator.clipboard.writeText('要复制的文本')
-    .then(() => console.log('文本已复制'))
-    .catch(err => console.error('复制失败:', err));
-
-    // 读取剪贴板
-    navigator.clipboard.readText()
-    .then(text => console.log('剪贴板内容:', text));
-  ```
+[Clipboard](./clipboard.md)
 
 ## Performance API
   ```js

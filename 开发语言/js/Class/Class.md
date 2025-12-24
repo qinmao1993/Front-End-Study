@@ -16,7 +16,6 @@
             // 实例属性
             this.name = name;
             this.age = age;
-
             this.#balance = balance;
         }
 
@@ -84,9 +83,21 @@
         constructor(value) {
             super(value) // 可以看成 Parent.call(this, value)
         }
+        // 方法重写
+        getValue() {
+            super.getValue();  // 调用父类方法
+            this.engineOn = true;
+            console.log('Engine is running');
+        }
+        
+        // 新增方法
+        honk() {
+            console.log('Beep beep!');
+        }
+
     }
     const child = new Child(1)
-    child.getValue() // 1
+    child.getValue() 
     child instanceof Parent // true
 
     // super
