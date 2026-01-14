@@ -8,7 +8,8 @@
     # 显示基本可用的帮助信息
     tsc -h
   ```
-## 编译 
+## 编译器
+> 将ts编译成js才能执行，有以下几种编译器
 * tsc
   + 优点
     - 官方提供的编译器,完全支持 TypeScript 的所有特性
@@ -31,6 +32,27 @@
         # 为了保证编译结果能在各种 js 引擎运行，tsc 默认会将 ts 代码编译成很低版本的js，即3.0版本（以es3表示）。
         tsc --target es2015 app.ts
     ```
+* swc
+  - 基于 Rust 编写的高性能 JavaScript/TypeScript 编译和打包工具。它主要用语法降级、代码压缩等场景，其核心优势在于极致的编译速度。通常比 Babel 快数十倍
+  - 无类型检查
+  ```bash
+    # 安装 CLI
+    npm install -g @swc/cli @swc/core
+    # 编译单个文件
+    swc ./src/index.ts -o ./dist/index.js
+    # 通常会在项目根目录创建 .swcrc 配置文件来统一规则
+  ```
+  ```json
+    {
+    "jsc": {
+        "parser": {
+            "syntax": "typescript"
+        },
+        "target": "es2015"
+    },
+    "minify": false
+    }
+  ```
 * Babel
   + 优点：
     - 编译速度快，适合大型项目。

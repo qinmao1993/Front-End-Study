@@ -94,28 +94,98 @@
     }
     ```
 ## 渐变
- * linear-gradient(线性渐变)([ <angle> | to <side-or-corner> ,]? <color-stop> [, <color-stop>]+ )
-            where <side-or-corner> = [left | right] || [top | bottom]
-            and <color-stop>     = <color> [ <percentage> | <length> ]?
+> CSS 渐变是一种创建平滑颜色过渡的强大工具，无需使用图像即可实现丰富的视觉效果
+* 语法
+  + 线性渐变 (linear-gradient)
+    ```css
+        /* 基本语法 */
+         /* 方向：to top right 左下到右上 */
+        background: linear-gradient([方向或角度], 颜色停止点1, 颜色停止点2, ...);
 
-        ```css
-            background-image:linear-gradient(45deg,#D1EE4D,#1ABF22,#F389B7);}
-            /* 45度三色线性渐变，初始值为黄色，中间值为绿色，结束值为粉色。角度可以设置负数
-            没有设置颜色的具体位置时，三个色块默认平均分布。*/
+        /* 示例 */
+        .element {
+            background: linear-gradient(to right, #32c7fe, #ffffff);
+            /* 指定每个颜色的位置 */
+            background: linear-gradient(to right, 
+                #32c7fe 0%, 
+                #32c7fe 30%, 
+                #ffffff 70%, 
+                #ffffff 100%
+            );
+        }
+    ```
+  + 径向渐变 (radial-gradient)
+    ```css
+        /* 基本语法 */
+        background: radial-gradient([形状] [大小] at [位置], 颜色停止点1, 颜色停止点2, ...);
 
-            background-image:linear-gradient(#F8F86D,#239C23 50%,#298C1E 51%,#D1E710)
-            background-image:linear-gradient(to right,red,orange,yellow,green,cyan,blue,purple)
-            background-image:linear-gradient(to bottom right,red,yellow)
-            background-image:linear-gradient(to bottom left,#FC3,rgba(255,255,255,0))
+        /* 示例 */
+        .element {
+            /* 默认居中 */
+            background: radial-gradient(circle, #32c7fe, #ffffff);
 
-            background:linear-gradient(to bottom left,#FC3,rgba(255,255,255,0)),url(images/1957.jpg)
+            /* 指定位置 */
+            background: radial-gradient(circle at 0% 50%, #32c7fe, #ffffff);     /* 左侧居中 */
+            background: radial-gradient(circle at 100% 0%, #32c7fe, #ffffff);    /* 右上角 */
+            background: radial-gradient(circle at 30px 30px, #32c7fe, #ffffff);  /* 像素定位 */
+            
+            /* 椭圆形（默认） */
+            background: radial-gradient(ellipse, #32c7fe, #ffffff);
 
-            /* 不设置任何的角度和方位，则默认是从上往下。可以为某个颜色设置具体的位置，可以是百分比，或者是具体的像素*/
-        ```
+            /* 指定大小 */
+            background: radial-gradient(50px 100px, #32c7fe, #ffffff);  /* 宽度 高度 */
 
- * 径向渐变: background-image:radial-gradient(20px at 10px,red,green);
+        }
+    ```
+
+* 高级应用
+  ```css
+    /* 多个渐变层叠 */
+    .advanced {
+        background: 
+        linear-gradient(45deg, rgba(255,0,0,0.2) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(0,255,0,0.2) 0%, transparent 50%),
+        linear-gradient(225deg, rgba(0,0,255,0.2) 0%, transparent 50%),
+        linear-gradient(315deg, rgba(255,255,0,0.2) 0%, transparent 50%),
+        #ffffff;
+    }
+
+    /* 网格背景 */
+    .grid-bg {
+        background-image: 
+            linear-gradient(rgba(50, 199, 254, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(50, 199, 254, 0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+
+    /* 渐变边框 */
+    .gradient-border-1 {
+        background: linear-gradient(white, white) padding-box,
+                    linear-gradient(45deg, #32c7fe, #ffffff) border-box;
+        border: 4px solid transparent;
+        border-radius: 8px;
+    }
+  ```
+
+* 文字渐变
+  ```css
+    .text-gradient {
+        /* 1. 设置渐变背景 */
+        background: linear-gradient(to bottom, #32c7fe 0%, #ffffff 100%);
         
- * [参考](http://www.mrszhao.com/post/58.html)
+        /* 2. 裁剪背景到文字区域 */
+        -webkit-background-clip: text;
+        background-clip: text;
+        
+        /* 3. 文字颜色透明，让背景显示出来 */
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        
+        /* 可选的文字样式 */
+        font-size: 48px;
+        font-weight: bold;
+    }
+  ```
 ## transform
 * 2D转换:
     * 位移 translateX(),translateY(),translate(X,Y)

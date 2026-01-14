@@ -1,9 +1,10 @@
 # yum|dnf 包管理  
-> centos、redhat 使用的包管理器，自动帮助我们处理安装依赖关系。 软件安装包格式为 rpm
+> DNF 和 YUM 都是 Red Hat 系列 Linux 发行版（如 RHEL、CentOS、Fedora）的包管理工具，它们关系密切，但 DNF 是 YUM 的现代化替代品。
 
-## 介绍
-  - YUM是RPM族(CentOS/Redhat/Fedora/SuSE...)Linux系统软件包的管理工具。该工具以rpm软件包的包头(header)写入的依赖信息为依据，分析软件之间依赖关系，在安装软件时如果有依赖软件能够自动安装。
-  - yum 在得到正确的参数后，会首先从/etc/yum.repo.d/*.repo路径下的repo文件中取得软件仓库的地址并下载"元数据"(metadata)，metadata含注册于该软件仓库内所有软件包的包名及其所需的依赖环境等信息，yum得到这些信息后会和本地已有环境做对比，进而列出确认需要安装哪些包，并在用户确认后开始安装。
+## 演进与替代
+* YUM：全称 Yellowdog Updater Modified，是早期基于 RPM 系统的包管理器。它用 Python 2 编写，曾是 RHEL/CentOS 5/6/7 的标配。
+* DNF：全称 Dandified YUM，是 YUM 的下一代版本。它用 Python 3 编写，旨在解决 YUM 在性能、依赖解析和代码维护性上的问题。从 RHEL/CentOS 8 和 Fedora 22 开始，DNF 已成为默认的包管理器。
+* DNF 刻意保持了与 YUM 高度兼容的命令行语法，系统新版本。默认使用 DNF。yum 命令通常作为一个符号链接指向 dnf，所以你用 yum 命令实际上也是在调用 DNF，确保了脚本的向后兼容性。
 
 ## CentOS常用的repos
 * CentOS内置的软件仓储
@@ -138,13 +139,10 @@
     yum check-update     # 列出所有可更新的软件清单
 
     yum info package1        # 查看软件包描述信息和概要信息
-
-    yum deplist  package1    # 显示rpm软件包的所有依赖关系
     
     yum search python3       # 查看可用的 Python 版本
 
-    # 执行package-cleanup –dupes列出重复的包
-    package-cleanup --dupes
+    dnf autoclean
 
   ```
 * 安装

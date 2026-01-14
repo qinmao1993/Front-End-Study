@@ -13,18 +13,18 @@
     class Person {
         // 构造函数 
         constructor(name, age,balance=0) {
-            // 实例属性
+            // 实例属性：存储对象状态
             this.name = name;
             this.age = age;
             this.#balance = balance;
         }
 
-        // 实例方法
+        // 实例方法：对象行为
         introduce() {
             return `你好，我是${this.name}，今年${this.age}岁`;
         }
 
-        // 静态属性和方法：指向类本身而非实例
+        // 静态属性和方法：指向类本身而非实例，工具函数
         static version = '1.0.0';
         static species() {
             return '人类';
@@ -56,7 +56,6 @@
     console.log(Person.species(),Person.version); // 人类 1.0.0
     console.log(person.#balance); //  错误: 私有字段不可访问
 
-
     // 类表达式
     const Animal = class {
         constructor(name) {
@@ -69,6 +68,7 @@
     const dog = new Animal('狗狗');
   ```
 
+  
 ## 类继承
   ```js
     class Parent {

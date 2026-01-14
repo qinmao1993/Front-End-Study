@@ -14,7 +14,8 @@
   - pinia 简化了 Vuex 推荐使用
 * 静态网站生成:  
   - VuePress -> VitePress
-## 全局API
+
+## 常用全局API
 * createApp
   ```js
     // 返回一个应用实例
@@ -35,20 +36,8 @@
    nextTick(() => {
     // 一些和 DOM 有关的东西
    })
+  ```
 
-  ```
-## 模版指令
-* key 使用
-  ```html
-    <!-- Vue 3.x -->
-    <template v-for="item in list" :key="item.id">
-        <div>...</div>
-        <span>...</span>
-    </template>
-  ```
-* v-if 与 v-for 的优先级
-  - 2.x v-for 优先
-  - 3.x v-if 优先
 ## 新增变化
 * 自定义指令
   ```js
@@ -104,19 +93,6 @@
 * mount api
   - 2.x 被渲染的内容会替换我们要挂载的目标元素
   - 3.x 中，被渲染的应用会作为子元素插入，从而替换目标元素的 innerHTML
-* transition class 名更改
-  ```css
-    .v-enter-from,
-    .v-leave-to {
-       opacity: 0;
-    }
-
-    .v-leave-from,
-    .v-enter-to {
-        opacity: 1;
-    }
-
-  ```
 * 片段:不需要用 div 包裹
   ```html
     <!-- Layout.vue -->
@@ -126,46 +102,7 @@
         <footer>...</footer>
     </template>
   ```  
-* 组合式 api 替代继承 mixin
-    ```js
-    import { fetchUserRepositories } from '@/api/repositories'
-    import { ref,onMounted,watch,computed } from 'vue'
-    export default {
-        setup(props,{ attrs, slots, emit, expose }) {
-            // 1. 因为 props 是响应式的，你不能使用 ES6 解构，它会消除 prop 的响应性。
-            // 2. 如果要解构保留响应式,使用 `toRefs` 创建对 `props` 中的 `user` property 的响应式引用
-            const { user } = toRefs(props)
-
-            // 3. title 是可选的 prop，传入的 props 中可能没有 title ,toRefs 将不会为 title 创建一个 ref 。你需要使用 toRef 替代它
-            // const title = toRef(props, 'title')
-
-            const repositories = ref([])
-            const getUserRepositories = async () => {
-                repositories.value = await fetchUserRepositories(props.user)
-            }
-
-            // computed 是响应式的
-            const counter = ref(0)
-            const twiceTheCounter = computed(() => counter.value * 2)
-            counter.value++
-            watch(counter, (newValue, oldValue) => {
-                console.log('The new counter value is: ' + counter.value)
-            })
-
-            // watch
-            watch(user, getUserRepositories)
-
-            // 生命周期钩子
-            onMounted(getUserRepositories)
-
-            // 返回供引用调用
-            return {
-                repositories,
-                getUserRepositories
-        }
-    }
-    
-    ```
+* 代码复用组合式代替 mixin
 * Teleport 
   - 例子说明:在子组件 Header 中使用到 Dialog 组件，此时 Dialog 就被渲染到一层层子组件内部，处理嵌套组件的定位、z-index和样式都变得困难。我们希望继续在组件内部使用 Dialog,又希望渲染的DOM结构不嵌套在组件的DOM中.我们可以用 <Teleport> 包裹 Dialog, 此时就建立了一个传送门，可以将Dialog渲染的内容传送到任何指定的地方。
   - 使用案例
@@ -185,6 +122,7 @@
             </teleport>
         </template>
     ```
+
 ## 响应式
 * 几种响应式方案
 ![响应式方案](./imgs/响应式.png)
@@ -232,6 +170,7 @@
     // 仍然是响应式的
     const { foo, bar } = obj
   ```
+
 ## 组件插槽
 * v-slot 合并了 slot 和 slot-scope 作用域插槽
   ```html
@@ -240,12 +179,13 @@
       <div v-for="item in scoped.data">{{item}}</div>
     </template>
 
-    <!-- 也可以简写成： -->
+    <!-- 可简写成： -->
     <template #content="{data}">
       <div v-for="item in data">{{item}}</div>
     </template>
   ```
-## 组件通讯（新增优化）
+
+## 组件通讯
 * 组件透传
   - 定义一个组件，然后再组件上添加样式如class、style 会合并到组件的根元素上
   - 禁用 Attributes 继承，你不想要一个组件自动地继承 attribute，你可以在组件选项中设置
@@ -302,6 +242,7 @@
     }
   ```
 * pinia
+
 ## watch 与 watchEffect 的用法
 > 我们需要在响应式状态变化时执行一些“副作用”：如更改 DOM，或是根据异步操作的结果去修改另一处的状态。
 * watch 默认是懒执行的：仅当数据源变化时，才会执行回调
@@ -442,6 +383,7 @@
       /* 在响应式数据变化时同步执行 */
     })
   ```
+
 ## TypeScript 类型支持
 * defineComponent  
   - 在定义 Vue 组件时提供类型推导的辅助函数。也支持对纯 js 编写的组件进行类型推导。
@@ -519,6 +461,7 @@
         // 若返回值不是 number 类型则会报错
     })
   ``` 
+
 ## 相对vue2做的优化
 ### 如何更快
 * Object.defineProperty => Proxy，它不仅让内存占用变得更小，还让组件的初始化变得更快
@@ -534,11 +477,12 @@
 ### 如何更小
 * vue 拆分成独立的功能模块，按需引入，有更好的 tree shaking
 * composition API声明的一些响应式变量，就可以很安全地对变量名进行压缩，这种引用调用的方式，构建工具可以很轻松地利用 Tree shaking 去消除我们实际未使用到 “死代码“
+
 ## 移除的内容
 * 事件API
   - $on，$off 和 $once 实例方法已被移除
 * 过滤器
   - 建议用方法调用或计算属性来替换
 * $children 当前实例的直接子组件 $refs 代替
-* Vue.extend 移除 defineComponent 替代
+* Vue.extend 移除,用 defineComponent 替代
 * 全局函数 set 和 delete 以及实例方法 $set 和 $delete。基于代理的变化检测已经不再需要它们了。

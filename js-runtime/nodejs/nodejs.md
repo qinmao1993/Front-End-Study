@@ -58,6 +58,15 @@
       node --watch index.js
     ```
   - 全文件搜索 glob、globSync
+* v23
+  - 放弃对 Windows 32 位系统的支持
+* v24
+  - 支持 Float16Array
+  - 显式资源管理 (using)
+  - RegExp.escape
+  - WebAssembly Memory64
+  - Error.isError 
+  - URLPattern
 
 ## 软件管理包
 * [npm](../包管理/npm.md)
@@ -107,7 +116,7 @@
 * [串口技术](./串口通信.md)
 
 ## 调试
-* [Nodejs调试](./nodejs调试.md)
+[nodejs调试](./nodejs调试.md)
 
 ## 测试（v18.x+）
 [测试案例](./case/test/index.js)
