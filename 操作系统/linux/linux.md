@@ -519,13 +519,13 @@
 * 网络故障排查
   + ping 检测目标主机是否畅通：
     - ping www.baidu.com
+  + telnet   检测端口问题
+    - telnet www.baidu.com 80
   + traceroute 追踪目标主机的网络的每一跳
     - traceroute -w www.baidu.com
   + mtr 检测到目标主机是否有数据包丢失
   + nslookup 域名访问是检测ip
     - nslookup www.baidu.com
-  + telnet   检测端口问题
-    - telnet www.baidu.com 80
   + tcpdump  细致分析数据包
     - tcpdump -i any -n port 80
     - tcpdump -i any -n hiost 10.0.0.1

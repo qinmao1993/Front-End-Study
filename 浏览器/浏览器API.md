@@ -117,6 +117,9 @@
 ## Clipboard API
 [Clipboard](./clipboard.md)
 
+## TextEncoder
+[TextEncoder](./TextEncoder.md)
+
 ## Performance API
   ```js
     // 测量代码执行时间

@@ -1,6 +1,6 @@
 # webgl
 ## 前置知识
-* html(canvas)、js
+* canvas、js
 * 3D数学知识
   + 线性代数 (核心！)
     - 向量 (Vector)： 表示点、方向、颜色。掌握加法、减法、点积、叉积、长度、归一化
@@ -387,7 +387,7 @@ WebGL 是 OpenGL ES 的 Web 绑定，本质上是状态机和光栅化 API
 * 3D 纹理 (3D Textures) & 2D 纹理数组 (2D Texture Arrays)
 * 标准导数 (dFdx, dFdy): 用于屏幕空间计算（如法线贴图、边缘检测）
 
-## 性能优化与
+## 性能优化
 * 减少绘制调用 (gl.draw* 次数): 批处理几何体、实例化渲染。
 * 减少状态切换： 合理组织绘制顺序（按纹理、着色器程序等），利用 VAO。
 * 优化数据传输： 避免每帧向 GPU 发送大量数据。使用 gl.bufferSubData 更新部分数据。考虑使用 gl.STATIC_DRAW/gl.DYNAMIC_DRAW/gl.STREAM_DRAW 提示。

@@ -78,8 +78,6 @@ Video.js 是一个开源的 HTML5 视频播放器框架，支持现代浏览器�
     # import videojs from 'video.js'
     # import 'video.js/dist/video-js.css'
   ```
-* 用法
-  - [videojs](./videojs.html)
 
 ## xgplayer（字节）
 > 一个由字节跳动（ByteDance）前端团队开源、功能强大且高度模块化的 Web 视频播放器库

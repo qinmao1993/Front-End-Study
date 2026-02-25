@@ -3,7 +3,7 @@
 ## ES 标准模块与 CommonJS 模块
 > 从 Node.js 12 版本开始，Node.js 支持大部分 ECMAScript 标准库模块，无需额外安装或配置。
 * 在 nodejs 中使用 ES 模块的几种方式
-  1. package.json 文件中将 "type" 字段的值设置为 "module"  推荐
+  1. package.json 文件中将 "type" 字段的值设置为 "module", 推荐
   2. 脚本文件的扩展名为 .mjs
   3. 命令行参数 --input-type=module 指定输入类型为模块
 
@@ -200,29 +200,76 @@
 * Global
   - 全局命名空间对象，类似于浏览器环境中的 window 对象，它包含了所有全局可用的变量、函数和对象，是 Node.js 全局作用域的核心。
   
-## 文件 fs 和 路经 path
+## path 和 url
+* url
+  - Node.js 的 url 模块是一个核心模块，用于处理 URL 的解析和格式化
+  - 它提供了两种不同的 API：传统 API（Node.js 早期版本）、WHATWG URL API（符合现代标准，推荐使用）
+  ```js
+    // 创建 URL 对象
+    const myURL = new URL('https://example.org:8080/path/name?query=string#hash');
+    // URL 对象属性，可修改
+    console.log(url.href,url.protocol、url.username、url.password);        // 完整URL、 'https:'
+    console.log(url.host,hostname,url.port); // 'example.com:8080'、'example.com'、'8080'
+    console.log(url.pathname,url.search,url.hash,url.origin);    // '/path/name'、'?q=term'、'#fragment'、'https://example.com:8080'
+
+    console.log(url.searchParams); // URLSearchParams 对象
+    const url = new URL('https://example.com/?name=John&age=30');
+    // 获取查询参数
+    console.log(url.searchParams.get('name')); // 'John'
+    console.log(url.searchParams.has('age'));  // true
+
+    // 设置/修改参数
+    url.searchParams.set('name', 'Jane');
+    url.searchParams.append('city', 'NYC');
+    url.searchParams.delete('age');
+
+    // 遍历参数
+    for (const [key, value] of url.searchParams) {
+        console.log(`${key}: ${value}`);
+    }
+    // 转换为字符串
+    console.log(url.searchParams.toString()); // 'name=Jane&city=NYC'
+    // 所有值
+    console.log([...url.searchParams.values()]); // ['Jane', 'NYC']
+
+    import { fileURLToPath,pathToFileURL } from "node:url";
+    // ES模块中获取当前文件绝对路径
+    console.log(import.meta.url) // file:///xxx/xxx/xxx.js
+    const __filename = fileURLToPath(import.meta.url); // /xxx/xxxx/xxx.js
+    const __dirname = dirname(__filename);
+
+    // 将路径转换为文件URL
+    const fileURL = pathToFileURL('/path/to/file.txt');
+    console.log(fileURL.href); // 'file:///path/to/file.txt'
+
+  ```
 * path
   - 提供了一些常用的方法和属性，用于处理文件路径的字符串
    ```js
-    import { join,resolve,basename,parse } = from "node:path";
+    import { join,resolve,dirname,basename,parse,extname} = from "node:path";
 
-    // 将所有给定的 path 片段连接到一起，并规范化生成的路径。这个方法会根据操作系统的规则来正确地拼接路径。
+    // 连接路径
     join("pub", "index.html"); // '/Users/michael/pub/index.html'
 
-    // resolve() 将路径或路径片段的序列解析为绝对路径
+    // resolve() 解析绝对路径
     resolve("/etc", "joe.txt"); //'/etc/joe.txt'
 
     // basename(path[, ext])：返回路径的最后一部分，即文件名。可选的 ext 参数可以过滤掉指定的文件扩展名。
     const notes = "/users/joe/notes.txt";
-    path.basename(notes); // notes.txt
+    basename(notes); // notes.txt
     // 指定第二个参数来获取不带扩展名的文件名
-    path.basename(notes, path.extname(notes)); //notes
+    const ext=extname(notes)
+    basename(notes, ext); //notes
+
+    dirname('/foo/bar/baz/asdf/quux');
+    // 返回: '/foo/bar/baz/asdf'
 
     // 返回一个对象，包含路径的各个部分，如 root、dir、base、ext 和 name
     parse(pathString)
   ```
-* fs
-  - 提供了与文件系统进行交互的 API，允许你在服务器上执行各种文件操作，包括读取、写入、更新、删除文件以及目录管理等
+
+## fs
+  - 提供了与文件系统进行交互的 API，允许你在服务器上执行各种文件操作，包括读取、写入、更新、删除文件以及目录管理
   - 详情见[fs.js](./case/fs.js)
 
 ## crypto

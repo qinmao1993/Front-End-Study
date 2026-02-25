@@ -1,93 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <!-- 元信息标签:是指描述自身的信息,通常不会显示，多数情况下是给浏览器、搜索引擎等机器阅读的 -->
-    <!-- 快捷键生成 meta:vp -->
-    <meta
-      name="viewport"
-      content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
-    />
-    <!-- 
-    width 设置viewport宽度，为一个正整数，或字符串‘device-width’ 
-    height 设置viewport高度，一般设置了宽度，会自动解析出高度，可以不用设置
-    initial-scale 默认缩放比例，为一个数字，可以带小数 
-    user-scalable 是否允许手动缩放 
-    minimum-scale 允许用户最小缩放比例，为一个数字，可以带小数
-    maximum-scale 允许用户最大缩放比例，为一个数字，可以带小数 -->
+    <head>
+        <meta charset="UTF-8" />
+        <!-- 元信息标签:是指描述自身的信息,通常不会显示，多数情况下是给浏览器、搜索引擎等机器阅读的 -->
+        <!-- 快捷键生成 meta:vp -->
+        <!-- 
+        width 设置viewport宽度，为一个正整数，或字符串‘device-width’ 
+        height 设置viewport高度，一般设置了宽度，会自动解析出高度，可以不用设置
+        initial-scale 默认缩放比例，为一个数字，可以带小数 
+        user-scalable 是否允许手动缩放 
+        minimum-scale 允许用户最小缩放比例，为一个数字，可以带小数
+        maximum-scale 允许用户最大缩放比例，为一个数字，可以带小数 
+    -->
+        <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
+        />
 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <!-- 默认使用最新浏览器 -->
+        <!--
+            搜索引擎抓取|seo
+            搜索引擎索引方式：robotterms是一组使用逗号(,)分割的值
+            all：文件将被检索，且页面上的链接可以被查询；
+            none：文件将不被检索，且页面上的链接不可以被查询；
+            index：文件将被检索；
+            follow：页面上的链接可以被查询；
+            noindex：文件将不被检索；
+            nofollow：页面上的链接不可以被查询。
+        -->
+        <meta name="keywords" content="your tags" />
+        <meta name="description" content="150 words" />
+        <meta name="robots" content="index,follow" />
 
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <!-- 不被网页(加速)转码 -->
+        <!-- 定义网页作者 -->
+        <meta name="author" content="author name" />
 
-    <meta name="keywords" content="your tags" />
-    <meta name="description" content="150 words" />
-    <meta name="robots" content="index,follow" />
-    <!--
-      搜索引擎抓取|seo
-      搜索引擎索引方式：robotterms是一组使用逗号(,)分割的值
-     all：文件将被检索，且页面上的链接可以被查询；
-     none：文件将不被检索，且页面上的链接不可以被查询；
-     index：文件将被检索；
-     follow：页面上的链接可以被查询；
-     noindex：文件将不被检索；
-     nofollow：页面上的链接不可以被查询。
- -->
+        <!--页面缓存设置: 清除缓存 -->
+        <meta http-equiv="pragma" content="no-cache" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
 
-    <!--页面缓存设置: 清除缓存 -->
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta http-equiv="cache-control" content="no-cache" />
-    <meta http-equiv="expires" content="0" />
+        <!-- safari 设置-->
+        <!-- 顶端状态条的样式（可选default/black/black-translucent ） -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <!-- 禁用将数字识别为电话号码/忽略Android平台中对邮箱地址的识别 -->
+        <meta name="format-detection" content="telephone=no, email=no" />
 
-    <!--ios 相关设置 可隐藏地址栏，仅针对IOS的Safari（注：IOS7.0版本以后，safari上已看不到效果） -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <!-- 仅针对IOS的Safari顶端状态条的样式（可选default/black/black-translucent ） -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <!-- IOS中禁用将数字识别为电话号码/忽略Android平台中对邮箱地址的识别 -->
-    <meta name="format-detection" content="telephone=no, email=no" />
+        <!-- 其他meta标签 -->
+        <!-- 启用360浏览器的极速模式(webkit) -->
+        <meta name="renderer" content="webkit" />
+        <!-- 避免IE使用兼容模式 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <!-- 其他meta标签 -->
-    <!-- 启用360浏览器的极速模式(webkit) -->
-    <meta name="renderer" content="webkit" />
-    <!-- 避免IE使用兼容模式 -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
-    <meta name="HandheldFriendly" content="true" />
+        <!-- uc强制竖屏 -->
+        <meta name="screen-orientation" content="portrait" />
+        <!-- UC强制全屏 -->
+        <meta name="full-screen" content="yes" />
+        <!-- UC应用模式 -->
+        <meta name="browsermode" content="application" />
 
-    <!-- 微软的老式浏览器 -->
-    <meta name="MobileOptimized" content="320" />
-    <!-- windows phone 点击无高光 -->
-    <meta name="msapplication-tap-highlight" content="no" />
+        <!-- QQ强制竖屏 -->
+        <meta name="x5-orientation" content="portrait" />
+        <!-- QQ强制全屏 -->
+        <meta name="x5-fullscreen" content="true" />
+        <!-- QQ应用模式 -->
+        <meta name="x5-page-mode" content="app" />
 
-    <!-- uc强制竖屏 -->
-    <meta name="screen-orientation" content="portrait" />
-    <!-- UC强制全屏 -->
-    <meta name="full-screen" content="yes" />
-    <!-- UC应用模式 -->
-    <meta name="browsermode" content="application" />
+        <title>h5新增的标签</title>
+        <style>
+            details {
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                padding: 8px;
+            }
 
-    <!-- QQ强制竖屏 -->
-    <meta name="x5-orientation" content="portrait" />
-    <!-- QQ强制全屏 -->
-    <meta name="x5-fullscreen" content="true" />
-    <!-- QQ应用模式 -->
-    <meta name="x5-page-mode" content="app" />
+            summary {
+                cursor: pointer;
+                font-weight: bold;
+            }
 
-    <!-- 定义网页作者 -->
-    <meta name="author" content="author name" />
+            /* 包住内容，让它能动画高度 */
+            details > .content {
+                overflow: hidden;
+                max-height: 0;
+                opacity: 0;
+                transition: max-height 0.45s ease, opacity 0.3s ease;
+            }
 
-    <title>h5新增的标签</title>
-  </head>
-  <body>
-    <!-- 常用新增的语义 -->
-    <header>头部</header>
-    <nav>导航</nav>
-    <main>主体</main>
-    <aside>侧边</aside>
-    <section>独立的区块</section>
-    <footer>底部</footer>
-    <article>文章</article>
-  </body>
+            /* details 处于 open 状态时 */
+            details[open] > .content {
+                max-height: 200px; /* 你内容高度大概多少设多少，足够大即可 */
+                opacity: 1;
+            }
+
+            /* 背景遮罩 */
+            dialog::backdrop {
+                background: rgba(0, 0, 0, 0.45);
+                backdrop-filter: blur(3px);
+                transition: opacity 0.3s ease;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 新增的语义 -->
+        <header>头部</header>
+        <nav>导航</nav>
+        <main>主体</main>
+        <aside>侧边</aside>
+        <section>独立的区块</section>
+        <footer>底部</footer>
+        <article>文章</article>
+
+        <!-- 原生实现的功能 -->
+        <!-- 折叠 -->
+        <details>
+            <summary>点击展开</summary>
+            <div class="content">
+                这里是展开后的内容，原生支持 Ctrl+F 页内搜索！
+            </div>
+        </details>
+
+        <!-- 弹窗 -->
+        <!-- 
+        1. Top Layer（顶层特性） ：浏览器会把它渲染在所有 DOM 的最上层，彻底无视父元素的 z-index 和 overflow: hidden。
+        2. ::backdrop 伪元素：直接用 CSS 定制遮罩层样式。
+        3. 原生交互：自带 Esc 关闭，自带焦点管理，表单提交自动关闭。
+         -->
+        <dialog id="myModal">
+            <form method="dialog">
+                <p>这是一个原生模态框</p>
+                <button>关闭（自动）</button>
+            </form>
+        </dialog>
+        <button onclick="myModal.showModal()">打开弹窗⏏</button>
+
+        <!-- H5 调用手机相机,可以是相册选的，也可以是当场拍的 -->
+        <!-- 只要加上 capture 属性，在移动端（iOS/Android）点击上传时，系统会直接拉起相机，而不是让你去选文件。拍完照后，你拿到的就是一个标准的 File 对象。 -->
+        <input type="file" capture>
+        <input type="file" capture="environment" accept="image/*">
+
+    </body>
 </html>

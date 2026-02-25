@@ -32,6 +32,7 @@ readFile("example.txt", "utf8", (err, data) => {
     }
     console.log("文件内容:", data);
 });
+
 // Promise 方式
 async function readFileExample() {
     try {
