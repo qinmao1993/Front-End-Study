@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>RAF动画示例</title>
+        <style>
+            .box-wrapper {
+                position: relative;
+                width: 200px;
+                height: 100px;
+                border: 1px solid red;
+                margin-top: 20px;
+            }
+            #box {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 50px;
+                height: 50px;
+                background: red;
+                transition: none; /* 确保不与CSS动画冲突 */
+            }
+        </style>
+    </head>
+    <body>
+        <button onclick="startAni()">开始动画</button>
+        <button onclick="stopAni()">停止动画</button>
+        <div class="box-wrapper">
+            <div id="box"></div>
+        </div>
+
+        <script>
+            const box = document.getElementById("box");
+            let animationId = null;
+            let isAnimating = false;
+            const duration = 2000;// ms
+            const targetLeft = 150;
+
+            function moveAni(currentTime,startTime) {
+                if (!isAnimating) return;
+                const elapsed = currentTime - startTime; // 计算已经过去的时间，不能超过总时长
+                const progress = Math.min(elapsed / duration, 1);
+                box.style.left = progress * targetLeft + "px";
+
+                // 如果动画未完成，继续请求下一帧
+                if (progress < 1) {
+                    animationId = requestAnimationFrame((currentTime)=> moveAni(currentTime, startTime));
+                } else {
+                    isAnimating = false;
+                    animationId = null;
+                }
+            }
+
+            function startAni() {
+                if (isAnimating) return; // 防止重复启动
+
+                isAnimating = true;
+                const startTime = performance.now();
+
+                animationId = requestAnimationFrame((currentTime)=> moveAni(currentTime, startTime));
+            }
+
+            function stopAni() {
+                isAnimating = false;
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+                // 可选：重置位置
+                // box.style.left = "0px";
+            }
+        </script>
+    </body>
+</html>

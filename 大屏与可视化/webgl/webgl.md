@@ -393,10 +393,12 @@ WebGL 是 OpenGL ES 的 Web 绑定，本质上是状态机和光栅化 API
 * 优化数据传输： 避免每帧向 GPU 发送大量数据。使用 gl.bufferSubData 更新部分数据。考虑使用 gl.STATIC_DRAW/gl.DYNAMIC_DRAW/gl.STREAM_DRAW 提示。
 * 优化着色器： 避免复杂分支、减少精度要求过高的操作、利用内置函数。
 * 利用 Mipmapping：减少远处纹理的锯齿和性能开销 (gl.generateMipmap)。
-* 使用 WebGL 分析工具： Chrome DevTools Performance 面板、WebGL Inspector 
-
 
 法线
 
 层级建模
 帧缓冲
+
+## 调试
+* Chrome DevTools Performance 面板、
+* WebGL Inspector 

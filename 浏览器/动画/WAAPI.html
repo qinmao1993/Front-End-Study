@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WAAPI</title>
+    </head>
+    <body>
+        <div class="box" style="width: 50px; height: 50px; background: red; position: relative;"></div>
+        <script>
+            async function runSequence() {
+                const box = document.querySelector(".box");
+
+                // 第一个动画
+                const anim1 = box.animate(
+                    [
+                        { transform: "translateX(0)" },
+                        { transform: "translateX(200px)" },
+                    ],
+                    { duration: 800, fill: "forwards" },
+                );
+                await anim1.finished; // 等待动画自然结束
+
+                // 第二个动画
+                const anim2 = box.animate(
+                    [
+                        { transform: "translateX(200px)" },
+                        { transform: "translateX(0)" },
+                    ],
+                    { duration: 600, fill: "forwards" },
+                );
+                await anim2.finished;
+
+                console.log("序列完成");
+            }
+
+            runSequence();
+        </script>
+    </body>
+</html>

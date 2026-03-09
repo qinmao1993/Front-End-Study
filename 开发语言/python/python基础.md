@@ -1,40 +1,43 @@
 # python
 > 强类型的解释型语言
+## 配置Python环境
+[环境配置](./环境配置.md)
+
 ## python的解释器
-- mac 默认的通常被安装在 /usr/bin/python3
-- 也可安装不同的版本在别的目录
-```bash
-  # 启动解释器：可以在 shell 中运行 Python 代码
-  cd /usr/bin
-  python3 
-  
-  # 案例1
-  1+1
-  40-20
-  
-  # 案例2
-  width = 20
-  height = 5 * 9
-  width * height
+* 在python环境下运行代码
+  ```bash
+    # 启动解释器：可以在 shell 中运行 Python 代码
+    cd /usr/bin
+    python3 
+    
+    # 案例1
+    1+1
+    40-20
+    
+    # 案例2
+    width = 20
+    height = 5 * 9
+    width * height
 
-  # 输出
-  print('name') 
-  print(r'C:\some\name')
+    # 输出
+    print('name') 
+    print(r'C:\some\name')
 
-  ## 输出字符长度
-  str = 'supercalifragilisticexpialidocious'
-  len(str)
+    ## 输出字符长度
+    str = 'supercalifragilisticexpialidocious'
+    len(str)
 
-  arr = ['a', 'b', 'c', 'd']
-  len(arr)
-```
+    arr = ['a', 'b', 'c', 'd']
+    len(arr)
+  ```
 * 调用 Python 时，可以指定下列任意选项
   - python [-bBdEhiIOqsSuvVWx?] [-c command | -m module-name | script | - ] [args]
   - 常见的是执行脚本：python myscript.py
+
 ## 执行过程
-* 源代码-> 解释器 -> 字节码-> python虚拟机 -> 执行
-## 基础语法
-### 常见的数据类型
+* 源代码 -> 解释器 -> 字节码 -> python虚拟机 -> 执行
+
+## 常见的数据类型
 * 数字类型
   - int
   - float 
@@ -178,7 +181,8 @@
   - 空集 "、（）、[]、{}、set() rang(0)
 * 类型转换
   - TODO 
-### 流程控制
+
+## 流程控制
 * 条件判断
   ```python
     if True:
@@ -279,7 +283,8 @@
 * 模块
   - 自定义模块见 demo_python 模块内容
   - 自定义包发布见 demo_python 模块内容
-### 进阶知识
+
+## 进阶知识
 * 对象的比较复制
 
 * 参数的传递
@@ -299,11 +304,13 @@
 * 并发编程
   - 见 demo_python 多线程
   - 见 demo_python 多进程
+  
 * 全局解释器锁
 
 * 垃圾回收机制
 
 * 和c++ 的混合使用
   - 使用 pythran 库将Python转换为c++
+
 ## 包管理
 * [pip使用](/包管理/pip.md)

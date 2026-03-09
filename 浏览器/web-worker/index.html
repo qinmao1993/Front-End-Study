@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>web-worker 示例</title>
+    </head>
+    <body>
+        <button onclick="startPolling()">启动轮询</button>
+        <button onclick="stopPolling()">停止轮询</button>
+
+        <div id="data-container"></div>
+        <script>
+            // 创建 Worker 实例
+            let worker = new Worker("polling-worker.js");
+            // 接收 Worker 发来的数据
+            worker.onmessage = (event) => {
+                const { type, data, error } = event.data;
+                if (type === "success") {
+                    // 更新 UI（轻量操作，不会阻塞）
+                    updateUI(data);
+                } else if (type === "error") {
+                    console.error("Polling error:", error);
+                    // 可显示错误提示
+                }
+            };
+            // 处理 Worker 内部未捕获的错误
+            worker.onerror = (error) => {
+                console.error("Worker error:", error);
+            };
+
+            // 示例 UI 更新函数
+            function updateUI(data) {
+                const container = document.getElementById("data-container");
+                container.textContent = JSON.stringify(data, null, 2);
+            }
+            // 启动轮询函数
+            function startPolling() {
+                // 这里可以添加一些 UI 反馈，例如禁用按钮或显示加载状态
+                console.log("Starting polling...");
+
+                // 启动轮询：向 Worker 发送 start 命令
+                worker.postMessage({ command: "start" });
+            }
+
+            // 当需要停止轮询时（例如页面卸载或用户退出）
+            function stopPolling() {
+                worker.postMessage({ command: "stop" });
+                // 也可以直接调用 worker.terminate() 强制终止
+                // worker.terminate();
+            }
+
+            // 根据页面可见性控制轮询
+            function controlPolling() {
+                if (document.visibilityState === "visible") {
+                    worker.postMessage({ command: "start" });
+                } else {
+                    worker.postMessage({ command: "stop" });
+                }
+            }
+
+            // 监听可见性变化
+            document.addEventListener("visibilitychange", controlPolling);
+
+            // 页面卸载前清理 Worker（避免内存泄漏）
+            window.addEventListener("beforeunload", () => {
+                worker && worker.terminate(); // 直接终止
+            });
+        </script>
+    </body>
+</html>

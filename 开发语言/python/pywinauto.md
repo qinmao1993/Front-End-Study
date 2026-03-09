@@ -1,5 +1,6 @@
 # pywinauto
-  - 主要操作于Windows标准图形界面
+> 主要操作于Windows标准图形界面
+
 ## 检测要控制的应用是什么技术实现的
 * windows上受支持的有两种：
   + Win32 API (backend= "win32") 默认 

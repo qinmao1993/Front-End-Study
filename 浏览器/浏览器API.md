@@ -85,7 +85,9 @@
 * 侦测标签页隐藏，自动暂停视频、停止轮询，移动端省电神器。
   ```js
     document.addEventListener('visibilitychange', () =>
-      document.hidden ? video.pause() : video.play()
+       // hidden|visible
+      console.log(`Document visibility changed: ${document.visibilityState}`);
+      console.log('document.hidden:', document.hidden);
     );
   ```
   
