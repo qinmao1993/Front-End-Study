@@ -1,6 +1,6 @@
 // polling-worker.js
 
-let pollingActive = true;
+let pollingActive = false;
 
 /**
  * 等待多少秒后继续执行，期间可被停止
