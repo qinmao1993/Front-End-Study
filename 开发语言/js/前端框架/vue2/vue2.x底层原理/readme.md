@@ -13,7 +13,6 @@
             return value 传入对象
         */
         Object.defineProperty(obj, prop, descriptor)
-        descriptor的一些属性，简单介绍几个属性，具体可以参考 MDN 文档。
         enumerable，属性是否可枚举，默认 false。
         configurable，属性是否可以被修改或者删除，默认 false。
         get，获取属性的方法。

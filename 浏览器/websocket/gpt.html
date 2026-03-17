@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>流式 Markdown 渲染 (GPT 风格)</title>
+        <!-- 引入 marked 用于 Markdown 渲染 -->
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <style>
+            body {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    "Segoe UI",
+                    Roboto,
+                    sans-serif;
+                max-width: 800px;
+                margin: 40px auto;
+                padding: 0 20px;
+                background: #f9f9f9;
+            }
+            .container {
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                padding: 24px;
+            }
+            h1 {
+                font-size: 1.8rem;
+                margin-top: 0;
+                color: #333;
+            }
+            #output {
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 20px;
+                min-height: 200px;
+                background: #fefefe;
+                line-height: 1.6;
+                font-size: 16px;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+            #output pre {
+                background: #f0f0f0;
+                padding: 10px;
+                border-radius: 6px;
+                overflow-x: auto;
+            }
+            #output code {
+                font-family: "Fira Code", "Courier New", monospace;
+                background: #f0f0f0;
+                padding: 2px 4px;
+                border-radius: 4px;
+            }
+            .controls {
+                margin-top: 20px;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+            button {
+                background: #0070f3;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 30px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+            button:hover {
+                background: #0051a2;
+            }
+            button:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+            }
+            .speed-control {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            label {
+                font-size: 14px;
+                color: #555;
+            }
+            input[type="range"] {
+                width: 200px;
+            }
+            .note {
+                margin-top: 16px;
+                color: #666;
+                font-size: 0.9rem;
+                border-top: 1px solid #eee;
+                padding-top: 16px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>⚡ 流式 Markdown 渲染（GPT 风格）</h1>
+            <div id="output"></div>
+
+            <div class="controls">
+                <button id="startBtn">开始流式输出</button>
+                <button id="resetBtn" disabled>重置</button>
+                <div class="speed-control">
+                    <label for="speed">速度 (ms/字符):</label>
+                    <input
+                        type="range"
+                        id="speed"
+                        min="10"
+                        max="200"
+                        value="50"
+                        step="5"
+                    />
+                    <span id="speedValue">50 ms</span>
+                </div>
+            </div>
+
+            <div class="note">
+                <p>💡 说明：</p>
+                <ul>
+                    <li>
+                        点击“开始流式输出”会逐字显示下方的 Markdown
+                        示例文本，并实时渲染为格式化的内容（使用了
+                        <code>marked.js</code> 库）。
+                    </li>
+                    <li>你可以调整速度滑块控制每个字符的间隔。</li>
+                    <li>
+                        这模拟了 GPT
+                        等大模型流式返回时的典型体验，非常适合集成到聊天应用或文档预览中。
+                    </li>
+                    <li>
+                        如果想用于生产环境，可以替换
+                        <code>marked</code> 为更轻量或更安全的渲染器（如
+                        <code>DOMPurify</code> 搭配使用）。
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                // 预定义的 Markdown 示例文本（可随意修改）
+                const fullText = `# 🚀 欢迎体验流式 Markdown
+
+这是一个 **模拟 GPT 流式输出** 的示例。它会逐字显示，并实时渲染成美观的 Markdown 格式。
+
+## 你可以看到以下特性
+
+*   **实时渲染**：文本一边出现，一边被转换为格式化内容。
+*   **代码高亮**：虽然没有内置高亮，但 \`marked\` 支持语法高亮扩展（本例未添加，你可以自行集成 Prism 或 Highlight.js）。
+*   **复杂元素**：比如表格、引用、列表等。
+
+### 示例表格
+
+| 功能 | 支持度 | 说明 |
+|------|--------|------|
+| 流式输出 | ✅ | 逐字显示，可调速 |
+| Markdown 渲染 | ✅ | 借助 \`marked\` 实现 |
+| 代码块 | ✅ | 包含行内 \`code\` 和块级代码 |
+
+\`\`\`javascript
+// 这是一个代码块示例
+function greet(name) {
+    return \`Hello, \${name}!\`;
+}
+console.log(greet('世界'));
+\`\`\`
+
+> “流式输出能让用户更快看到内容，心理体验更佳。”  
+> —— 某位产品经理
+
+---
+
+**试试调整上面的速度滑块**，放慢或加快字符出现速度，感受不同节奏下的阅读体验。`;
+
+                // DOM 元素
+                const outputDiv = document.getElementById("output");
+                const startBtn = document.getElementById("startBtn");
+                const resetBtn = document.getElementById("resetBtn");
+                const speedInput = document.getElementById("speed");
+                const speedSpan = document.getElementById("speedValue");
+
+                // 状态变量
+                let currentIndex = 0;
+                let timer = null;
+                let isStreaming = false;
+
+                // 更新速度显示
+                function updateSpeedDisplay() {
+                    speedSpan.textContent = speedInput.value + " ms";
+                }
+                speedInput.addEventListener("input", updateSpeedDisplay);
+                updateSpeedDisplay();
+
+                // 渲染当前累积的文本
+                function renderCurrentText() {
+                    const partial = fullText.slice(0, currentIndex);
+                    // 使用 marked 将 markdown 转换为 HTML
+                    outputDiv.innerHTML = marked.parse(partial);
+                    // 自动滚动到底部（可选）
+                    outputDiv.scrollTop = outputDiv.scrollHeight;
+                }
+
+                // 开始流式输出
+                function startStreaming() {
+                    if (isStreaming) return;
+                    if (currentIndex >= fullText.length) {
+                        // 如果已经显示完毕，重置再开始
+                        reset();
+                    }
+                    isStreaming = true;
+                    startBtn.disabled = true;
+                    resetBtn.disabled = false;
+
+                    timer = setInterval(
+                        () => {
+                            if (currentIndex < fullText.length) {
+                                currentIndex++;
+                                renderCurrentText();
+                            } else {
+                                // 输出完毕，停止定时器
+                                stopStreaming();
+                            }
+                        },
+                        parseInt(speedInput.value, 10),
+                    );
+                }
+
+                // 停止流式输出
+                function stopStreaming() {
+                    if (timer) {
+                        clearInterval(timer);
+                        timer = null;
+                    }
+                    isStreaming = false;
+                    startBtn.disabled = false; // 允许再次点击（但会从头开始？为了符合预期，点击后应重置？）
+                    // 实际上停止后，如果未完成，可以再次点击继续；如果已完成，再次点击应重置再开始
+                    // 这里简单处理：如果已经完成，再次点击 start 会 reset 再开始；否则继续
+                    // 我们需要根据 currentIndex 判断
+                    if (currentIndex >= fullText.length) {
+                        startBtn.textContent = "重新开始";
+                    } else {
+                        startBtn.textContent = "继续输出";
+                    }
+                }
+
+                // 重置所有
+                function reset() {
+                    stopStreaming();
+                    currentIndex = 0;
+                    outputDiv.innerHTML = ""; // 清空显示
+                    startBtn.disabled = false;
+                    resetBtn.disabled = true;
+                    startBtn.textContent = "开始流式输出";
+                }
+
+                // 事件绑定
+                startBtn.addEventListener("click", () => {
+                    // 如果已经显示完毕，重置再开始
+                    if (currentIndex >= fullText.length) {
+                        reset();
+                    }
+                    startStreaming();
+                });
+
+                resetBtn.addEventListener("click", reset);
+
+                // 速度变化时，如果正在流式，需要更新定时器间隔（简单起见，我们重启定时器）
+                speedInput.addEventListener("input", () => {
+                    if (isStreaming) {
+                        // 重启定时器
+                        stopStreaming();
+                        startStreaming();
+                    }
+                });
+
+                // 初始化
+                reset();
+            })();
+        </script>
+    </body>
+</html>

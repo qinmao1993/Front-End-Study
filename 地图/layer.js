@@ -89,6 +89,8 @@ map.loadImage("图片地址", function (error, image) {
 
 // 移动图层到不同的显示层级
 map.move(layerId)
+
+
 // 将图层从地图移除，如果这个图层不存在，会派发一个错误事件
 map.removeLayer(layerId)
 

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字滚筒 · 上下滚动效果</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(145deg, #1e2b3c 0%, #0f1a26 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: rgba(18, 28, 40, 0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 40px 30px;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6), inset 0 2px 2px rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .roller-panel {
+            display: flex;
+            gap: 16px;
+            background: #0d141f;
+            padding: 30px 30px;
+            border-radius: 36px;
+            box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.8), 0 10px 15px -5px rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid #2d3e58;
+        }
+
+        /* 单个数字滚筒 */
+        .digit-roller {
+            width: 100px;
+            height: 120px;
+            overflow: hidden;
+            border-radius: 24px;
+            background: #1b293b;
+            box-shadow: 
+                inset 0 -2px 8px rgba(0, 0, 0, 0.9),
+                inset 0 2px 5px rgba(255, 255, 255, 0.08),
+                0 8px 12px rgba(0, 0, 0, 0.4);
+            position: relative;
+            border: 1px solid #3c4f68;
+        }
+
+        /* 高光效果 */
+        .digit-roller::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
+            pointer-events: none;
+            z-index: 2;
+            border-radius: 24px 24px 0 0;
+        }
+
+        /* 数字滑动容器 */
+        .roll-numbers {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            will-change: transform;
+            background: #1b293b;
+        }
+
+        .roll-numbers span {
+            height: 120px;
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            font-weight: 700;
+            color: #e1eaf2;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.6), 0 0 4px #4e7eb3;
+            background: #1b293b;
+            border-bottom: 1px dashed #2d4057;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', monospace;
+            line-height: 1;
+            backface-visibility: hidden;
+        }
+
+        /* 控制区域 */
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 32px;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .random-btn {
+            background: #2d405b;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding: 16px 40px;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 10px 0 #121d2b, 0 5px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.08s linear;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid #5b7397;
+            flex: 0 0 auto;
+        }
+
+        .random-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 4px 0 #121d2b, 0 8px 18px rgba(0, 0, 0, 0.5);
+        }
+
+        .random-btn:disabled {
+            opacity: 0.5;
+            transform: translateY(5px);
+            box-shadow: 0 5px 0 #121d2b;
+            cursor: not-allowed;
+        }
+
+        .value-display {
+            background: #0b111a;
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #b7d0ea;
+            text-shadow: 0 0 8px #3f6a9e;
+            letter-spacing: 8px;
+            border: 1px solid #3d5777;
+            box-shadow: inset 0 2px 6px black;
+        }
+
+        .footer-note {
+            color: #7a8ca5;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="roller-panel" id="rollerPanel">
+            <!-- 四个数字滚筒会由JS动态生成，但也可以静态占位，这里用JS动态生成以保证结构清晰 -->
+        </div>
+
+        <div class="controls">
+            <button class="random-btn" id="rollBtn">⚡ 随机滚动</button>
+            <div class="value-display" id="displayValue">0000</div>
+        </div>
+        <div class="footer-note">▼ 每个数字独立滚筒 · 始终向下旋转 ▼</div>
+    </div>
+
+<script>
+(function(){
+   const DIGIT_HEIGHT=120;
+   const GROUP_SIZE=10;
+   const REPEAT_GROUPS=8;
+   const TOTAL=GROUP_SIZE*REPEAT_GROUPS;
+   const MID_START=Math.floor(REPEAT_GROUPS/2)*GROUP_SIZE;
+
+   const panel=document.getElementById('rollerPanel');
+   const rollBtn=document.getElementById('rollBtn');
+   const displayEl=document.getElementById('displayValue');
+
+   const rollers=[];
+   let isRolling=false;
+
+   function initRollers(initial=1234){
+     panel.innerHTML='';
+     rollers.length=0;
+     const digits=initial.toString().padStart(4,'0').split('').map(Number);
+     digits.forEach(d=>{
+       const rollerDiv=document.createElement('div');
+       rollerDiv.className='digit-roller';
+       const nums=document.createElement('div');
+       nums.className='roll-numbers';
+       for(let g=0;g<REPEAT_GROUPS;g++){
+         for(let n=0;n<GROUP_SIZE;n++){
+           const span=document.createElement('span');
+           span.textContent=n;
+           nums.appendChild(span);
+         }
+       }
+       rollerDiv.appendChild(nums);
+       panel.appendChild(rollerDiv);
+       const idx=MID_START + d;
+       nums.style.transform=`translateY(-${idx*DIGIT_HEIGHT}px)`;
+       rollers.push({element:nums,currentIndex:idx});
+     });
+     updateDisplay(digits.join(''));
+   }
+
+   function updateDisplay(text){displayEl.textContent=text;}
+   function getCurrentDigits(){return rollers.map(r=> (r.currentIndex%GROUP_SIZE).toString()).join('');}
+
+   function resetToSafePositions(){
+     rollers.forEach(r=>{
+       const digit=r.currentIndex%GROUP_SIZE;
+       const safe=MID_START+digit;
+       if(r.currentIndex!==safe){
+         const el=r.element;
+         el.style.transition='none';
+         el.style.transform=`translateY(-${safe*DIGIT_HEIGHT}px)`;
+         el.offsetHeight;
+         el.style.transition='';
+         r.currentIndex=safe;
+       }
+     });
+   }
+
+   function rollDigitTo(roller,target){
+     return new Promise(resolve=>{
+       const el=roller.element;
+       const curIdx=roller.currentIndex;
+       const curDigit=curIdx%GROUP_SIZE;
+       if(curDigit===target){resolve(false);return;}
+       const group=Math.floor(curIdx/GROUP_SIZE);
+       let nextIdx=group*GROUP_SIZE+target;
+       if(target<=curDigit) nextIdx+=GROUP_SIZE;
+       el.addEventListener('transitionend',function handler(){
+         el.removeEventListener('transitionend',handler);
+         roller.currentIndex=nextIdx;
+         resolve(true);
+       });
+       el.style.transform=`translateY(-${nextIdx*DIGIT_HEIGHT}px)`;
+     });
+   }
+
+   async function rollRandom(){
+     if(isRolling) return;
+     const num=Math.floor(Math.random()*10000);
+     const digits=num.toString().padStart(4,'0').split('').map(Number);
+     resetToSafePositions();
+     isRolling=true;
+     rollBtn.disabled=true;
+     await Promise.all(rollers.map((r,i)=>rollDigitTo(r,digits[i])));
+     resetToSafePositions();
+     updateDisplay(getCurrentDigits());
+     isRolling=false;
+     rollBtn.disabled=false;
+   }
+
+   rollBtn.addEventListener('click',rollRandom);
+   initRollers(2024);
+})();
+</script>
+
+</body>
+</html>
