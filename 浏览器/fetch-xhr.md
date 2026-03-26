@@ -96,7 +96,6 @@
             const response = await fetch('https://api.example.com/data');
             
             const jsonData = await response.json();
-
             // 应用场景：图片地址
             const blob = await response.blob()
             // URL.createObjectURL(blob) 可以获取当前文件的一个内存URL
@@ -112,11 +111,7 @@
             reader.readAsText(blob, "GBK");
 
             const buffer = await response.arrayBuffer()
-
             const text = await response.text()
-
-
-
 
         } catch (error) {
             console.error('请求失败:', error);

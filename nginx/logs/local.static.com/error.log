@@ -1,0 +1,1 @@
+2026/03/25 11:21:44 [error] 44475#0: *7 open() "/Users/qinmao/Desktop/project/Front-End-Study/nginx/html/static/favicon.ico" failed (2: No such file or directory), client: 127.0.0.1, server: local.static.com, request: "GET /favicon.ico HTTP/2.0", host: "local.static.com", referrer: "https://local.static.com/"

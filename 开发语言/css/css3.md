@@ -49,7 +49,7 @@
     - 扩展半径  可以为负值，值越大，扩展半径越大
     - 内阴影  inset(可选)
     - 一般用border 设置线比较粗，用box-shadow 的内阴影设置线比较细如下：
-    - box-shadow: 0px -.5px 0px 0px #F5F4F3 inset;
+    - box-shadow: 0px -5px 0px 0px #F5F4F3 inset;
 ## 边框
  * border-radius
     - border-radius:x x x x/y y y y
@@ -60,22 +60,28 @@
     - 切割图片 border-image-slice:
     - border-image-repeat:round;
 ## 背景
-* background-image(支持多张图)：
-   - url("images/bg1.png") left top,
-   - url("images/bg2.png") right top,
-   - url("images/bg3.png") right bottom,
-   - url("images/bg4.png") left bottom,
-   - url("images/bg5.png") center center;
+* background-image(支持多张图)
+  ```css
+   .bg{
+     background:
+     url(../imgs/left-top.png) no-repeat top left / 120px 120px,
+     url(../imgs/left-bottom.png) no-repeat bottom left / 120px 120px,
+     url(../imgs/right-top.png) no-repeat top right / 120px 120px,
+     url(../imgs/right-bottom.png) no-repeat bottom right / 654px 120px,
+     url(../imgs/x-bg.png) no-repeat top / 1528px 842px,
+     url(../imgs/y-bg.png) no-repeat center / 100% 100%;
+   }
+  ```
 
 * background-size:
    - 数字/百分比，
    - cover 把背景图片放大到适合元素容器的尺寸，图片比例不变，但是要注意，超出容器的部分可能会裁掉。
    - contain 完全显示图片，不考虑是否覆盖整个元素
-   + 注意：
-        - background-size：100% 100%;---按容器比例撑满，图片变形；
+   + 注意：background-size：100% 100%; 按容器比例撑满，图片变形；
 
 * background-origin 
    - 背景原点(默认是padding-box)
+
 * background-clip 背景图片的显示位置
   - background-clip: border-box|padding-box|content-box;
 ## 图片 
@@ -198,7 +204,7 @@
     * 视角：perspective
     * 3d转换：transform-style:flat 2d平面呈现 perserve-3d 3d空间呈现 
 ## css 动画
-* 详见[浏览器动画](/浏览器/动画.md)
+* 详见[浏览器动画](/浏览器/animate.md)
 ## media 
  ```css
  @media (min-width: 750px) {
@@ -208,12 +214,6 @@
  }
  ```
 ## css变量
-* 好处：
-  - 减少样式代码的重复性
-  - 增加样式代码的扩展性
-  - 提高样式代码的灵活性
-  - 增多一种CSS与JS的通讯方式
-  - 不用深层遍历DOM改变某个样式
 * 定义：
   ```css
   .page-wrap {
@@ -232,8 +232,8 @@
         baseInfo,
     }) {
         const themeConfig = {
-            buttonColour: baseInfo.shareInfoDTO.buttonColour,
-            buttonWordColour: baseInfo.shareInfoDTO.buttonWordColour,
+            buttonColour: "#ddd",
+            buttonWordColour: "#fff",
         };
         Object.entries(themeConfig).forEach(([key, value]) => {
             this.$el.style.setProperty(`--${key}`, value);

@@ -11,11 +11,7 @@
   - OpenResty
 
 ## 优点
-* 高性能
-* 可拓展性好
-* 高可靠性
-* 热部署
-* BSD许可证
+>高性能、可拓展性好、高可靠性、热部署、BSD许可证
 
 ## 安装
 [nginx安装](./nginx安装.md)
@@ -23,8 +19,9 @@
 ## nginx的组成
 * nginx 二进制可执行文件
 * nginx.conf 配置 
-* access.log 访问日志 纪录每一条 http 请求信息
-* error.log 错误日志 定位问题
+* 日志
+  - access.log 访问日志 记录每一条 http 请求信息
+  - error.log 错误日志 定位问题
 
 ## 版本
 * nginx.org 开源版
@@ -45,6 +42,8 @@
     # 查看 Nginx 运行状态：
     systemctl status nginx
     
+    # 修改配置文件路径
+    nginx -c /home/xxx.conf 
     # 热重启(重新加载配置文件,-s 表示发送信号)：
     nginx -s reload
 
@@ -176,7 +175,6 @@
         # 处理 OPTIONS 请求
         # 处理预检请求（OPTIONS）。这对于某些类型的跨域请求（例如使用 PUT 或 DELETE 法时）是必需的。
         # 返回 HTTP 204 No Content 响应，表示请求成功，但没有内容返回。
-
         if ($request_method = 'OPTIONS') {
             add_header 'Access-Control-Allow-Origin' '*';
             add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
@@ -306,7 +304,6 @@
     server {
         # 定义访问日志的输出格式，log_format 在 http 配置块中进行定义，这样会对所有的 server 块生效。
         # Nginx 中常用的日志格式有 main、combined(默认)
-
         # $remote_user 用户身份验证，如使用了 HTTP 基本认证，可以记录用户身份信息。
         # $time_local 请求时间 格式为 [day/month/year:hour:minute:second zone]，即 31/Dec/2024:13:45:12 +0800
         # X-Forwarded-For 代理时，用于传递客户端的真实 IP
@@ -380,3 +377,11 @@
 ![nginx进程结构](./imgs/nginx进程结构.png)
 ![nginx进程管理信号](./imgs/nginx进程管理信号.png)
 ![nginx reload 流程](./imgs/nginx%20reload%20流程.png)
+
+## Nginx 进程模型与权限分工
+> 启动 Nginx 后，你会看到两类进程：
+* master 进程：通常以 root 用户启动。
+  - 职责：读取配置文件、绑定端口（尤其是 80/443 等特权端口）、创建和管理 worker 进程、接收信号（重载、热升级等）。
+  - 因为需要绑定低于 1024 的端口和读取系统配置文件，master 必须拥有 root 权限
+* worker 进程：由一个或多个工作进程组成，默认以非特权用户运行（如 nobody、www-data 或专用 nginx 用户）。
+  - 职责：实际处理网络请求、读取静态文件、执行 FastCGI 等。工作进程以低权限运行，即使被攻击者利用，也无法直接控制系统。
