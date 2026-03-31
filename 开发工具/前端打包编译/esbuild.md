@@ -23,6 +23,7 @@ esbuild 是一个极快的 JavaScript 打包工具，用 Go 语言编写，专�
     // 重建时只处理变化的文件
     await ctx.rebuild();
   ```
+  
 ## 局限性
 * 插件生态相对较小
 * 高级功能不如 Webpack 丰富

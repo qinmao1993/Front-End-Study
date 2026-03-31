@@ -1,17 +1,21 @@
-# vite
-> Vite 需要 Node.js 版本 18+ 或 20+
+# vite8+
+> Vite8 需要 Node.js 版本 20.19+ 或 22.12+
 ## vite 为什么快
 * 冷启动:不存在打包(bundle)的过程,冷启动速度很快
 * HMR性能:代码是按需编译的，只编译的当前页面导入的代码,热更新的性能与模块的数量是解耦的
 * 构建速度:Go 语言编写的快速、轻量级的 js/ts 构建工具，比以 js 编写的打包器预构建依赖快 10-100 倍。
 
 ## 组成
-* 开发阶段
-  - 使用 esbuild 预构建依赖，将非js部分如（css、图片、vue等组件文件）转换并按需提供源码
-  - 源码模块进行协商缓存，依赖模块请求则会设置强缓存
-* 构建阶段
-  - 使用 Rollup，侧重包体积大小和广泛的生态
-
+* vite8以前
+  + 开发阶段
+    - 使用 esbuild 预构建依赖，将非js部分如（css、图片、vue等组件文件）转换并按需提供源码
+    - 源码模块进行协商缓存，依赖模块请求则会设置强缓存
+  + 构建阶段
+    - 使用 Rollup，侧重包体积大小和广泛的生态
+* vite8+
+  - Rolldown 统一打包：Vite 8 使用 Rust 编写的 Rolldown 同时替代了 esbuild 和 Rollup。它既拥有 esbuild 级别的性能，又完全兼容 Rollup 的插件 API，彻底解决了开发与生产环境行为不一致的问题
+  - Oxc 赋能核心功能：Oxc 现在接管了 JavaScript/TypeScript 的解析、转换和代码压缩工作
+  
 ## 创建一个vue项目
   ```bash
     npm create vite@latest my-vue-app -- --template vue
@@ -43,5 +47,3 @@
 
   ```
   
-## 插件开发
-- TODO
