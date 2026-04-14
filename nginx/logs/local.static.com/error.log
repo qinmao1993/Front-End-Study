@@ -1,1 +1,2 @@
-2026/03/25 11:21:44 [error] 44475#0: *7 open() "/Users/qinmao/Desktop/project/Front-End-Study/nginx/html/static/favicon.ico" failed (2: No such file or directory), client: 127.0.0.1, server: local.static.com, request: "GET /favicon.ico HTTP/2.0", host: "local.static.com", referrer: "https://local.static.com/"
+2026/04/09 14:44:34 [error] 16038#0: *171 rewrite or internal redirection cycle while internally redirecting to "/dp/index.html", client: 127.0.0.1, server: local.static.com, request: "GET /dp/ HTTP/2.0", host: "localhost"
+2026/04/09 14:44:49 [error] 16038#0: *171 rewrite or internal redirection cycle while internally redirecting to "/dp/index.html", client: 127.0.0.1, server: local.static.com, request: "GET /dp/test HTTP/2.0", host: "localhost"

@@ -1,0 +1,2 @@
+2026/04/07 15:45:33 [error] 10336#0: *19 directory index of "/Users/qinmao/Desktop/project/Front-End-Study/nginx/html/spa/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", host: "localhost:8084"
+2026/04/07 15:45:33 [error] 10336#0: *19 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost:8084", referrer: "http://localhost:8084/"
