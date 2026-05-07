@@ -97,8 +97,6 @@
   ```
 
 * linux(ubuntu/centos8+)
-  - TODO
-  
   ```bash
     # ubuntu 
     apt-get install cmake

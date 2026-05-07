@@ -61,8 +61,43 @@ Iconify 是一个统一的图标框架，它聚合了超过 150 个开源图标�
   <Icon icon="mdi-light:home" />
   ```
 
-## 离线使用与性能优化
-虽然 Iconify 的核心优势是按需从 API 加载，但生产环境中你可能不希望依赖外部服务。成本最低、维护最简单的方案。前端代码几乎无需改动，只需将 API 地址指向内网服务即可
+## 离线使用
+> 在离线内网环境下使用 @iconify/vue，核心思路是将图标所需的元数据（JSON文件）或完整API服务预先部署到内网。根据项目规模和需求，主要有三种方案：手动注册、自动化插件和部署API服务。所有离线方案的实质，都是将这个“在线请求”变成“本地获取”。
+* 方案一：手动按需注册 (最推荐，最可控)
+  > 适用场景：绝大部分项目。它完美平衡了可控性和性能，且构建产物不会包含未使用的图标数据。
+  1. 安装依赖
+  ```bash
+    # @iconify/json 包含了所有图标集的元数据，体积约300MB（不推荐）
+    npm install @iconify/vue @iconify/json -D
+
+    # 独立图标集(推荐)
+    npm install @iconify/json/ep -D
+  ```
+  2. 引入并注册图标集
+    - 在应用入口文件（如 main.js 或 main.ts）中，只引入你需要的图标集JSON文件。
+    ```js
+        // main.js
+        // 1. 核心 API 保持不变
+        import { addCollection } from '@iconify/vue'
+
+
+        // 完整包 @iconify/json
+        import antDesignIcons from '@iconify/json/json/ant-design.json'; // 仅按需引入
+        // 应用初始化前，注册图标集
+        addCollection(antDesignIcons);
+
+  
+        // 2. 引入指定的独立图标集包
+        // 假设我们只需要 Element Plus (ep) 和 Ant Design (ant-design)
+        import { icons as epIcons } from '@iconify-json/ep'
+
+        // 3. 应用启动前注册它们
+        addCollection(epIcons)
+
+        // ... 后续初始化代码
+
+    ```
+* 方案二：部署内网Iconify API服务 (适合团队级应用)
   ```bash
     # 拉取官方 API 项目
     git clone https://github.com/iconify/api.git

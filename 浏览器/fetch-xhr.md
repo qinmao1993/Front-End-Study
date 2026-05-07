@@ -85,23 +85,19 @@
         }
     }
   ```
-* 服务器响应的数据类型
-  - json 
-  - blob 
-  - text
-  - arrayBuffer
+* 响应的数据类型
+  - json、blob、text、arrayBuffer
   ```js
      async function fetchData() {
         try {
             const response = await fetch('https://api.example.com/data');
             
             const jsonData = await response.json();
-            // 应用场景：图片地址
-            const blob = await response.blob()
-            // URL.createObjectURL(blob) 可以获取当前文件的一个内存URL
-            // FileReader.readAsDataURL(blob)可以获取一段data:base64的字符串
-            const url = URL.createObjectURL(blob);
 
+            // blob 应用场景：图片地址
+            const blob = await response.blob()
+            // FileReader.readAsDataURL(blob)可以获取一段data:base64的字符串
+            const url = URL.createObjectURL(blob); // 获取当前文件的一个内存URL
             // 应用场景：解决返回的 html gbk 乱码问题
             const reader = new FileReader();
             reader.onload = function (e) {

@@ -1,9 +1,9 @@
 # conda
-  - 开源的包管理和环境管理系统，支持多种编程语言（包括 Python、R 等），不仅可以管理 Python 包，还可以管理其他软件包和依赖项。
-  - 可以在 Windows、macOS 和 Linux 上运行的开源包和环境管理系统。安装、运行和更新软件包及其依赖项
+  > 开源跨平台的包管理和环境管理系统，支持多种编程语言（包括 Python、R 等），不仅可以管理 Python 包，还可以管理其他软件包和依赖项。
+
 ## 安装
 * 有两种方式
-  - Anaconda： 包含了大量常用的数据科学包，还有可视化的界面，适合需要一站式解决方案的用户体积较大。
+  - Anaconda：包含了大量常用的数据科学包，还有可视化的界面，适合需要一站式解决方案的用户体积较大。
   - Miniconda：Miniconda 只包含 Conda 本身和 Python 可以按需安装其他包。 是Anaconda迷你版本
 * 方式一：不同系统下载对应安装包
   - [下载](https://docs.anaconda.com/miniconda/)
@@ -45,6 +45,7 @@
   ```bash
     conda --version
   ```
+
 ## 常用命令
 * 镜像源配置
   ```bash
@@ -124,6 +125,7 @@
     conda update xxx
 
   ```
+
 ## 离线安装
 ```bash
     # 在有网环境安装 conda-pack

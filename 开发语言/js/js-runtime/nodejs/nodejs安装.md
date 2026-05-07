@@ -112,9 +112,9 @@
     # 手动指定：j2表示用2个逻辑cpu
     make -j2  
 
-    # macOS，使用 sysctl -n hw.ncpu 获取 CPU 核心数
+    # macOS，使用 sysctl -n hw.logicalcpu 获取 CPU 核心数
     # centos cat /proc/cpuinfo | grep processor | wc -l
-    make -j$(sysctl -n hw.ncpu)   
+    make -j$(sysctl -n hw.logicalcpu)   
 
     make install
   ```
