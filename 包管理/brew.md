@@ -5,7 +5,7 @@
 * brew: Homebrew 源代码仓库      
 * homebrew-core  Homebrew 核心源   
 * homebrew-bottles:预编译二进制软件包
-* homebrew-cask: 提供 macOS 应用和大型二进制文件的安装
+* homebrew-cask: 安装GUI应用 [查看可安装列表]（https://formulae.brew.sh/cask/）
 
 ## 安装:
   ```bash 
@@ -61,6 +61,7 @@
    brew install 软件名  
    brew install --verbose --debug FORMULA|CASK
    brew uses --installed icu4c@77 # 找出依赖所有依赖icu4c@77的包
+   brew install --cask dotnet-sdk
 
    brew uninstall  软件名称
 

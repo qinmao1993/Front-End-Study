@@ -1,18 +1,20 @@
 # opencv 安装
 
-## 方式一：预构建版本（包管理安装:python）
+## Python 安装
   ```bash
-    # 安装开发版(支持中文标记)
-    pip install opencv-python-rolling 
-    # 安装lts版
-    pip|conda install opencv-python
+    pip install opencv-python          # 主库，不含 contrib 非免费模块
+    pip install opencv-contrib-python  # 包含 contrib 扩展（不能与主库同时安装）
 
-    # 可选 人脸模型的拓展包
+    pip install opencv-python-rolling  # 安装开发版(支持中文标记)
     pip install opencv-contrib-python-rolling
   ```
+  
+## c++ 构建
+* 包管理器安装
+  - Linux: libopencv-dev,macOS: brew install opencv
 
-## 方式二：源码安装
-> OpenCV 使用 CMake 构建管理系统进行配置和构建
+## 源码构建
+> 可以从源码编译。从源码构建可获得最大程度的定制（如开启 CUDA、IPP、OpenCL 支持）。
 * 先决条件：必需的依赖库
   - 需要用 CMake 3.9 或更高版本 
     ```bash
@@ -23,10 +25,10 @@
   - C++ 编译器：通常是 GCC/G++ 或 Clang 编译器
   - Python 2.7 或更高版本以及 Numpy 1.5 或更高版本
 
-* 获取软件源
+* 下载源码
   + OpenCV 有两个代码仓库：
-    - opencv - 具有稳定且积极支持的算法的主仓库
-    - 包含实验性和非自由（专利）算法的opencv_contrib
+    - opencv 具有稳定且积极支持的算法的主仓库
+    - 包含实验性和非自由（专利）算法的 opencv_contrib
     - 以及一个包含测试数据的存储库：opencv_extra
   + 下载指定版本
     - https://github.com/opencv/opencv/releases 
@@ -42,7 +44,6 @@
       git clone https://github.com/opencv/opencv_extra
     ```
 
-
 * 配置
   - 在此步骤中，CMake 将验证所有必要的工具和依赖项是否可用并与库兼容，并将为所选构建系统生成中间文件。
   - 它可以是 Makefile、IDE 项目和解决方案等。通常此步骤在新创建的 build 目录中执行：
@@ -56,11 +57,8 @@
   ```bash
     # 构建
     cmake --build <build-directory> <build-options>
-
     cmake --build <build-directory> --target install <other-options>
-
     # 如果安装根位置是受保护的系统目录，则必须使用超级用户或管理员权限（例如 ）运行安装过程。sudo cmake ...
-
   ```
 
 * macOS安装

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <title>OpenCV.js 实战案例</title>
+        <!-- 加载 OpenCV.js -->
+        <!-- <script src="https://docs.opencv.org/master/opencv.js"></script> -->
+        <script src="./static/opencv.js"></script>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+            canvas {
+                border: 1px solid #ccc;
+                margin: 10px;
+                max-width: 100%;
+            }
+            .section {
+                margin-bottom: 40px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>OpenCV.js 案例</h1>
+
+        <div class="section">
+            <h2>案例: 读取和显示图像</h2>
+            <input type="file" id="fileInput1" accept="image/*" />
+            <br />
+            <canvas id="canvasOutput1"></canvas>
+        </div>
+
+        <script>
+            function initReadAndDisplayExample() {
+                const fileInput = document.getElementById("fileInput1");
+                const canvasOut = document.getElementById("canvasOutput1");
+
+                fileInput.addEventListener("change", (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const url = URL.createObjectURL(file);
+                    const img = new Image();
+                    img.onload = () => {
+                        // 从图像创建cv.Mat并显示
+                        const imgMat = cv.imread(img);
+
+                        // 转为灰度
+                        const grayMat = new cv.Mat();
+                        cv.cvtColor(imgMat, grayMat, cv.COLOR_RGBA2GRAY);
+
+                        // 高斯模糊（可选，边缘更干净）
+                        // cv.GaussianBlur(src, dst, ksize, sigmaX, sigmaY, borderType);
+                        const blurredMat = new cv.Mat();
+                        cv.GaussianBlur(
+                            grayMat,
+                            blurredMat,
+                            new cv.Size(5, 5),
+                            0,
+                        );
+
+                        // Canny 边缘检测
+                        const edgesMat = new cv.Mat();
+                        cv.Canny(blurredMat, edgesMat, 50, 150);
+
+                        cv.imshow(canvasOut, edgesMat);
+
+                        // 释放内存
+                        imgMat.delete();
+                        grayMat.delete();
+                        blurredMat.delete();
+                        edgesMat.delete();
+                        URL.revokeObjectURL(url); // 地址释放
+                    };
+                    img.src = url;
+                });
+            }
+
+            cv.onRuntimeInitialized = function () {
+                console.log("✅ OpenCV.js 已就绪，版本：");
+                // console.log(cv.getBuildInformation && cv.getBuildInformation())
+
+                initReadAndDisplayExample();
+            };
+        </script>
+    </body>
+</html>

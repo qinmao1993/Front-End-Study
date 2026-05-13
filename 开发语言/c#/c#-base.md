@@ -1,7 +1,7 @@
 # c# 基本语法
 C# 是由微软公司于 2000 年推出的一种现代、面向对象、类型安全的编程语言，运行在 .NET 平台（包括 .NET Framework、.NET Core 及最新的统一 .NET）之上。它由 Anders Hejlsberg（Delphi 和 Turbo Pascal 之父）主导设计，语法风格深受 C/C++ 和 Java 影响，同时又融入了函数式、异步编程等现代特性。
 
-# 跨平台能力
+## 跨平台能力
 * 自 .NET Core 起，C# 可原生运行于 Windows、Linux、macOS 以及移动、嵌入式设备。
 * .NET 统一 (2020-)	.NET 5/6/8/9 合并 .NET Core 与 .NET Framework，成为唯一主流开发平台。
 

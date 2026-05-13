@@ -5,7 +5,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>音视频</title>
-        <style></style>
     </head>
     <body>
         <!-- 生产环境需要：https -->
@@ -101,22 +100,23 @@
             }
 
             function handleLocalMediaStreamError(err) {
-                console.log("navigator.getUserMedia error: ", err);
+                let message = "摄像头打开失败。";
+                // 根据错误类型提供不同提示
                 if (
                     err.name === "NotAllowedError" ||
                     err.name === "PermissionDeniedError"
                 ) {
-                    // 用户拒绝了音视频权限，可以在此处提示用户开启权限
-                    console.log("用户拒绝了音视频权限,请点击允许");
+                    message = "用户拒绝了摄像头权限，请允许后重试。";
                 } else if (
                     err.name === "NotFoundError" ||
+                    err.name === "NotReadableError" ||
                     err.name === "DevicesNotFoundError"
                 ) {
-                    // 没有检测到音视频设备
-                    console.log("没有检测到音视频设备");
+                    message = "没有检测到可用摄像头设备。";
+                } else if (error.name === "OverconstrainedError") {
+                    console.error("您设置的约束条件太苛刻，无法满足");
                 } else {
-                    // 其他错误，可以进行相应处理
-                    console.log("其他错误");
+                    console.error("访问媒体设备出错了:", error);
                 }
             }
 
@@ -127,7 +127,6 @@
                     frameRate: { min: 20 },
                     width: { min: 640, ideal: 1280 },
                     height: { min: 360, ideal: 720 },
-                    aspectRatio: 16 / 9,
                 },
                 audio: false,
                 // audio: {

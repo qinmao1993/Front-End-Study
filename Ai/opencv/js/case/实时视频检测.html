@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <title>OpenCV.js 实战案例</title>
+        <!-- 兼容性处理 -->
+        <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+        <!-- 加载 OpenCV.js -->
+        <!-- <script src="https://docs.opencv.org/master/opencv.js"></script> -->
+        <script src="./static/opencv.js"></script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+
+            .video-controls {
+                margin-bottom: 40px;
+                .video-desc {
+                    margin: 8px 0;
+                    color: #666;
+                }
+            }
+            .video-output {
+                display: flex;
+                gap: 10px;
+                .video-wrapper {
+                    flex: 1; /* 每个占一半宽度 */
+                    border: 1px solid #ccc;
+                }
+                #videoInput,
+                #canvasOutput {
+                    width: 100%;
+                    height: auto;
+                    display: block;
+                }
+                #videoInput {
+                    object-fit: contain;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <h1>OpenCV.js 案例</h1>
+
+        <div class="video-controls">
+            <h2>视频设备与采集控制</h2>
+            <button id="refreshDevicesBtn">刷新设备</button>
+            <select id="cameraSelect"></select>
+            <button id="startBtn">开始采集</button>
+            <button id="stopBtn" disabled>停止采集</button>
+            <div id="videoStatus" class="video-desc">
+                请刷新设备并选择摄像头。
+            </div>
+        </div>
+
+        <div class="video-output">
+            <div class="video-wrapper">
+                <video id="videoInput" autoplay playsinline></video>
+            </div>
+            <div class="video-wrapper">
+                <canvas id="canvasOutput"></canvas>
+            </div>
+        </div>
+
+        <script>
+            // 获取 DOM 元素引用
+            const videoInput = document.getElementById("videoInput");
+            const canvasOut = document.getElementById("canvasOutput");
+
+            const cameraSelect = document.getElementById("cameraSelect");
+            const refreshDevicesBtn =
+                document.getElementById("refreshDevicesBtn");
+            const startBtn = document.getElementById("startBtn");
+            const stopBtn = document.getElementById("stopBtn");
+            const videoStatus = document.getElementById("videoStatus");
+
+            // 状态变量
+            let currentStream = null; // 当前媒体流
+            let rafId = null; // requestAnimationFrame ID
+            let isStreaming = false; // 是否正在采集
+
+            let srcMat = null; // 视频帧的源矩阵
+            let grayMat = null; // 灰度矩阵
+            let resizedMat = null; // 调整大小后的矩阵
+            let resizingFactor = 0.5; // 调整大小的缩放因子
+
+            let cap = null; // OpenCV 视频捕捉对象
+            /**
+             * 枚举并列出所有视频输入设备
+             */
+            async function enumerateVideoDevices() {
+                // 检查浏览器支持
+                if (
+                    !navigator.mediaDevices ||
+                    !navigator.mediaDevices.enumerateDevices
+                ) {
+                    videoStatus.textContent =
+                        "当前浏览器不支持 mediaDevices.enumerateDevices。";
+                    return;
+                }
+
+                try {
+                    // 获取所有媒体设备
+                    const devices =
+                        await navigator.mediaDevices.enumerateDevices();
+                    // console.log("设备列表：", devices);
+                    // 过滤出视频输入设备
+                    const videoDevices = devices.filter(
+                        (device) => device.kind === "videoinput",
+                    );
+                    // 清空选择器
+                    cameraSelect.innerHTML = "";
+
+                    // 如果没有视频设备
+                    if (videoDevices.length === 0) {
+                        videoStatus.textContent = "未检测到摄像头设备。";
+                        cameraSelect.disabled = true;
+                        startBtn.disabled = true;
+                        return;
+                    }
+
+                    // 添加设备选项到选择器
+                    videoDevices.forEach((device, index) => {
+                        const option = document.createElement("option");
+                        const label = device.label || `摄像头 ${index + 1}`;
+                        const value = device.deviceId;
+                        option.value = value;
+                        option.textContent = label;
+
+                        cameraSelect.appendChild(option);
+                    });
+
+                    // 启用控件
+                    cameraSelect.disabled = false;
+                    startBtn.disabled = false;
+                    videoStatus.textContent = "请选择摄像头并点击“开始采集”。";
+                } catch (error) {
+                    console.error(error);
+                    videoStatus.textContent = `设备枚举失败：${error.message}`;
+                }
+            }
+
+            /**
+             * 处理媒体错误
+             * @param {Error} err - 错误对象
+             */
+            function handleMediaError(err) {
+                let message = "摄像头打开失败。";
+                // 根据错误类型提供不同提示
+                if (
+                    err.name === "NotAllowedError" ||
+                    err.name === "PermissionDeniedError"
+                ) {
+                    message = "用户拒绝了摄像头权限，请允许后重试。";
+                } else if (
+                    err.name === "NotFoundError" ||
+                    err.name === "NotReadableError" ||
+                    err.name === "DevicesNotFoundError"
+                ) {
+                    message = "没有检测到可用摄像头设备。";
+                } else if (err.name === "OverconstrainedError") {
+                    console.error("您设置的约束条件太苛刻，无法满足");
+                } else {
+                    console.error("访问媒体设备出错了:", err);
+                }
+                videoStatus.textContent = message;
+                stopCamera();
+            }
+
+            /**
+             * 启动摄像头采集
+             */
+            async function startCamera() {
+                // 检查浏览器支持
+                if (
+                    !navigator.mediaDevices ||
+                    !navigator.mediaDevices.getUserMedia
+                ) {
+                    videoStatus.textContent = "当前浏览器不支持 getUserMedia。";
+                    return;
+                }
+
+                // 获取选择的设备 ID
+                const deviceId = cameraSelect.value;
+                // 设置媒体约束
+                const constraints = {
+                    // video: {
+                    //     deviceId: deviceId ? { exact: deviceId } : undefined,
+                    //     width: { ideal: 1280 },
+                    //     height: { ideal: 720 },
+                    //     frameRate: { min: 30 },
+                    // },
+                    video: true,
+                    audio: false,
+                };
+
+                try {
+                    // 请求媒体流
+                    const stream =
+                        await navigator.mediaDevices.getUserMedia(constraints);
+                    currentStream = stream;
+                    // 设置视频源并播放
+                    videoInput.srcObject = stream;
+                    await videoInput.play(); // 等待视频播放,异步的，为了确保 videoWidth 和 videoHeight 可用
+
+                    const track = stream.getVideoTracks()[0];
+                    const settings = track.getSettings();
+                    console.log(
+                        `实际分辨率: ${settings.width}x${settings.height}, 实际帧率: ${settings.frameRate}`,
+                    );
+
+                    // 返回视频轨道解码后的实际像素尺寸，Canvas 绘制和 cv.imshow 都与之对齐。
+                    const videoWidth = videoInput.videoWidth;
+                    const videoHeight = videoInput.videoHeight;
+                    // 兼容性处理：opencv.js依赖 width/height 属性做初始化
+                    videoInput.width = videoWidth;
+                    videoInput.height = videoHeight;
+                    // 内部像素尺寸:决定了图像的精细度（OpenCV 输出矩阵的尺寸）去视频实际分辨率，保持原始比例
+                    canvasOut.width = videoWidth;
+                    canvasOut.height = videoHeight;
+
+                    // 初始化 OpenCV 矩阵
+                    if (srcMat) {
+                        srcMat.delete();
+                    }
+                    if (grayMat) {
+                        grayMat.delete();
+                    }
+                    srcMat = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
+                    grayMat = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC1);
+                    cap = new cv.VideoCapture(videoInput);
+
+                    // 更新状态
+                    isStreaming = true;
+                    stopBtn.disabled = false;
+                    startBtn.disabled = true;
+                    cameraSelect.disabled = true;
+                    refreshDevicesBtn.disabled = true;
+                    videoStatus.textContent = "摄像头已启动，正在渲染视频...";
+
+                    // 开始处理视频帧
+                    requestAnimationFrame(processVideoFrame);
+                } catch (err) {
+                    handleMediaError(err);
+                }
+            }
+
+            /**
+             * 停止摄像头采集
+             */
+            function stopCamera() {
+                // 停止动画帧
+                if (rafId) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+                // 停止媒体流
+                if (currentStream) {
+                    currentStream.getTracks().forEach((track) => track.stop());
+                    currentStream = null;
+                }
+                // 清空视频源
+                videoInput.srcObject = null;
+
+                // 释放矩阵和捕捉器，避免内存泄漏
+                if (srcMat) {
+                    srcMat.delete();
+                    srcMat = null;
+                }
+                if (grayMat) {
+                    grayMat.delete();
+                    grayMat = null;
+                }
+                cap = null;
+                const ctx = canvasOut.getContext("2d");
+                ctx.clearRect(0, 0, canvasOut.width, canvasOut.height);
+
+                // 更新状态
+                isStreaming = false;
+
+                stopBtn.disabled = true;
+                startBtn.disabled = false;
+                refreshDevicesBtn.disabled = false;
+                cameraSelect.disabled = false;
+                videoStatus.textContent = "已停止采集。";
+            }
+
+            /**
+             * 在图像上绘制 FPS 文本（左上角）
+             * @param {cv.Mat} mat - 目标图像矩阵（可以是 RGBA 或灰度图）
+             * @param {number} fps - 当前的 FPS 值
+             * @param {Object} [options] - 可选配置
+             * @param {cv.Point} [options.org] - 文字左上角起点，默认 {x:10, y:40}
+             * @param {number} [options.fontScale] - 字体大小，默认 0.8
+             * @param {cv.Scalar} [options.color] - 文字颜色，默认白色（灰度图）或 (255,255,255,255)（彩色）
+             * @param {number} [options.thickness] - 线条粗细，默认 2
+             */
+            function drawFps(mat, fps, options = {}) {
+                const text = `FPS: ${fps}`;
+                const org = options.org ?? new cv.Point(10, 40);
+                const fontFace = cv.FONT_HERSHEY_SIMPLEX;
+                const fontScale = options.fontScale ?? 0.8;
+                const thickness = options.thickness ?? 2;
+
+                // 根据图像通道数自动推断颜色
+                let color;
+                if (options.color) {
+                    color = options.color;
+                } else {
+                    if (mat.channels() === 1) {
+                        color = new cv.Scalar(255); // 灰度图用白色
+                    } else {
+                        color = new cv.Scalar(255, 255, 255, 255); // RGBA 白色
+                    }
+                }
+
+                // 绘制文字
+                cv.putText(
+                    mat,
+                    text,
+                    org,
+                    fontFace,
+                    fontScale,
+                    color,
+                    thickness,
+                );
+            }
+
+            let fps = 0;
+            let prevTime = performance.now();
+            let frameCount = 0;
+            /**
+             * 处理视频帧（实时渲染）
+             */
+            function processVideoFrame() {
+                if (!isStreaming || !cap) {
+                    return;
+                }
+
+                // 从视频读取帧
+                cap.read(srcMat);
+                // 转换为灰度
+                // cv.cvtColor(srcMat, grayMat, cv.COLOR_RGBA2GRAY);
+
+                // 计算 FPS
+                frameCount++;
+                const currentTime = performance.now();
+                const elapsed = currentTime - prevTime;
+                if (elapsed >= 1000) {
+                    fps = frameCount;
+                    frameCount = 0;
+                    prevTime = currentTime;
+                }
+
+                // 绘制 FPS
+                drawFps(srcMat, fps);
+
+                // 显示到画布
+                cv.imshow(canvasOut, srcMat);
+
+                // 继续下一帧
+                rafId = requestAnimationFrame(processVideoFrame);
+            }
+
+            // 绑定事件监听器
+            startBtn.addEventListener("click", startCamera);
+            stopBtn.addEventListener("click", stopCamera);
+            refreshDevicesBtn.addEventListener("click", enumerateVideoDevices);
+
+            // OpenCV 初始化完成后枚举设备
+            cv.onRuntimeInitialized = function () {
+                console.log("✅ OpenCV.js 已就绪，版本：");
+                // console.log(cv.getBuildInformation && cv.getBuildInformation());
+                enumerateVideoDevices();
+            };
+        </script>
+    </body>
+</html>

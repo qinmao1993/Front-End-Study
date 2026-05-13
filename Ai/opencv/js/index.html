@@ -1,11 +1,202 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>opencv-js</title>
-</head>
-<body>
-    
-</body>
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <title>OpenCV.js 实战案例</title>
+        <!-- 加载 OpenCV.js -->
+        <script src="https://docs.opencv.org/master/opencv.js"></script>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+            canvas,
+            img {
+                border: 1px solid #ccc;
+                margin: 10px;
+                max-width: 100%;
+            }
+            button {
+                margin: 5px;
+                padding: 8px 16px;
+            }
+            .section {
+                margin-bottom: 40px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>OpenCV.js 案例</h1>
+
+        <!-- 案例1：Canny 边缘检测 -->
+        <div class="section">
+            <h2>案例1：Canny 边缘检测</h2>
+            <input type="file" id="fileInput1" accept="image/*" />
+            <br />
+            <canvas id="canvasOutput1"></canvas>
+        </div>
+
+        <!-- 案例2：人脸检测（Haar 级联） -->
+        <div class="section">
+            <h2>案例2：人脸检测（Haar 级联）</h2>
+            <input type="file" id="fileInput2" accept="image/*" />
+            <div id="faceStatus" style="margin: 8px 0; color: #666; font-size: 0.95rem;">正在加载人脸分类器...</div>
+            <canvas id="canvasOutput2"></canvas>
+        </div>
+
+        <script>
+            // ============ OpenCV.js 加载完成后执行 ============
+            cv.onRuntimeInitialized = function () {
+                // console.log("✅ OpenCV.js 已就绪，版本：", cv.getBuildInformation && cv.getBuildInformation());
+
+                // ------ 初始化案例1：Canny ------
+                initCannyExample();
+
+                // ------ 初始化案例2：人脸检测（需要先加载分类器XML）------
+                // initFaceDetection();
+            };
+
+            // ============ 案例1：Canny 边缘检测 ============
+            function initCannyExample() {
+                const fileInput = document.getElementById("fileInput1");
+                const canvasOut = document.getElementById("canvasOutput1");
+
+                fileInput.addEventListener("change", (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            // 1. 将 HTML Image 转换为 cv.Mat
+                            const src = cv.imread(img);
+                            // 2. 转为灰度
+                            const gray = new cv.Mat();
+                            cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+                            // 3. 高斯模糊（可选，边缘更干净）
+                            const blurred = new cv.Mat();
+                            cv.GaussianBlur(
+                                gray,
+                                blurred,
+                                new cv.Size(5, 5),
+                                0,
+                            );
+                            // 4. Canny 边缘检测
+                            const edges = new cv.Mat();
+                            cv.Canny(blurred, edges, 50, 150);
+                            // 5. 显示到 canvas
+                            cv.imshow(canvasOut, edges);
+                            // 6. 释放内存（重要！）
+                            src.delete();
+                            gray.delete();
+                            blurred.delete();
+                            edges.delete();
+                        };
+                        img.src = event.target.result; // base64
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // ============ 案例2：人脸检测 ============
+            let faceCascade = null; // 级联分类器对象
+            let faceCascadeLoaded = false;
+            const faceCascadeFile = "haarcascade_frontalface_default.xml";
+
+            function initFaceDetection() {
+                const fileInput = document.getElementById("fileInput2");
+                const canvasOut = document.getElementById("canvasOutput2");
+                const statusEl = document.getElementById("faceStatus");
+
+                // 使用本地分类器文件，提高稳定性并支持离线运行
+                fetch(faceCascadeFile)
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`无法加载分类器：${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then((xmlText) => {
+                        cv.FS_createDataFile(
+                            "/",
+                            faceCascadeFile,
+                            xmlText,
+                            true,
+                            false,
+                            false,
+                        );
+                        faceCascade = new cv.CascadeClassifier();
+                        if (!faceCascade.load(faceCascadeFile)) {
+                            throw new Error("CascadeClassifier 加载失败");
+                        }
+                        faceCascadeLoaded = true;
+                        statusEl.textContent = "✅ 人脸分类器加载完成，请选择图片进行检测。";
+                        console.log("✅ 人脸分类器加载完成");
+                    })
+                    .catch((err) => {
+                        statusEl.textContent = `❌ 分类器加载失败：${err.message}`;
+                        console.error("❌ 分类器加载失败：", err);
+                    });
+
+                // 文件选择事件
+                fileInput.addEventListener("change", (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (!faceCascadeLoaded) {
+                        statusEl.textContent = "分类器尚未加载，请稍候再试。";
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const src = cv.imread(img);
+                            const gray = new cv.Mat();
+                            cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+                            cv.equalizeHist(gray, gray);
+
+                            const faces = new cv.RectVector();
+                            const scaleFactor = 1.1;
+                            const minNeighbors = 3;
+                            const minSize = new cv.Size(30, 30);
+                            faceCascade.detectMultiScale(
+                                gray,
+                                faces,
+                                scaleFactor,
+                                minNeighbors,
+                                0,
+                                minSize,
+                            );
+
+                            for (let i = 0; i < faces.size(); ++i) {
+                                const rect = faces.get(i);
+                                cv.rectangle(
+                                    src,
+                                    rect,
+                                    new cv.Scalar(0, 255, 0, 255),
+                                    2,
+                                );
+                            }
+
+                            cv.imshow(canvasOut, src);
+
+                            if (faces.size() === 0) {
+                                statusEl.textContent = "未检测到人脸，请换一张清晰正脸图片。";
+                            } else {
+                                statusEl.textContent = `检测到 ${faces.size()} 张人脸。`;
+                            }
+
+                            src.delete();
+                            gray.delete();
+                            faces.delete();
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        </script>
+    </body>
 </html>

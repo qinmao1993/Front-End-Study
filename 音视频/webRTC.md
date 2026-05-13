@@ -21,39 +21,42 @@
     // 如果 getUserMedia 调用成功，则可以通过 Promise 获得 MediaStream 对象，也就是说现在我们已经从音视频设备中获取到音视频数据了。
     // 如果调用失败，比如用户拒绝该 API 访问媒体设备（音频设备、视频设备），或者要访问的媒体设备不可用，则返回的 Promise 会得到 PermissionDeniedError 或 NotFoundError 等错误对象。
   ```
-* MediaStreamConstraints 参数
+  - MediaStreamConstraints 参数,核心就是包含 video 和 audio 两个属性，用于告诉浏览器我们需要什么，以及具体要怎么样的媒体流
+
   ```js
-    dictionary MediaStreamConstraints {
-        (boolean or MediaTrackConstraints) video = false,
-        (boolean or MediaTrackConstraints) audio = false
+    const mediaStreamContrains= {
+        video:true, // 默认值通常都是 VGA (640x480) 分辨率，帧率 30 FPS
+        audio: false
     };
 
-    // 还可以通过 MediaTrackConstraints 进一步对每一条媒体轨进行限制
+    // 媒体设备的能力就像现实世界中有多种型号的摄像头，有多种分辨率、帧率一样多样。
+    // 我们可以用几种特定的“关键字”，来向浏览器表达我们的需求是“必须满足”还是“尽力而为”。
+
+    // 通用格式:
+    // min 这是硬性要求，设备必须满足的最小值，否则请求会失败。
+    // max 同样是硬性要求，设备支持的最大值不能超过这个值。
+    // exact 一个精确值要求，设备必须完美匹配，等价于min和max取同一个值。
+    // ideal 这是我们最期望的理想值。浏览器会尽力满足，但如果不满足，也会退而求其次
     const mediaStreamContrains = {
         video: {
-            frameRate: {min: 20},
-            width: {min: 640, ideal: 1280},
-            height: {min: 360, ideal: 720},
-            aspectRatio: 16/9
+            // deviceId	// 指定使用特定的摄像头或麦克风设备，设备ID需要通过enumerateDevices()方法获取。
+            frameRate: { min: 30 }, // 帧率
+            width: { min: 640, ideal: 1280 }, // 视频的分辨率。
+            height: { min: 360, ideal: 720 },
+            // aspectRatio: 16/9,// 宽高比
+            resizeMode: 'none', 视频流的裁剪模式，"none"表示不裁剪。
+            facingMode:'enviroment'  //（h5中使用）user 前置摄头 enviroment 后置 left 前置左、right前置右 
         },
         audio: {
-            // 开启回音消除、降噪以及自动增益功能。
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true
+            echoCancellation: true,  // 开启回声消除，提升通话质量
+            noiseSuppression: true,  // 开启噪声抑制，减少背景噪音
+            autoGainControl: true,   // 开启自动增益控制，使音量保持稳定
+            volume:0.9               // 用于调整麦克风的输入增益，范围从0到1
         }
     };
 
-    // 其他参数
-    facingMode: （h5中使用）user 前置摄头 enviroment 后置 left 前置左、right前置右 
-    resizeMode: 是否允许调整图像大小
-    latency:  延迟大小
-    channalCount： 声道数
-    deviceId:     设备id 指定用哪个输出、输入设备
-    groupId:      设置组id
-
   ```
-* 获取设备信息(设备检测):
+* mediaDevices.enumerateDevices 获取设备信息(设备检测):
   - 如果存在多个摄像头、多个音频设备可以获取到
     ```js
         //判断浏览器是否支持这些 API
@@ -81,8 +84,7 @@
     3. kind，设备种类，可用于识别出是音频设备还是视频设备，是输入设备还是输出设备
   - 注意：出于安全原因，除非用户已被授予访问媒体设备的权限（要想授予权限需要使用 HTTPS 请求），否则 label 字段始终为空   
   - 案例:[音视频采集.html](./case/音视频采集.html)
-* 录制本地音视频
-  - MediaRecorder：
+* MediaRecorder 录制本地音视频
   - 只能够实现一路视频和一路音视流的情况，一般在录制时一般不是录制音视频数据，而是录制桌面加音频
    ```js
     var mediaRecorder = new MediaRecorder(stream[, options]);
@@ -91,10 +93,10 @@
     // options，可选项，指定视频格式、编解码器、码率等相关信息，如 mimeType: 'video/webm;codecs=vp8'
     // ondataavailable 事件。当 MediaRecoder 捕获到数据时就会触发该事件。通过它，我们才能将音视频数据录制下来。
    ```
-* 抓取桌面
+* getDisplayMedia 抓取桌面
   ```js
     // 注意： 与 getUserMedia 采集的区别，在桌面采集的参数里却不能对音频进行限制了，也就是说，不能在采集桌面的同时采集音频
-    // //只有在 PC 下才能抓取桌面
+    // 只有在 PC 下才能抓取桌面
     const constraints={video: true}
     const promise = navigator.mediaDevices.getDisplayMedia(constraints)
     .then((stream)=>{
