@@ -68,7 +68,7 @@
             name: 'John',
             age: 30
         }),
-        mode: 'cors', // no-cors, *cors, same-origin
+        mode: 'cors', // no-cors,  same-origin
         cache: 'no-cache', // default, no-cache, reload, force-cache, only-if-cached
         credentials: 'same-origin', // include, same-origin, omit
         redirect: 'follow' // manual, follow, error
@@ -85,6 +85,25 @@
         }
     }
   ```
+  + mode 请求模式
+    - cors 默认，允许跨域请求，要求服务器支持 CORS（需返回 Access-Control-Allow-Origin 等头）。如果跨域响应不合法，会报错。
+    - 'no-cors' 只允许发送特定“简单请求”（如 GET/POST，只能使用 text/plain 等有限内容类型）。响应无法通过 JavaScript 读取（状态码、内容都不可见），常用于 Service Worker 或 <img>/<script> 类请求。
+    - 'same-origin'	仅允许同源请求（协议、域名、端口完全相同）。任何跨域请求都会直接报错。
+  + cache 缓存模式 控制浏览器 HTTP 缓存的行为。
+    - 'default'（默认）	遵循浏览器默认缓存策略（如强缓存 Expires/Cache-Control，协商缓存 Last-Modified/ETag）。
+    - 'no-cache'	不使用缓存。会先向服务器验证缓存是否过期（发送 If-Modified-Since 等），若返回 304 则复用缓存，否则获取新资源。
+    - 'reload'	强制从网络获取，类似 Ctrl+F5。请求头会携带 Cache-Control: no-cache，响应也不会存入缓存
+    - 'force-cache'	强制使用缓存。只要缓存里有就使用，完全不走网络（除非缓存不存在才请求）。
+    - 'only-if-cached'	仅当存在缓存时才使用，且只能用于 same-origin 模式。否则返回网络错误。
+  + credentials 凭证携带策略 决定请求是否携带 Cookie、Authorization 等凭证信息。
+    - 'same-origin'（默认）	仅在同源请求中携带凭证。跨域请求不会携带。
+    - 'include'	无论同源还是跨域，都始终携带凭证。跨域时需要服务器配置 Access-Control-Allow-Credentials: true
+    - 'omit'	绝不携带凭证。请求中不会包含 Cookie、认证头等。
+  + redirect  重定向处理 控制遇到 HTTP 重定向（状态码 301/302/307/308）时的行为。
+    - 'follow'（默认）	自动跟随重定向，最终返回最终目标地址的响应。
+    - 'manual'	手动处理重定向。fetch 会返回一个不透明（opaque）的响应（状态码为 0，无法读取内容），但可以获取 response.url 和 response.type === 'opaqueredirect'，用于自己实现重定向逻辑。
+    - 'error'	将重定向视为错误，直接抛出异常。
+    
 * 响应的数据类型
   - json、blob、text、arrayBuffer
   ```js
@@ -134,29 +153,36 @@
   ```
 * 数据流式读取
   ```js
-    async function sendPost(){
-        // 第一个 awiat 等待的是请求头
-       const response = await fetch("https://api.binjie.fun/api/generateStream?refer__1360=n4AxuDBDyDg0G%3DG8DlxGO4%2BrOb8p4iK03mQx", {
-            "body": "{\"prompt\":\"取对象数组最后三条记录\",\"userId\":\"#/chat/1733396635331\",\"network\":true,\"system\":\"\",\"withoutContext\":false,\"stream\":false}",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "omit"
+    async function fetchStream(url, body) {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ...' },
+            body: JSON.stringify(body),
         });
-          // 解码器
-         const textDecoder = new TextDecoder()
-         const reader = response.body.getReader()
-         let content=''
-         while(true){
-            const { done,value }= await reader.read()
-            if(done){
-                break
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+
+            // 按行解析 SSE 事件
+            const lines = buffer.split('\n');
+            buffer = ''; 
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    const data = line.slice(6).trim();
+                    const json = JSON.parse(data);
+                    // 处理 json.choices[0].delta.content 等...
+                }
             }
-            const txt=textDecoder.decode(value)
-            content+=txt
-         }
-        console.log(contetent)
+        }
     }
   ```
+* 为了更方便地处理重连与解析，可用第三方库如 @microsoft/fetch-event-source（支持 POST、自定义头、自动重连）。
 
 ## Axios 第三方库 
 * responseType
@@ -248,3 +274,33 @@
   - Fetch 默认情况下不会发送同源的 Cookie，需要设置 fetch(url, {credentials: 'include'})
   - 服务器返回 400，500 等错误码时并不会 reject，只有网络错误导致请求不能完成时，fetch 才会被 reject。
   - IE 均不支持原生 Fetch
+
+## 排查cookie 写入
+```js
+// 拦截 fetch
+const originalFetch = window.fetch;
+window.fetch = function(...args) {
+  return originalFetch.apply(this, args).then(response => {
+    const clone = response.clone();
+    const headers = clone.headers;
+    if (headers.has('set-cookie')) {
+      console.log('Set-Cookie from fetch:', args[0], headers.get('set-cookie'));
+    }
+    return response;
+  });
+};
+
+// 拦截 XMLHttpRequest
+const originalOpen = XMLHttpRequest.prototype.open;
+XMLHttpRequest.prototype.open = function() {
+  this.addEventListener('readystatechange', function() {
+    if (this.readyState === 2) {
+      const setCookie = this.getResponseHeader('set-cookie');
+      if (setCookie) {
+        console.log('Set-Cookie from XHR:', this.responseURL, setCookie);
+      }
+    }
+  });
+  return originalOpen.apply(this, arguments);
+};
+```

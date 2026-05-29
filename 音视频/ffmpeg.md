@@ -1,5 +1,5 @@
 # ffmpeg
-  >ffmpeg 是一个开源的多媒体处理工具，广泛用于音频、视频和流媒体的处理、转码、录制和播放等任务。它提供了强大的命令行工具集，可以在不同的操作系统上运行。
+> ffmpeg 是一个开源的多媒体处理工具，广泛用于音频、视频和流媒体的处理、转码、录制和播放等任务。它提供了强大的命令行工具集，可以在不同的操作系统上运行。
 ## 主要功能和应用场景
 * 音视频转码和处理：
   - 支持几乎所有主流的音视频编解码器和格式，可以进行转码、压缩、裁剪、合并等操作。
@@ -102,24 +102,27 @@
 
 ## 应用：录制和截取
   ```bash
-    # Linux 采集本机摄像头的视频
-    ffmpeg -f v4l2 -i /dev/video0 -c:v libx264 -preset ultrafast -pix_fmt yuv420p output.mp4
-
-    # macOS 采集本机摄像头的视频(未成功)
     # 查找摄像头设备
+    # mac (使用AVFoundation) 会列出视频设备和音频设备，例如 [0] FaceTime HD Camera。
     ffmpeg -f avfoundation -list_devices true -i ""
-    # -r 30：设置帧率为 30fps,
-    # -t 10：设置录制时长为 10秒（可选）。
-    # -s 1920x1080 分辨率
-    ffmpeg -f avfoundation -i "0" -r 30 -t 10 output.mp4
-
-    # windows 
-    # 查看摄像头名称
+    # windows (使用DirectShow) 输出中 "USB2.0 HD UVC WebCam" 这类带引号的内容就是摄像头名称。
     ffmpeg -list_devices true -f dshow -i dummy
-    ffmpeg -f dshow -i video="你的摄像头名称" -c:v libx264 -preset ultrafast -pix_fmt yuv420p output.mp4
+    # Linux (使用V4L2) 通常设备文件是 /dev/video0
+    v4l2-ctl --list-devices
 
+    # 采集本机摄像头的视频
+    # Linux 
+    ffmpeg -f v4l2 -i /dev/video0 -c:v libx264 -preset ultrafast -pix_fmt yuv420p output.mp4
+    # mac 
+    # -i "0" 取索引为0 的设备
+    # -r 25：设置帧率为 25fps,
+    # -t 10：设置录制时长为 10秒（可选）。
+    ffmpeg -f avfoundation -i "0" -r 25 -t 10 output.mp4
+    # windows 
+    ffmpeg -f dshow -i video="你的摄像头名称" -c:v libx264 -preset ultrafast -pix_fmt yuv420p output.mp4
     # Linux 录制桌面视频:
     ffmpeg -f x11grab -framerate 30 -video_size 1920x1080 -i :0.0 output.mp4
+
 
     # 从视频中提取音频：
     ffmpeg -i input.mp4 -vn -c:a copy output_audio.aac
@@ -176,7 +179,7 @@
     ffmpeg -i input.mp4 -c:v h264_amf -b:v 5000k -f flv rtmp://server/stream
   ```
 
-## FFmpeg 中的模块
+## ffmpeg 中的模块
 * AvFormat
   - 封装与解封装，传输协议的框架
 * Avcodec 
@@ -193,19 +196,20 @@
 ## ffplay
 * 推流到媒体服务器后，拉流观看的方式
 ```bash
-  # 直接播放摄像头的视频 Linux
+  # 预览摄像头画面
+  # Linux
   ffplay -f v4l2 /dev/video0
-  # Macos
+  # Macos -vf "hflip" 镜像翻转
   ffplay -f avfoundation -i "0" -vf "hflip" -framerate 25
   # windows
   ffplay -f dshow -i video="设备名称"
 
   # 播放远程的摄像头画面 
-  # RTSP 端口通常是 554，HTTP 端口是 80 或 8080。
+  # RTSP 端口通常是 554
   ffplay rtsp://<IP_ADDRESS>:<PORT>/
   ffplay rtsp://username:password@<IP_ADDRESS>:<PORT>/
 
-  # 拉流
+  # 拉流播放
   ffplay -vf "drawtext=text='%{eif\:mod(n\,60)\:d}':x=10:y=10:fontsize=24:fontcolor=white"  rtmp://127.0.0.1/live/stream  
   ffplay http://localhost:8082/hls/stream/index.m3u8
 ```
@@ -221,9 +225,10 @@
     ffprobe -v verbose filename.mp4
 
     # -show_streams 分析音视频流:以JSON格式输出分析信息
-    # -show_format 分析音视屏容器格式
+    # -show_format  分析音视屏容器格式
     # -show_packets 分析音视频包
     # -show_frames  分析音视频帧
+
     ffprobe -v quiet -print_format json -show_format -show_streams filename.mp4
 
   ```

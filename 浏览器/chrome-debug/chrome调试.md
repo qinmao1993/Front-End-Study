@@ -1,15 +1,6 @@
 # chrome 调试
 精准调试、性能分析、网络控制和效率飞升四个维度，直达 DevTools 的使用精髓。
 
-## 样式调试(Elements)
-* computed 看盒模型信息
-* dom 断点的调试
-  1. 选择一个dom节点：该节点断点有三个选项 
-    - 子树修改（subtree modifications）
-    - 属性修改(attibute modifications）)
-    - 删除节点(node removal)
-  ![dom断点的调试1](./imgs/dom断点调试1.png)
-
 ## 精准调试,告别 console.log，让代码"听话地"停下(Sources)
 * 在浏览器中修改并运行网页的源代码？
   ![修改并运行网页的源代码](./imgs/修改网页源码.png)

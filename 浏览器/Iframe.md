@@ -17,6 +17,7 @@
     referrerpolicy	枚举值	控制 Referer 头的发送策略
     loading	lazy / eager	懒加载支持（现代浏览器） -->
 ```
+
 ## sandbox —— 最强的隔离沙箱
 * 默认全部开启
 * 常用令牌：
@@ -45,8 +46,8 @@
 
     // iframe 中修改父页面样式
     window.parent.document.body.style.background = 'red';
-
   ```
+  
 * 跨域通信：postMessage
   - 跨域时，浏览器禁止直接访问对方 DOM，但允许通过 postMessage API 安全地交换数据。
     ```js

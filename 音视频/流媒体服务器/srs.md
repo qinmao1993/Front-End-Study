@@ -1,6 +1,24 @@
 # SRS
-  - SRS是一个开源的（MIT协议）简单高效的实时视频服务器，支持RTMP、WebRTC、HLS、HTTP-FLV、SRT、MPEG-DASH和GB28181等协议
-  - SRS使用ANSI C++ (98)开发，只使用了基本的C++能力，可以在Linux、Windows、macOS等多个平台运行。推荐使用 Ubuntu 20+系统开发和调试
+
+## 特点
+  - 开源：SRS是一个开源的（MIT协议）简单高效的实时视频服务器，高性能、高并发的流媒体服务器集群。
+  - 协议支持：RTMP、WebRTC、HLS、HTTP-FLV、SRT、MPEG-DASH和GB28181等协议
+  - 跨平台：SRS使用ANSI C++ (98)开发，只使用了基本的C++能力，可以在Linux、Windows、macOS等多个平台运行。推荐使用 Ubuntu 20+系统开发和调试
+
+## 并发能力
+单机稳定支持6000+ RTMP并发连接
+
+## 延迟
+RTMP: 1-3s, WebRTC: 80-200ms
+
+## 运维部署
+功能模块多，编译安装，配置需重启生效
+
+## 安全特性
+HTTP回调, Token认证, 安全策略需额外配置
+
+## 生态与社区
+国内老牌项目，生态完善，广泛的生产环境验证
 
 ## 应用场景
 * SRS主要用于直播和WebRTC领域。

@@ -18,7 +18,6 @@
             this.age = age;
             this.#balance = balance;
         }
-
         // 实例方法：对象行为
         introduce() {
             return `你好，我是${this.name}，今年${this.age}岁`;
@@ -30,11 +29,12 @@
             return '人类';
         }
 
-        // 私有字段和方法 (ES2022) (以#开头)
+        // 私有字段和方法 (ES2022) (以#开头)，只能在类中访问
         #balance;
         #validate(balance) {
             return balance>=0
         }
+
         // Getter 和 Setter
         get balance() {
             console.log(`查询余额: ${this.#balance}`);
@@ -54,7 +54,7 @@
     const person = new Person('张三', 25,1000);
     console.log(person.introduce()); // 你好，我是张三，今年25岁
     console.log(Person.species(),Person.version); // 人类 1.0.0
-    console.log(person.#balance); //  错误: 私有字段不可访问
+    console.log(person.#balance); //  错误: 私有字段实例不可访问
 
     // 类表达式
     const Animal = class {
@@ -68,7 +68,6 @@
     const dog = new Animal('狗狗');
   ```
 
-  
 ## 类继承
   ```js
     class Parent {
@@ -114,6 +113,7 @@
             return this.color + ' ' + super.toString(); // 调用父类的toString()
         }
         // super 它在这里表示父类的构造函数，用来新建父类的 this 对象
+
         // 注意：子类必须在 constructor 方法中调用 super 方法，否则新建实例时会报错。这是因为子类没有自己的 this 对象，而是继承父类的 this 对象，然后对其进行加工。如果不调用super方法，子类就得不到this对象
     }
   ``` 
@@ -122,4 +122,4 @@
   - es6 实质是先创造父类的实例对象 this（所以必须先调用super方法），然后再用子类的构造函数修改 this。
   
 ## 应用案例
- [ShoppingCart](./demo.js)
+* [ShoppingCart](./demo.js)

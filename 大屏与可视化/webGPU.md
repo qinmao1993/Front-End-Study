@@ -24,7 +24,7 @@
     // 设备：逻辑GPU上下文，核心操作对象
   ```
 2. 命令编码器（CommandEncoder）
-```js
+  ```js
     const commandEncoder = device.createCommandEncoder();
     const renderPass = commandEncoder.beginRenderPass(renderPassDescriptor);
 
@@ -32,7 +32,7 @@
     renderPass.end();
     const commandBuffer = commandEncoder.finish();
     device.queue.submit([commandBuffer]);
-```
+  ```
 3. 管线（Pipelines）
   - 渲染管线（RenderPipeline）：处理图形渲染
   - 计算管线（ComputePipeline）：处理通用GPU计算

@@ -24,4 +24,4 @@
    ```
 ## 源码安装
 * 如果你需要更高级的配置或者特定的功能，可以选择手动编译安装 ffmpeg。
-   - 具体步骤可以参考 ffmpeg [编译安装文档](https://trac.ffmpeg.org/wiki/CompilationGuide)。  
+   - 参考[编译安装文档](https://trac.ffmpeg.org/wiki/CompilationGuide)。  

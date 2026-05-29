@@ -4,6 +4,11 @@
    ```js
     const instance = echarts.init(el)
    ```
+   + 实例的常用方法和属性
+      - setOption() 设置图表实例的配置项以及数据,ECharts 会合并新的参数和数据，然后刷新图表
+      - getWidth()/getHeight() 获取宽高
+      - resize() 改变图表尺寸，在容器大小发生改变时需要手动调用。
+      - dispose() 销毁实例释放资源，避免内存泄漏。
 * 系列 series
   - 一组数值以及他们映射成的图，可以理解为是专门绘制“图”的组件
   ```js
@@ -72,8 +77,6 @@
       })
       resizeObserver.observe(chartEl)
   ```
-* 容器节点销毁时
-  - 应调用 echartsInstance.dispose 以销毁实例释放资源，避免内存泄漏。
 
 ## 样式
 * 颜色主题 Theme: echarts.init(el,'dark') 可在官网中自定义主题
@@ -104,4 +107,50 @@
         formatter: 'This is a emphasis label.'
       }
     }
+  ```
+
+## 事件
+> 在 ECharts 中事件分为两种类型
+* 用户鼠标操作点击，或者 hover 图表的图形时触发的事件
+  - 支持常规的鼠标事件类型，包括 'click'、 'dblclick'、 'mousedown'、 'mousemove'、 'mouseup'、 'mouseover'、 'mouseout'、 'globalout'、 'contextmenu' 事件
+  - chart.on(eventName, query, handler) 使用 query 只对指定的组件的图形元素的触发回调：
+  ```js
+    chart.on('click', 'series', function() {});
+    chart.on('click', 'series.line', function() {});
+    chart.on('click', 'dataZoom', function() {});
+    chart.on('click', 'xAxis.category', function() {});
+  ```
+* 使用可以交互的组件后触发的行为事件，如在切换图例开关时触发的 'legendselectchanged' 事件
+* 代码触发 ECharts 中组件的行为
+  - 通过调用 myChart.dispatchAction({ type: '' }) 触发图表行为，统一管理了所有动作，也可以方便地根据需要去记录用户的行为路径。
+* 监听“空白处”的事件
+  + zrender 事件和 echarts 事件区别？
+    > echarts 事件是在 zrender 事件的基础上实现的
+    - zrender事件 当鼠标在任何地方都会被触发
+    - 当鼠标在图形元素上时才能被触发
+  ```js
+    myChart.getZr().on('click', function(event) {
+        // 该监听器正在监听一个`zrender 事件`。
+        // 没有 target 意味着鼠标/指针不在任何一个图形元素上，它是从“空白处”触发的。
+        if (!event.target) {
+            // 点击在了空白处，做些什么。
+        }
+
+        // 解决 myChart事件触发式图形元素上过小不好选中的问题
+        const chartInstence = chart1Instance.value.getEchartInstance()
+        const pointInPixel = [event.offsetX, event.offsetY]
+        const pointInGrid = chartInstence.convertFromPixel({ xAxisIndex: 0, yAxisIndex: 0 }, pointInPixel)
+        let yValueIndex = pointInGrid[1]
+        // 计算点击的具体元素的索引
+        const maxYIndex = 3
+        const minYIndex = 0
+        if (yValueIndex <= minYIndex) yValueIndex = minYIndex
+        if (yValueIndex > maxYIndex) yValueIndex = maxYIndex
+        // 关联业务数据
+        const yValueName = citys[yValueIndex]
+    });
+
+    myChart.on('click', function(event) {
+        // 该监听器正在监听一个`echarts 事件`。
+    });
   ```
