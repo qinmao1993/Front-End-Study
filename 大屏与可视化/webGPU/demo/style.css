@@ -1,0 +1,15 @@
+* { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+html,body,#app { height:100%; margin:0; }
+#app { display:flex; height:100vh; }
+aside#controls { width:320px; padding:16px; background:#0f1724; color:#e6eef8; overflow:auto; }
+main { flex:1; display:flex; flex-direction:column; background:#071024; }
+canvas { width:100%; height:calc(100vh - 80px); display:block; background:#000; }
+.controls-group { margin-top:8px; }
+button, select, input { margin:6px 0; padding:8px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); background:#0b1220; color:#e6eef8; }
+#log { color:#cbd5e1; padding:8px; font-size:13px; height:80px; overflow:auto; background:#02101a; }
+#deviceInfo { margin-top:8px; font-size:13px; color:#9fb3c8; }
+label { display:block; margin-top:12px; }
+small { color:#7f9fb0; }
+#extraControls button{display:block; width:100%;}
+
+@media (max-width:900px){ aside#controls{display:none;} }

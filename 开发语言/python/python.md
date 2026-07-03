@@ -1,6 +1,5 @@
 # python
 > 强类型的解释型语言
-
 ## 入门程序
   - Python 没有 {}，靠缩进（通常 4 个空格）表示代码块。
   ```py
@@ -20,6 +19,7 @@
 
 ## 配置开发环境
 * [环境配置](./环境配置.md)
+* [vscode配置](./vscode配置.md)
 
 ## 数据类型
 > 动态类型，无声明关键字，Python 直接赋值即可，不写 let/var/const。
@@ -31,7 +31,6 @@
 * bool：（首字母大写 True/False）
   - Python 的“假值”有：False、None、0、0.0、""、空容器 [] {} () 
 * None 空值
-
 * 示例
   ```py
     x = 10 ** 100  # 很大的整数，JS 需要 BigInt
@@ -39,6 +38,7 @@
     flag = True
     empty = None
   ```
+
 ### 复合类型
 * 序列类型
   + list 列表，可变序列（≈ JS 数组）
@@ -164,6 +164,7 @@
     a - b          # {1}        差集（a 有 b 无）
     a ^ b          # {1,4}      对称差集
   ```
+
 ### 推导式
 > 推导式是 Python 的语法糖，简洁高效，很多时候可替代 map/filter。
 * 列表推导式
@@ -181,6 +182,7 @@
   ```py
     {x for x in 'abracadabra' if x not in 'abc'}   # {'r', 'd'}
   ```
+
 ### 成员检测
 ```py
     if "a" in ['a','b','c']:
@@ -223,7 +225,6 @@
   ```python
    # 1.百分号 %：
    "%s is %s then %s" %("a","b","c")
-
     # 2 format 函数
     “{1} is {2} then {0}”.format("a","b","c")
 
@@ -264,7 +265,20 @@
         global global_var  # 声明要使用全局变量，否则会创建一个新的局部变量
         global_var = 100  # 修改全局变量
   ```
+* 函数注释
+  - vscode 插件 autoDocstring 会自动生成
+  ```py
+  def read_by_path(img_path: str | Path):
+    """本地路径读取
 
+    Args:
+        img_path (str | Path): 本地路径
+    Returns:
+        _type_: img_path
+    """
+    return img_path
+  ```
+  
 ## 面向对象：类与继承
 > Python 的 OOP 比 JS 的 class 更“传统”，但不是基于原型链。
   - self 显式作为第一个参数
@@ -285,17 +299,31 @@
   ```
 
 ## 模块与包
-  - 文件即模块：一个 .py 文件就是一个模块。
-  - 导入：使用 import，和 JS 的 import 很像，但语法有差异：
+* 文件即模块：一个 .py 文件就是一个模块。
+* 导入：使用 import，和 JS 的 import 很像，但语法有差异：
     ```py
         import math            # 类似js import * as math from "math"
         from math import sqrt  # 类似js import { sqrt } from "math"
         import numpy as np     # 别名
     ```
-  - __name__ == "__main__" 用于判断是否直接执行，相当于 Node 的 require.main === module。
-  - 包就是包含 __init__.py 的文件夹（3.3+ 可以省略，但建议保留）。
+* __name__ == "__main__" 
+  - 用于判断当前脚本是否作为主程序直接运行，而不是被导入到其他模块中作为库使用。
+  - 常用于测试代码、命令行工具或模块的演示功能。
+  + 工作原理
+    - 当脚本被直接执行时（如 python script.py），__name__ 的值会被设置为 "__main__"。
+    - 当脚本被导入到另一个模块（import script）时，__name__ 的值会变成该模块的文件名（不含 .py 后缀）。
+    ```py
+        # my_module.py
+        def main():
+            print("程序入口")
 
-  + 示例
+        if __name__ == "__main__":
+            main()
+        # 直接运行 python my_module.py → 执行 main()
+        # 在其他文件中 import my_module → 不会自动执行 main()，只有在需要时显式调用 my_module.main()
+    ```
+
+* 示例
     - 自定义模块见[demo_python]()
     - 自定义包发布见[demo_python]()
 
@@ -395,18 +423,15 @@
 ## Web 开发
 * Flask：轻量，类似 Express。
 * Django：全栈“全家桶”，自带 ORM、认证、管理后台，类似一个功能完备的 Rails/Laravel。
-* FastAPI：现代异步 Web 框架，利用类型注解自动生成 API 文档，性能极高，常用于构建 API。配套 Pydantic 做数据校验。
+* FastAPI：现代异步 Web 框架，利用类型注解自动生成 API 文档，性能极高，常用于构建 API。配套Pydantic 做数据校验。
 
 ## 数据科学与计算
 > 这是 Python 远超 JS 的领域
-* NumPy：多维数组与数学运算，类似 MATLAB。
+* NumPy
+  - 多维数组与数学运算，类似 MATLAB
+  - [NumPy](./NumPy.md)
 * pandas：数据分析核心，提供 DataFrame（≈ 加强版电子表格/SQL 表）。
 * Matplotlib / Seaborn：图表绘制。
-
-## 机器学习和 AI
-* scikit-learn：经典 ML 算法。
-* PyTorch / TensorFlow：深度学习框架。
-* Hugging Face 生态：Transformer 模型等。
 
 ## 自动化与运维
 * 脚本化替代 Shell，配合 os, shutil, pathlib。

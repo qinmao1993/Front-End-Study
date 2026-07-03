@@ -400,5 +400,5 @@ WebGL 是 OpenGL ES 的 Web 绑定，本质上是状态机和光栅化 API
 帧缓冲
 
 ## 调试
-* Chrome DevTools Performance 面板、
+* Chrome DevTools Performance 面板
 * WebGL Inspector 

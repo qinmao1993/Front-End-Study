@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WebGPU 交互演示</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <aside id="controls">
+      <h2>WebGPU 交互演示</h2>
+      <p>先点击「请求设备」。选择示例并点击「开始」。</p>
+      <button id="requestDevice">请求设备</button>
+      <div id="deviceInfo"></div>
+
+      <label>示例：
+        <select id="exampleSelect">
+          <option value="triangle">基础三角形（渲染管线）</option>
+          <option value="texture">纹理渲染（上传图片）</option>
+          <option value="compute">计算着色器 + 渲染（粒子）</option>
+          <option value="readback">缓冲区读回示例（mapReadAsync）</option>
+        </select>
+      </label>
+
+      <div class="controls-group">
+        <button id="startBtn">开始</button>
+        <button id="stopBtn">停止</button>
+        <button id="singleStepBtn">提交单帧</button>
+      </div>
+
+      <div id="extraControls"></div>
+
+      <hr>
+      <small>提示：在本地通过静态服务器（例如 python -m http.server）打开以支持 module/worker 请求。</small>
+    </aside>
+
+    <main>
+      <canvas id="gpuCanvas"></canvas>
+      <div id="log"></div>
+    </main>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
