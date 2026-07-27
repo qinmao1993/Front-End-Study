@@ -36,9 +36,9 @@
         # 2. 生成ssh key
         
         cat ~/.ssh/id_rsa.pub  # 判断本地是否已经存在公钥 windows 保存在 C:\Users\登录用户下.ssh文件夹里
-        ssh-keygen -t rsa    # 没有生成公钥和私钥
+        ssh-keygen -t rsa    # 没有,生成公钥和私钥
 
-        # 3. 存在将本机的公钥放到代码托管仓库，如gitlab、github 在个人信息下的ssh秘钥选项中，添加秘钥，复制粘贴上去
+        # 3. 存在,将本机的公钥放到代码托管仓库，如gitlab、github 在个人信息下的ssh秘钥选项中，添加秘钥，复制粘贴上去
         
       ```
   + 删除仓库：rm -rf .git  

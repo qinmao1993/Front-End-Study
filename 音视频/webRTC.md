@@ -583,7 +583,7 @@
 
    ```
 * 连接配置参数
-```js
+  ```js
     var pcConfig = {
     'iceServers': [{ //指定 ICE 服务器信令
         'urls': 'turn:stun.al.learningrtc.cn:3478', //turn服务器地址
@@ -602,7 +602,7 @@
         return;
     }
 
-```
+  ```
 
 ## 多方通信架构的三种方案
 * Mesh 方案

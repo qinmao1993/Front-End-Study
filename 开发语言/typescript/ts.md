@@ -1,5 +1,5 @@
 # TS
-> TypeScript（简称 TS）是微软公司开发的一种基于 JavaScript （简称 JS）语言的编程语言。它的目的并不是创造一种全新语言，而是增强 JavaScript 的功能，使其更适合多人合作的企业级项目。
+> TypeScript（简称 TS）是微软公司开发的一种基于 js （简称 JS）语言的编程语言。它的目的并不是创造一种全新语言，而是增强 js 的功能，使其更适合多人合作的企业级项目。
 ## 安装
   ```bash
     npm i typescript -g
@@ -8,22 +8,26 @@
     # 显示基本可用的帮助信息
     tsc -h
   ```
+
 ## 编译器
 > 将ts编译成js才能执行，有以下几种编译器
 * tsc
   + 优点
-    - 官方提供的编译器,完全支持 TypeScript 的所有特性
+    - 官方提供的编译器,完全支持 ts 的所有特性
     - 配置简单，直接使用 tsconfig.json 文件。
     - 支持增量编译，提高编译速度。
-  + 缺点：
+  + 缺点（ts6及以前）：
     - 编译速度相对较慢，尤其是在大型项目中。
     - 仅负责编译，不处理模块打包、代码压缩等任务。
+  + ts7
+    - ts7它不再是基于 js/Node.js 的，而是一个用 Go 语言重写的全新原生编译器。
+    - 对比以前编译速度提升10倍左右，内存占用降低18%-20%。
   + 用法
     ```bash
         # 编译ts文件，支持一次编译多个
         tsc demo1.ts demo2.ts
 
-        # 将多个 TypeScript 脚本编译成一个 JavaScript 文件
+        # 将多个 ts 脚本编译成一个 js 文件
         tsc file1.ts file2.ts --outFile app.js
 
         # 编译结果默认都保存在当前目录，--outDir参数可以指定保存到其他目录
@@ -33,7 +37,7 @@
         tsc --target es2015 app.ts
     ```
 * swc
-  - 基于 Rust 编写的高性能 JavaScript/TypeScript 编译和打包工具。它主要用语法降级、代码压缩等场景，其核心优势在于极致的编译速度。通常比 Babel 快数十倍
+  - 基于 Rust 编写的高性能 js/ts 编译和打包工具。它主要用语法降级、代码压缩等场景，其核心优势在于极致的编译速度。通常比 Babel 快数十倍
   - 无类型检查
   ```bash
     # 安装 CLI
@@ -56,11 +60,11 @@
 * Babel
   + 优点：
     - 编译速度快，适合大型项目。
-    - 支持最新的 JavaScript 特性和插件生态。
+    - 支持最新的 js 特性和插件生态。
     - 可以与其他工具（如 Webpack）无缝集成。
   + 缺点：
-    - 需要额外配置才能支持 TypeScript。
-    - 不支持 TypeScript 的类型检查，只负责语法转换。
+    - 需要额外配置才能支持 ts。
+    - 不支持 ts 的类型检查，只负责语法转换。
 * Webpack
   + 优点：
     - 支持模块打包、代码拆分、热模块替换等功能。
@@ -72,20 +76,22 @@
 * esbuild
   + 优点：
     - 编译速度极快，适合大型项目和开发环境。
-    - 支持最新的 JavaScript 和 TypeScript 特性。
+    - 支持最新的 js 和 ts 特性。
     - 配置简单，易于集成。
   + 缺点：
     - 生态系统相对较新，某些高级特性和插件可能不如 Webpack 完善。
     - 类型检查支持有限，通常需要与 tsc 结合使用。
 * ts-node
-  - 是一个 TypeScript 执行引擎，可以直接在 Node.js 中运行 TypeScript 代码，而无需手动编译。它集成了 TypeScript 编译器，并在运行时进行即时编译。
+  - 是一个 ts 执行引擎，可以直接在 Node.js 中运行 ts 代码，而无需手动编译。它集成了 ts 编译器，并在运行时进行即时编译。
   - 安装 npm install -D ts-node
   ```bash
     ts-node src/index.ts
   ```
+
 ## tsconfig.json 中常见的参数配置
-> TypeScript 允许将 tsc 的编译参数，写在配置文件 tsconfig.json。只要当前目录有这个文件，tsc就会自动读取，所以运行时可以不写参数。
+> ts 允许将 tsc 的编译参数，写在配置文件 tsconfig.json。只要当前目录有这个文件，tsc就会自动读取，所以运行时可以不写参数。
 见[tsconfig.json](./demo_ts/tsconfig.json)
+
 ## ts的类型系统
 * 类型注解：js原始类型 number|bigint|string|boolean|undefined|null|symbol
   ```js
@@ -115,11 +121,11 @@
     // 1. 是在数组成员的类型后面，加上一对方括号。
     let arr:number[] = [1, 2, 3];
 
-    // 2. 是使用 TypeScript 内置的 Array 接口。
+    // 2. 是使用 ts 内置的 Array 接口。
     let arr:Array<number> = [1, 2, 3];
     let arr:Array<number|string>;
  
-    // TypeScript 允许使用方括号读取数组成员的类型。
+    // ts 允许使用方括号读取数组成员的类型。
     type Names = string[];
     type Name = Names[0]; // string
 
@@ -201,7 +207,7 @@
         Green: 1,
         Blue: 2
     };
-    // 加上const好处:编译为 JavaScript 代码后，代码中 Enum 成员会被替换成对应的值，这样能提高性能
+    // 加上const好处:编译为 js 代码后，代码中 Enum 成员会被替换成对应的值，这样能提高性能
     const x = Color.Red;
     const y = Color.Green;
     const z = Color.Blue;
@@ -218,6 +224,7 @@
         Right = 'RIGHT',
     }
   ```
+
 ## ts中的工具类型
 * Record
   - 快速构造对象类型，严格约束键名和值类型。
@@ -287,13 +294,14 @@
     }
     // 继承 GCanvasConfig 中已有类型的属性，选取6个属性，保持属性一致，减少冗余代码
   ```
+
 ### ts的三种特殊类型
 * any 类型
   - 类型表示没有任何限制，该类型的变量可以赋予任意类型的值。
   - 变量类型一旦设为any，ts 实际上会关闭这个变量的类型检查。即使有明显的类型错误，只要句法正确，都不会报错。
   + 应用场景：
     - 出于特殊原因，需要关闭某些变量的类型检查，就可以把该变量的类型设为any。
-    - 为了适配以前老的 JavaScript 项目，让代码快速迁移到 TypeScript，可以把变量类型设为any
+    - 为了适配以前老的 js 项目，让代码快速迁移到 TypeScript，可以把变量类型设为any
 * unknown 类型
   - 为了解决any类型“污染”其他变量的问题，TypeScript 3.0 引入了unknown类型。它与any含义相同，表示类型不确定，可能是任意类型，但是它的使用有一些限制，不像any那样自由，可以视为严格版的any。
     ```ts
@@ -347,11 +355,12 @@
   + 使用场景
     - 主要是在一些类型运算之中，保证类型运算的完整性
     - 不可能返回值的函数，返回值的类型就可以写成 never
+
 ## 函数
   ```ts
     function reload(name: string) // :string 返回值类型可省略，会自动推断出来
 
-    // Function 类型:TypeScript 提供 Function 类型表示函数，任何函数都属于这个类型。
+    // Function 类型:ts 提供 Function 类型表示函数，任何函数都属于这个类型。
     function doSomething(f:Function) {
         return f(1, 2, 3);
     }
@@ -382,6 +391,7 @@
     function reverse(arr:any[]):any[];
 
   ```
+
 ## 接口
 > interface 是对象的模板，可以看作是一种类型约定
   ```ts
@@ -391,6 +401,7 @@
     greet(): void;
   }
   ```
+
 ## 类
 * 基础示例
   ```js
@@ -468,6 +479,7 @@
     temp.celsius = 25; // 通过 Setter 赋值
     console.log(temp.fahrenheit); // 输出 77
   ```
+
 ## 继承
 * 类继承
   + 修饰符
@@ -537,6 +549,7 @@
     // 1. 父接口的同名属性必须类型兼容，否则会报错
     // 2. 子接口可以重载方法，但需兼容参数和返回值
   ```
+
 ## 多态
 * 概念：面向对象编程中的一个重要概念，它允许对象以多种形式出现。多态性使得同一个方法可以根据对象的不同类型而表现出不同的行为。多态主要通过继承和接口实现。
 * 应用场景
@@ -571,6 +584,7 @@
     makeAnimalSound(myDog); // 输出: Bark
     makeAnimalSound(myCat); // 输出: Meow
   ```
+
 ## 泛型
 > 不预先设定类型，在使用的时候确定 好处：1. 增强程序的拓展性 2. 不必写多条函数重载，联合类型声明 3. 灵活控制类型之间的约束
   ```ts
@@ -615,8 +629,10 @@
 
     loggingIdentity({ length: 10, value: 3 });
   ```
+
 ## 装饰器
 [装饰器](https://wangdoc.com/typescript/decorator)
+
 ## declare 关键字
 * declare 关键字用来告诉编译器，某个类型是存在的，可以在当前文件中使用。
   - 如自己的脚本使用外部库定义的函数，编译器会因为不知道外部函数的类型定义而报错，这时就可以在自己的脚本里面使用 declare 关键字，告诉编译器外部函数的类型。
@@ -686,9 +702,11 @@
   ```ts
   /// <reference path="node.d.ts"/>
   ```
+
 ## d.ts 类型声明文件
 * 单独使用的模块，一般会同时提供一个单独的类型声明文件（declaration file），把本模块的外部接口的所有类型都写在这个文件里面，便于模块使用者了解接口，也便于编译器检查使用者的用法是否正确。
 * 类型声明文件里面只有类型代码，没有具体的代码实现。它的文件名一般为[模块名].d.ts的形式，其中的d表示 declaration（声明）
+
 ## 类型声明文件的来源
 > tsc 在编译的时候，会分别加载 lib、@types，还有 include 和 files 的文件，进行类型检查。
 * ts 编译器自动生成。
@@ -701,9 +719,9 @@
     }
   ```
 * ts 内置类型文件。
-  - 安装 TypeScript 语言时，会同时安装一些内置的类型声明文件，主要是内置的全局对象（JavaScript 语言接口和运行环境 API）的类型声明。
+  - 安装 ts 语言时，会同时安装一些内置的类型声明文件，主要是内置的全局对象（JavaScript 语言接口和运行环境 API）的类型声明。
   - 这些只是声明类型，没有具体的 JS 实现，也就是 d.ts， d 是 declare 的意思
-  - TypeScript 编译器会自动根据编译目标 target 的值，加载对应的内置声明文件。但是，可以使用编译选项lib，指定加载哪些内置声明文件。
+  - ts 编译器会自动根据编译目标 target 的值，加载对应的内置声明文件。但是，可以使用编译选项lib，指定加载哪些内置声明文件。
   ```json
     {
         "compilerOptions": {
