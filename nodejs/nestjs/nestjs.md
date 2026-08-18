@@ -32,14 +32,13 @@
   - spec:false 自动生成不产出测试文件
   ```json
     {
-    "compilerOptions": {
-      "deleteOutDir": true,
-    },
-    
-    "generateOptions": {
-      "spec": false
+        "compilerOptions": {
+            "deleteOutDir": true,
+        },
+        "generateOptions": {
+            "spec": false
+        }
     }
-  }
 
   ```
 
@@ -65,7 +64,7 @@
   - 依赖注入容器： 负责解析模块、提供者、控制器之间的依赖关系，并创建和管理它们的实例
   - 模块引用： 通过 ModulesContainer 等提供对已加载模块的访问
   - 应用生命周期： 管理应用的启动、停止等生命周期事件
-  - 中间件、守卫、拦截器、管道 的执行上下文和调用链
+  - 中间件、守卫、拦截器、管道的执行上下文和调用链
 
 ### 平台抽象层
 > NestJS 的核心设计是平台无关的。它通过平台适配器来支持不同的底层 HTTP 服务器框架。
@@ -135,7 +134,6 @@
     export class UserWithRoleDto extends IntersectionType(User, Role) {}
    ```
 
-
 * rxjs 
   > 一个用于响应式编程的库，用于使用 Observables 处理异步数据流。
   ```ts
@@ -146,7 +144,7 @@
   ```
 
 * reflect-metadata
-  - 一个 Polyfill 库，为 JavaScript 提供了元数据反射 API
+  - 一个 Polyfill 库，为 js 提供了元数据反射 API
   - 问题：TypeScript 装饰器（如 @Injectable(), @Controller(), @Inject()）本身只是语法糖，它们需要一种机制来存储和读取附加到类、方法或属性上的元数据
   + 解决方案：reflect-metadata 就是这个机制。它允许 NestJS 在运行时
     - 知道一个类是否被 @Injectable() 装饰了（是一个提供者）。

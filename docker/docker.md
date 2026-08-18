@@ -6,7 +6,7 @@
   - 资源占用多
   - 冗余步骤多
   - 启动慢
-* linux 容器：
+* linux 容器
   - 为了解决虚拟机的这些缺点，linux 发展出了另一种虚拟化技术Linux 容器（Linux Containers，缩写为 LXC） Linux 容器不是模拟一个完整的操作系统，而是对进程进行隔离，由于容器是进程级别的，相比虚拟机有很多优势。
   - 启动快
   - 资源占用少
@@ -19,13 +19,14 @@
 * Control Group：实现容器进程的资源访问限制
 * UnionFS：实现容器文件系统的分层存储，写时复制，镜像合并
 
-## docker 的用途
+## docker 优势
   > Docker 的主要用途，目前有三大类。
+* 用途
   - 提供一次性的环境。比如，本地测试他人的软件、持续集成的时候提供单元测试和构建的环境。
   - 提供弹性的云服务。因为 Docker 容器可以随开随关，很适合动态扩容和缩容。
   - 组建微服务架构。通过多个容器，一台机器可以跑多个服务，因此在本机就可以模拟出微服务架构。
 
-## 用 docker 部署的好处：
+* 好处
   - 提供一致的运行环境
   - 更轻松的迁移
   - 持续交付和部署
@@ -80,10 +81,12 @@
 
     # 启用 buildx
     docker buildx create --use
+
     # 构建多平台镜像
     docker buildx build --platform linux/amd64,linux/arm64 -t <镜像名>:<标签> .
   ```
 2. 传输镜像文件到离线环境
+
 3. 在离线环境中导入镜像
   ```bash
     docker load -i <文件名>.tar  # 示例：docker load -i nginx.tar
@@ -92,7 +95,8 @@
     for file in *.tar; do
         docker load -i "$file"
     done
-    docker images   # 验证镜像是否导入成功
+
+    docker image ls   # 验证镜像是否导入成功
   ```
 4. 运行容器
 
@@ -103,7 +107,6 @@
     - RUN 命令在 image 文件的构建阶段执行，执行结果都会打包进入 image 文件
     - 一个 Dockerfile 可以包含多个 RUN 命令
   + CMD 表示容器启动后执行,只能有一个CMD 命令 
-
 * 它是一个文本文件，用来配置 image。Docker 根据该文件生成二进制的 image 文件。
   ```Dockerfile
     FROM node:18.16.0-bullseye-slim
@@ -125,15 +128,12 @@
     # npm 安装依赖
     RUN npm ci
 
-    ENTRYPOINT ["npm", "run"]
-
     # 容器启动后执行
-    CMD ["start"]
+    CMD ["node index.js"]
 
     EXPOSE 3000
 
   ```
-
 * 生成 image 文件
   ```bash
     # -t 参数用来指定 image 文件的名字，后面还可以用冒号指定标签。如果不指定，默认的标签就是latest。
@@ -145,13 +145,11 @@
 
 ## 容器
 * 特性
-  - image 文件生成的容器实例，本身也是一个文件，称为容器文件，一旦容器生成，就会同时存在两个文件： image 文件和容器文件
+  - image 文件生成的容器实例，本身也是一个文件，称为容器文件，一旦容器生成，就会同时存在两个文件：image 文件和容器文件
   - 而且关闭容器并不会删除容器文件，只是容器停止运行而已
 
 * 容器的管理
   ```bash
-    docker ps                  # 列出本机正在运行的容器 早期的命令，和下面一样，下面更具语义化
-    docker ps -a 
     docker container ls         # 列出本机正在运行的容器
     docker container ls -a      # 查看所有的容器,包括终止运行的容器
                          
@@ -165,14 +163,12 @@
     # -t：表示分配一个伪终端（tty），让你能够获得类似终端的界面。
     # -d：表示容器将在后台运行，不会阻塞终端。
     # /bin/bash：这是容器启动后要执行的命令，启动一个 Bash shell的终端
-    # --rm 启动容器后，当容器停止时自动删除容器,避免容器停止后还留在本地，占用系统资源
+    # --restart=always 应用意外崩溃,服务重启
+    docker run -p 8000:3000 --name=c3  gateway:0.0.1  
+    docker run -d -p 8000:3000 --name=c3  gateway:0.0.1  
+    docker run -d -p 8000:3000 --name c3 --restart=always app:0.0.1
 
-    docker run -p --name=c3 8000:3000 gateway:0.0.1      
-    docker run -p 8000:3000 -itd gateway:0.0.1           
     docker run -p 8000:3000 -itd gateway:0.0.1 /bin/bash 
-
-    docker run --rm -p 8000:3000 -itd gateway:0.0.1 /bin/bash 
-
     docker exec -it [containerID] /bin/bash  # 进入一个正在运行的 docker 容器
     docker exec -it [containerID] /bin/sh
 
@@ -297,18 +293,130 @@
       nginx:latest
   ```
 
+## 日志
+> Docker 日志处理的核心在于应用只负责将日志打印到标准输出，而由 Docker 或编排平台统一接管日志的收集、流转与存储。遵循这一原则，再配合合理的配置，就能构建一个清晰、可控、不占满磁盘的日志体系。
+* 查看容器日志
+  > 在开发和调试时，docker logs 是最直接的查看方式
+  ```bash
+   docker logs --tail 100 <container_name> # 查看最近100行
+   docker logs -f <container_name>  # 实时跟踪
+
+   # 查看指定时间后的日志
+   docker logs --since "2026-07-29T10:00:00" <container_name>
+  ```
+* 生产环境的日志处理
+  - 核心原则：日志输出到标准输出， 如 nginx 示例，Docker 引擎和所有日志驱动都能原生地捕获这些输出，无需在应用内部处理日志文件路径、轮转等复杂逻辑
+  ```nginx
+    # 关键配置：让日志直接输出到标准输出，而非文件
+    access_log /dev/stdout;
+    error_log /dev/stderr;
+  ```
+  + 方案一：全局配置 (推荐)
+   - Docker 官方推荐在生产环境使用 local 驱动，因为它默认启用了日志轮转，且格式更高效。
+   - 修改 Docker 守护进程的配置文件 /etc/docker/daemon.json，对所有新容器生效。
+   - 配置后重启 Docker 服务生效：sudo systemctl restart docker。
+   ```json
+    {
+        "log-driver": "local",
+        "log-opts": {
+            "max-size": "100m",
+            "max-file": "5"
+        }
+    }
+   ```
+  + 方案二：集中式日志管理 (生产环境必备)
+    ```yaml
+        version: '3.8'
+        services:
+            # 你的前端应用服务
+            frontend:
+                build: ./frontend
+                # 为单个服务配置日志驱动
+                logging:
+                    driver: "loki"
+                    options:
+                        loki-url: "http://loki:3100/loki/api/v1/push"
+                        loki-batch-size: "400" # 可选的批量大小
+                        # 关键：为这个服务的日志添加标签
+                        loki-external-labels: "service=frontend,env=production"
+
+            # 日志存储与查询后端：Grafana Loki
+            loki:
+                image: grafana/loki:latest
+                ports:
+                    - "3100:3100"
+                volumes:
+                    - ./loki-config.yaml:/etc/loki/loki-config.yaml:ro   # 挂载配置文件
+                    - loki-data:/loki                                    # 挂载数据卷，持久化数据
+            # 日志可视化工具：Grafana
+            grafana:
+                image: grafana/grafana:latest
+                ports:
+                    - "3000:3000"
+                environment:
+                    - GF_AUTH_ANONYMOUS_ENABLED=true
+                    - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+        volumes:
+            loki-data:
+    ```
+    - 通过这种配置，所有 frontend 容器的日志会自动推送到 Loki，你可以在 Grafana 中统一查看和检索。
+
+## 网络问题
+* 容器中网络是隔离的吗？容器中的服务能够访问外部的接口吗？
+  - 是的，默认是强隔离的。虽然容器的网络是隔离的，但Docker默认会为容器创建一个 “桥接网络（Bridge）”。当容器向外发起请求（比如调用第三方API、请求MySQL数据库）时，Docker会在宿主机内核层面做一个NAT（网络地址转换），将容器的请求伪装成宿主机的IP地址发送出去。宿主机能访问哪个公网IP，容器内就能访问哪个公网IP
+  ```bash
+    # 验证
+    # 进入容器内部
+    docker exec -it c3 /bin/bash
+
+    # 测试外网连通性（比如请求百度或你的另一个API）
+    curl -I https://www.baidu.com
+  ```
+* 容器内的服务如何访问宿主机？
+  - 它默认访问不了宿主机的本地服务（Localhost）
+  - 在容器内，宿主机有一个特殊的虚拟网关地址，通常是 host.docker.internal（Mac/Windows）或 172.17.0.1（Linux）。你需要用这个地址才能访问宿主机上的端口。
+  - 或者用宿主机在局域网中的真实 IP（如 192.168.x.x），绝对不能用 127.0.0.1
+  ```bash
+    # 进入你的容器
+    docker exec -it c3 /bin/bash
+
+    # 1. 尝试 ping 宿主机在局域网中的 IP（比如你的电脑 IP 是 192.168.1.100）
+    ping 192.168.1.100
+
+    # 2. 尝试 ping Docker 网关（Linux 下常用）
+    ping 172.17.0.1
+
+    # 3. 尝试使用 host.docker.internal（Mac/Windows）
+    # 测试宿主机本地服务（如果宿主机跑着MySQL）
+    # curl host.docker.internal:3306  (Mac/Windows)
+  ```
+* 容器间的网络访问（推荐方案）？
+  > 这是 Docker 官方推荐的容器间通信方式。核心优势是：容器之间可以通过“容器名称”直接互相访问，就像访问本地 localhost 一样简单
+  ```bash
+    # 1. 创建一个自定义网络（只需执行一次）
+    docker network create app-network
+
+    # 2. 启动依赖服务（比如 MySQL/Redis）时，指定加入该网络：
+    docker run -d --name mysql-db --network app-network -e MYSQL_ROOT_PASSWORD=123456 mysql:8.0
+
+    # 3. 启动你的容器时，也加入同一个网络（并映射端口供外部访问）：
+    docker run -d -p 8000:3000 --name c3 --network app-network app:0.0.1
+
+    # 4. 在代码中修改连接地址：
+    # 将数据库连接配置从 localhost:3306 改为 mysql-db:3306。
+  ```
+    
 ## docker compose
-* 是什么？
+* 是什么,解决了什么问题？
   - 是一个用于定义和运行多容器 Docker 应用的工具，通过 声明式 YAML 文件 描述应用的各个服务、网络、卷等组件，简化复杂多容器环境的部署与管理
-  
-* 核心功能
-  - 一键启动多容器应用：通过单条命令启动所有服务。
-  - 服务依赖管理：自动处理服务启动顺序和健康检查。
-  - 环境隔离与复用：支持多环境（开发、测试、生产）配置。
-  - 资源统一管理：集中定义网络、卷、环境变量等资源。
+  + 核心功能
+    - 一键启动多容器应用：通过单条命令启动所有服务。
+    - 服务依赖管理：自动处理服务启动顺序和健康检查。
+    - 环境隔离与复用：支持多环境（开发、测试、生产）配置。
+    - 资源统一管理：集中定义网络、卷、环境变量等资源。
 
 * 核心概念
-  - 服务（Service）：定义单个容器的运行参数（镜像、端口、卷挂载等）。如一个 Web 服务 + 一个数据库服务。
+  - 服务（Service）：定义单个容器的运行参数（镜像、端口、卷挂载等）。如一个 Web 服务加一个数据库服务。
   - 项目（Project）：由一组关联的服务、网络和卷组成的完整应用。默认以当前目录名作为项目名（可通过 -p 参数指定）。
   - 网络（Network）：自动创建自定义网络，实现服务间隔离通信。默认所有服务加入同一网络，可通过服务名互相访问。
   - 卷（Volume）：定义持久化存储，供多个服务共享数据。
@@ -328,74 +436,24 @@
   - Docker Desktop 已内置无需安装
 
 * 配置示例
-  ```yaml
-    version: "3.9"  # Compose 文件版本
-    services:
-        demo-web:                     # 服务名称
-            image: nginx:latest       # 使用镜像
-            ports:
-                - "80:80"             # 端口映射
-            volumes:
-                - ./html:/usr/share/nginx/html  # 绑定挂载
-            depends_on:
-                - db                  # 依赖其他服务
-        db:
-            image: mysql:8.0
-            environment:              # 环境变量
-                MYSQL_ROOT_PASSWORD: secret
-            volumes:
-                - mysql_data:/var/lib/mysql  # 数据卷挂载
-
-    volumes:
-        mysql_data:                   # 定义数据卷
-  ```
+[前后端示例](./docker-compose.yml)
 
 * 常用命令
   ```bash
-    # 在 docker-compose.yml 配置文件同级文件路径下
-
-    docker compose stop      # 先停止但不删除容器
-    docker compose down	  # 停止并删除所有容器、网络（-v 同时删除卷）
-
-    docker compose up -d	 # 启动所有服务（-d 后台运行）应用新配置
-    docker compose up -d --force-recreate --no-deps app     # 只重启 app 服务（其他服务不受影响）
+    docker compose build <service_name> # 重新构建镜像
 
     docker compose ps	  # 列出运行中的容器
+
+    docker compose stop   # 先停止但不删除容器
+    docker compose down	  # 停止并删除所有容器、网络（-v 同时删除卷）
+
+    docker compose up -d  # 启动所有服务（-d 后台运行）应用新配置
+    docker compose up -d  --no-deps app     # 只重启 app 服务（其他服务不受影响）
+    docker compose restart <service_name>  # 仅重启特定服务 (不重建)
+
+    docker compose exec	xxx /bin/bash # 进入运行中的容器执行命令（如 exec web sh）
     docker compose logs	  # 查看服务日志（-f 实时跟踪）
     docker compose config # 验证并查看最终的 Compose 配置
 
-    docker compose exec	xxx /bin/bash # 进入运行中的容器执行命令（如 exec web sh）
-
     docker compose pull	  # 拉取服务所需的镜像
-
   ```
-
-## 日志
- ```bash
-   docker logs --since 30m 容器id
- ```
-
-## 网络问题
-* TODO
-
-## 遇到的一些问题
-* docker容器内应用访问宿主机的 MySQL？
-  ```bash
-   # 1. 开放数据库端口
-   # 防火墙 开放 3306 端口
-   firewall-cmd --zone=public --add-port=3306/tcp --permanent
-   # 刷新一下
-   firewall-cmd --reload
-
-    # 2. 查看容器是从哪个 IP 连宿主机 MySQL
-    docker exec -it 容器ID ip addr
-
-    # 开放权限给这个IP
-    mysql -u root -p
-    
-    # 进入 mysql 后，开放权限，当root用户以pwd（密码记得换成自己的）从端口 172.17.0.3 登入时，允许它操作数据库的所有表，下面的单引号别省了
-    grant all privileges on *.* to 'root'@'IP' identified by 'pwd' with grant option;
-
-  ```
-* docker容器内访问宿主机的或第三方接口？
-  - TODO
